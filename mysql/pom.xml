@@ -11,9 +11,6 @@
 
     <groupId>com.andy.zhflow</groupId>
     <artifactId>mysql</artifactId>
-    <packaging>pom</packaging>
-    <properties>
-    </properties>
 
     <dependencies>
         <dependency>

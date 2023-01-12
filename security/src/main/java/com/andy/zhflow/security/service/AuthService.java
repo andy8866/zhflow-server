@@ -1,6 +1,6 @@
-package com.andy.zhflow.auth;
+package com.andy.zhflow.security.service;
 
-import com.andy.zhflow.user.User;
+import com.andy.zhflow.redis.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +11,11 @@ import java.util.concurrent.TimeUnit;
 public class AuthService {
 
     @Autowired
-    private RedisUtils redisUtil;
+    private RedisService redisService;
 
-    public String createToken(User user){
+    public String createToken(String userId){
         String token= UUID.randomUUID().toString();
-        redisUtil.set(token,user.getId(),3600, TimeUnit.SECONDS);
+        redisService.set(token,userId,3600, TimeUnit.SECONDS);
         return token;
     }
 }

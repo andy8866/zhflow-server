@@ -16,17 +16,32 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.andy.zhflow</groupId>
             <artifactId>comm</artifactId>
             <version>${version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>security</artifactId>
+            <version>${version}</version>
         </dependency>
-
-
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>null</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

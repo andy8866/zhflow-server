@@ -13,11 +13,10 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.0.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.andy</groupId>
     <artifactId>zhflow</artifactId>
-    <version>${version}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>zhflow</name>
     <description>zhflow</description>
     <packaging>pom</packaging>
@@ -42,12 +41,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>

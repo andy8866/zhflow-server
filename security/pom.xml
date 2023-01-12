@@ -12,8 +12,6 @@
     <groupId>com.andy.zhflow</groupId>
     <artifactId>security</artifactId>
 
-    <packaging>pom</packaging>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -24,6 +22,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>redis</artifactId>
+            <version>${version}</version>
         </dependency>
     </dependencies>
 </project>

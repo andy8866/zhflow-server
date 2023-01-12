@@ -12,11 +12,6 @@
     <groupId>com.andy.zhflow</groupId>
     <artifactId>redis</artifactId>
 
-    <packaging>pom</packaging>
-
-    <properties>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
