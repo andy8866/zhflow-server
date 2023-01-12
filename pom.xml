@@ -17,8 +17,7 @@
     <groupId>com.andy</groupId>
     <artifactId>zhflow</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>zhflow</name>
-    <description>zhflow</description>
+
     <packaging>pom</packaging>
 
     <properties>
