@@ -18,5 +18,11 @@
             <artifactId>mysql</artifactId>
             <version>${version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>base</artifactId>
+            <version>${version}</version>
+        </dependency>
     </dependencies>
 </project>
