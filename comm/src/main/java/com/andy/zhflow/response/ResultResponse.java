@@ -1,4 +1,4 @@
-package com.andy.zhflow.base.response;
+package com.andy.zhflow.response;
 
 import lombok.Data;
 

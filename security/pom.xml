@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>com.andy.zhflow</groupId>
-            <artifactId>redis</artifactId>
+            <artifactId>comm</artifactId>
             <version>${version}</version>
         </dependency>
 
@@ -43,12 +43,6 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.andy.zhflow</groupId>
-            <artifactId>base</artifactId>
-            <version>${version}</version>
         </dependency>
 
         <dependency>

@@ -1,9 +1,9 @@
 package com.andy.zhflow.security.handler;
 
-import com.andy.zhflow.base.response.ResultResponse;
+import com.andy.zhflow.response.ResponseUtil;
+import com.andy.zhflow.response.ResultResponse;
 import com.andy.zhflow.security.jwt.JwtTokenUtils;
 import com.andy.zhflow.security.jwt.JwtUser;
-import com.andy.zhflow.security.response.ResponseUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,6 +40,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 按照jwt的规定，最后请求的时候应该是 `Bearer token`
         response.setHeader("token", JwtTokenUtils.TOKEN_PREFIX + token);
 
-        ResponseUtil.writeObject(response,ResultResponse.success(token));
+        ResponseUtil.writeObject(response, ResultResponse.success(token));
     }
 }

@@ -8,7 +8,6 @@
         <module>mysql</module>
         <module>redis</module>
         <module>security</module>
-        <module>base</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

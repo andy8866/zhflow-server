@@ -20,9 +20,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
-            <artifactId>base</artifactId>
-            <version>${version}</version>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
         </dependency>
     </dependencies>
 </project>

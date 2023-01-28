@@ -1,7 +1,7 @@
 package com.andy.zhflow.security.handler;
 
-import com.andy.zhflow.base.response.ResultResponse;
-import com.andy.zhflow.security.response.ResponseUtil;
+import com.andy.zhflow.response.ResponseUtil;
+import com.andy.zhflow.response.ResultResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +29,6 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             msg="用户名或者密码输入错误";
         }
 
-        ResponseUtil.writeObject(response,ResultResponse.fail(msg,exception.getMessage()));
+        ResponseUtil.writeObject(response, ResultResponse.fail(1,msg,exception.getMessage()));
     }
 }

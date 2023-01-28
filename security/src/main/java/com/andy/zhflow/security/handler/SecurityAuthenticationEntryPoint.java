@@ -1,7 +1,7 @@
 package com.andy.zhflow.security.handler;
 
-import com.andy.zhflow.base.response.ResultResponse;
-import com.andy.zhflow.security.response.ResponseUtil;
+import com.andy.zhflow.response.ResponseUtil;
+import com.andy.zhflow.response.ResultResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +16,6 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
             throws IOException, ServletException {
 //        response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        ResponseUtil.writeObject(response,ResultResponse.fail("权限验证未通过",authException.getMessage()));
+        ResponseUtil.writeObject(response, ResultResponse.fail(2,"权限验证未通过",authException.getMessage()));
     }
 }

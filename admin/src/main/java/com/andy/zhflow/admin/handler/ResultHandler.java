@@ -1,6 +1,6 @@
 package com.andy.zhflow.admin.handler;
 
-import com.andy.zhflow.base.response.ResultResponse;
+import com.andy.zhflow.response.ResultResponse;
 import com.andy.zhflow.exception.ErrMsgException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

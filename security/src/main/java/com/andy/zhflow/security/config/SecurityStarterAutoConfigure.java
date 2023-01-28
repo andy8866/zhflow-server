@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class SecurityStarterAutoConfigure {
         http.cors().configurationSource(corsConfigurationSource());
 
         http.authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers("/api/index/validateToken/**").permitAll()
                 .requestMatchers("/**").hasAnyRole("admin", "user")
         );
 
@@ -62,12 +64,12 @@ public class SecurityStarterAutoConfigure {
     private CorsConfigurationSource corsConfigurationSource() {
         // Very permissive CORS config...
         final var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedHeader("*");
 
-        final var source = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
