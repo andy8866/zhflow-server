@@ -18,6 +18,10 @@ public class ResultResponse<T> {
         this.data = data;
     }
 
+    public static <B> ResultResponse<B> success(){
+        return new ResultResponse(0,"",null);
+    }
+
     public static <B> ResultResponse<B> success(B data){
         return new ResultResponse(0,"",data);
     }

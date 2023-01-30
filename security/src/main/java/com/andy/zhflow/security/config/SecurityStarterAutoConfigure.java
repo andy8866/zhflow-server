@@ -43,7 +43,8 @@ public class SecurityStarterAutoConfigure {
         http.cors().configurationSource(corsConfigurationSource());
 
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/index/validateToken/**").permitAll()
+                .requestMatchers("/api/admin/index/validateToken/**").permitAll()
+                .requestMatchers("/api/admin/website/submitSuggest/**").permitAll()
                 .requestMatchers("/**").hasAnyRole("admin", "user")
         );
 
