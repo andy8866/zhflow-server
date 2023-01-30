@@ -68,6 +68,7 @@ public class SecurityStarterAutoConfigure {
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://zhflow-dev.scyingneng.com");
         configuration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
