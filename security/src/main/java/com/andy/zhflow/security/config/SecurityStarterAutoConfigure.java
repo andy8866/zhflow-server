@@ -64,7 +64,7 @@ public class SecurityStarterAutoConfigure {
         final var configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");
-        configuration.addAllowedOrigin("*");
+//        configuration.addAllowedOrigin("*");
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
 
