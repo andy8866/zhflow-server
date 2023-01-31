@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
 public class SecurityStarterAutoConfigure {
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -43,8 +45,6 @@ public class SecurityStarterAutoConfigure {
         http.cors().configurationSource(corsConfigurationSource());
 
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/admin/index/**").permitAll()
-                .requestMatchers("/api/admin/website/**").permitAll()
                 .requestMatchers("/**").hasAnyRole("admin", "user")
         );
 
@@ -67,8 +67,7 @@ public class SecurityStarterAutoConfigure {
         final var configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedOrigin("http://zhflow-dev.scyingneng.com");
+        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
