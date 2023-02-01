@@ -5,13 +5,13 @@ spring:
   application:
     name: admin
   datasource:
-    url: jdbc:mysql://local:3306/zhflow?serverTimezone=GMT%2B8&useSSL=FALSE
+    url: jdbc:mysql://dev:3306/zhflow?serverTimezone=GMT%2B8&useSSL=FALSE
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: local
+      host: dev
       port: 6379
       database: 1
       jedis:
