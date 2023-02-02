@@ -25,4 +25,10 @@ public class SuggestController {
 
         return ResultResponse.success(AmisPage.transitionPage(suggestPage));
     }
+
+    @GetMapping(value="/del")
+    public ResultResponse<String> del(@RequestParam("id") String id) {
+        Suggest.del(id);
+        return ResultResponse.success("");
+    }
 }

@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,5 +42,9 @@ public class Suggest extends BaseEntity {
         lambdaQueryWrapper.orderByDesc(Suggest::getCreateTime);
         Page<Suggest> suggestPage = suggestMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
         return suggestPage;
+    }
+
+    public static void del(String id){
+        suggestMapper.deleteById(id);
     }
 }
