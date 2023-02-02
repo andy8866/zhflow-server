@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -36,7 +37,8 @@ public class MyErrorController extends BasicErrorController {
         body.put("msg",body.remove("message"));
         body.put("status",1);
 
-        if(error instanceof JwtException){
+        if(error instanceof JwtException ||
+            error instanceof AuthenticationException){
             body.put("status",2);
         }
         return new ResponseEntity<>(body, HttpStatus.OK);
