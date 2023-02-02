@@ -3,6 +3,8 @@ package com.andy.zhflow.suggest;
 import com.andy.zhflow.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,4 +39,10 @@ public class Suggest extends BaseEntity {
         return getId();
     }
 
+    public static IPage<Suggest> selectPage(Integer page,Integer perPage){
+        LambdaQueryWrapper<Suggest> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.orderByDesc(Suggest::getCreateTime);
+        Page<Suggest> suggestPage = suggestMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
+        return suggestPage;
+    }
 }

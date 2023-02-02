@@ -25,6 +25,9 @@ public class ResultResponse<T> {
     public static <B> ResultResponse<B> success(B data){
         return new ResultResponse(0,"",data);
     }
+    public static <B> ResultResponse<B> fail(String msg){
+        return new ResultResponse(1,msg,null);
+    }
     public static <B> ResultResponse<B> fail(String msg,B data){
         return new ResultResponse(1,msg,data);
     }

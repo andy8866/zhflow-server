@@ -4,6 +4,12 @@ import com.andy.zhflow.security.filter.JWTAuthorizationFilter;
 import com.andy.zhflow.security.handler.LoginFailureHandler;
 import com.andy.zhflow.security.handler.LoginSuccessHandler;
 import com.andy.zhflow.security.handler.SecurityAuthenticationEntryPoint;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +24,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +50,7 @@ public class SecurityStarterAutoConfigure {
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/admin/index/**").permitAll()
                 .requestMatchers("/api/admin/website/**").permitAll()
+                .requestMatchers("/error/**").permitAll()
                 .requestMatchers("/**").hasAnyRole("admin", "user")
         );
 
@@ -53,7 +62,7 @@ public class SecurityStarterAutoConfigure {
         usernamePasswordAuthenticationFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
         http.addFilterAt(usernamePasswordAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
 
-        JWTAuthorizationFilter jwtAuthorizationFilter=new JWTAuthorizationFilter(authenticationManager);
+        JWTAuthorizationFilter jwtAuthorizationFilter=new JWTAuthorizationFilter(authenticationManager,new SecurityAuthenticationEntryPoint());
         http.addFilterAt(jwtAuthorizationFilter, BasicAuthenticationFilter.class);
 
         return http.build();
@@ -72,6 +81,13 @@ public class SecurityStarterAutoConfigure {
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
+    }
+
+    @Bean
+    public MyErrorController basicErrorController(ErrorAttributes errorAttributes, ServerProperties serverProperties,
+                                                  ObjectProvider<List<ErrorViewResolver>> errorViewResolversProvider) {
+        serverProperties.getError().setIncludeMessage(ErrorProperties.IncludeAttribute.ALWAYS);
+        return new MyErrorController(errorAttributes, serverProperties.getError(), errorViewResolversProvider.getIfAvailable());
     }
 
 }

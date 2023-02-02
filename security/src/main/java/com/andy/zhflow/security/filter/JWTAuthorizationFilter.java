@@ -1,22 +1,26 @@
 package com.andy.zhflow.security.filter;
 
 import com.andy.zhflow.security.jwt.JwtTokenUtils;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
 import java.util.Collections;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, AuthenticationEntryPoint authenticationEntryPoint) {
+        super(authenticationManager,authenticationEntryPoint);
     }
 
     /**
@@ -39,7 +43,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         // 如果请求头中有token，则进行解析，并且设置认证信息
-        SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
+
+//        try{
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
+//        }catch (AuthenticationException e){
+//            getAuthenticationEntryPoint().commence(request, response, e);
+//        }
+
         super.doFilterInternal(request, response, chain);
     }
 
@@ -48,18 +58,25 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
      * @param tokenHeader
      * @return
      */
-    private UsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) {
-        // 获取令牌
-        String token = tokenHeader.replace(JwtTokenUtils.TOKEN_PREFIX, "");
-        // 获取用户信息
-        String username = JwtTokenUtils.getUsername(token);
-        // 获取角色信息
-        String role = JwtTokenUtils.getUserRole(token);
-        if (username != null){
-            return new UsernamePasswordAuthenticationToken(username, null,
-                    Collections.singleton(new SimpleGrantedAuthority(role))
-            );
+    private UsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) throws AuthenticationException {
+
+        try{
+            // 获取令牌
+            String token = tokenHeader.replace(JwtTokenUtils.TOKEN_PREFIX, "");
+            // 获取用户信息
+            String username = JwtTokenUtils.getUsername(token);
+            // 获取角色信息
+            String role = JwtTokenUtils.getUserRole(token);
+            if (username != null){
+                return new UsernamePasswordAuthenticationToken(username, null,
+                        Collections.singleton(new SimpleGrantedAuthority(role))
+                );
+            }
+        }catch (ExpiredJwtException e){
+            e.printStackTrace();
+            throw new AccountExpiredException(e.getMessage());
         }
+
         return null;
     }
 }
