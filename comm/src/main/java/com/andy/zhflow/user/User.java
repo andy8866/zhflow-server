@@ -1,8 +1,12 @@
 package com.andy.zhflow.user;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.andy.zhflow.entity.BaseEntity;
+import com.andy.zhflow.suggest.Suggest;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,8 @@ public class User extends BaseEntity {
     }
 
     private String userName;
+
+    @JSONField(serialize = false)
     private String password;
 
     public static User getByUserName(String userName){
@@ -40,5 +46,12 @@ public class User extends BaseEntity {
         }
 
         return false;
+    }
+
+    public static IPage<User> selectPage(Integer page, Integer perPage){
+        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.orderByDesc(User::getCreateTime);
+        Page<User> suggestPage = userMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
+        return suggestPage;
     }
 }

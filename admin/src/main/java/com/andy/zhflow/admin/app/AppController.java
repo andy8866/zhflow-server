@@ -3,9 +3,7 @@ package com.andy.zhflow.admin.app;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.app.App;
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.suggest.Suggest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
