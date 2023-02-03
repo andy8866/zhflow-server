@@ -1,10 +1,10 @@
 package com.andy.zhflow.entity;
 
 import com.andy.zhflow.utils.UUIDUtil;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 public class BaseEntity {
@@ -12,12 +12,18 @@ public class BaseEntity {
     private Date createTime;
     private Date updateTime;
 
+
+    @TableField(exist = false)
+    private Boolean isNew=false;
+
     public void setBase(){
         setBase(false);
     }
     public void setBase(Boolean needSetId){
-        if(needSetId){
+
+        if(needSetId && id==null){
             id= UUIDUtil.generate();
+            isNew=true;
         }
 
         if(createTime==null) {

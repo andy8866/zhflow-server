@@ -21,9 +21,9 @@ public class WebsiteController {
      */
     @PostMapping(value="/submitSuggest")
     public ResultResponse<Void> submitSuggest(HttpServletRequest request,
-                                              @RequestBody SubmitSuggestIVO submitSuggestIVO) {
+                                              @RequestBody SubmitSuggestInputVO submitSuggestInputVO) {
         Suggest suggest=new Suggest();
-        BeanUtils.copyProperties(submitSuggestIVO,suggest);
+        BeanUtils.copyProperties(submitSuggestInputVO,suggest);
         suggest.setIp(IpUtil.getIpAddr(request));
         suggest.save();
 

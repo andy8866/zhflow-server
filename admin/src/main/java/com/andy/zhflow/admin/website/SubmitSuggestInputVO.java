@@ -6,7 +6,7 @@ import lombok.Data;
  * 添加建议
  */
 @Data
-public class SubmitSuggestIVO {
+public class SubmitSuggestInputVO {
     private String companyName;
     private String phone;
     private String email;
