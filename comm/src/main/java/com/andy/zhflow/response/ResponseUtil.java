@@ -1,8 +1,8 @@
 package com.andy.zhflow.response;
 
 import com.alibaba.fastjson2.JSON;
-import jakarta.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,7 +1,6 @@
 package com.andy.zhflow.utils;
 
-import jakarta.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 
 public class IpUtil {
