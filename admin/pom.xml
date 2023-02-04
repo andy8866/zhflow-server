@@ -31,6 +31,13 @@
             <artifactId>security</artifactId>
             <version>${version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>redis</artifactId>
+            <version>${version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -33,10 +33,11 @@ public class JwtTokenUtils {
      * @param isRememberMe
      * @return
      */
-    public static String createToken(String username, String role, boolean isRememberMe) {
+    public static String createToken(String userId,String username, String role, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
         HashMap<String, Object> map = new HashMap<>();
         map.put(ROLE_CLAIMS, role);
+        map.put("userId", userId);
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .setClaims(map)
@@ -55,6 +56,10 @@ public class JwtTokenUtils {
      */
     public static String getUsername(String token) {
         return getTokenBody(token).getSubject();
+    }
+
+    public static String getUserId(String token) {
+        return (String) getTokenBody(token).get("userId");
     }
 
     /**

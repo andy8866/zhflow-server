@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class App extends BaseEntity {
     private static AppMapper appMapper;
 
+
     @Autowired
     public void setAppMapper(AppMapper mapper){
         appMapper =mapper;
@@ -57,6 +58,14 @@ public class App extends BaseEntity {
     }
 
     public static IPage<App> selectPage(Integer page, Integer perPage){
+        if(page==null){
+            page=1;
+        }
+
+        if(perPage==null){
+            perPage=10;
+        }
+
         LambdaQueryWrapper<App> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.orderByDesc(App::getCreateTime);
         Page<App> appPage = appMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
@@ -66,4 +75,9 @@ public class App extends BaseEntity {
     public static void del(String id){
         appMapper.deleteById(id);
     }
+
+    public static App getById(String appId) {
+        return appMapper.selectById(appId);
+    }
+
 }

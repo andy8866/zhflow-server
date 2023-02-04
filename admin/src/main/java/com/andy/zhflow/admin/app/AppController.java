@@ -2,6 +2,7 @@ package com.andy.zhflow.admin.app;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.app.App;
+import com.andy.zhflow.appuser.AppUser;
 import com.andy.zhflow.response.ResultResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,8 @@ public class AppController {
     }
 
     @GetMapping(value="/getList")
-    public ResultResponse<AmisPage<App>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
+    public ResultResponse<AmisPage<App>> getList(@RequestParam(value = "page",required = false) Integer page,
+                                                 @RequestParam(value = "perPage",required = false) Integer perPage) {
         IPage<App> appPage = App.selectPage(page, perPage);
 
         return ResultResponse.success(AmisPage.transitionPage(appPage));
