@@ -18,16 +18,16 @@ public class AppUserController {
     private AppUserService appUserService;
 
     @PostMapping(value="/save")
-    public ResultResponse<String> save(@RequestBody() AppUserInputVO appUserInputVO) throws Exception {
+    public ResultResponse<String> save(@RequestBody() AppUserInputVO inputVO) throws Exception {
         AppUser appUser=new AppUser();
-        if(StringUtils.isNoneEmpty(appUserInputVO.getId())){
-            appUser = AppUser.getById(appUserInputVO.getId());
+        if(StringUtils.isNoneEmpty(inputVO.getId())){
+            appUser = AppUser.getById(inputVO.getId());
             if(appUser==null){
                 throw new Exception("未找到ID数据");
             }
         }
 
-        BeanUtils.copyProperties(appUserInputVO,appUser);
+        BeanUtils.copyProperties(inputVO,appUser);
 
         String id=AppUser.save(appUser);
         return ResultResponse.success(id);
