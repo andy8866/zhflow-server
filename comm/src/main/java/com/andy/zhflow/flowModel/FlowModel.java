@@ -42,7 +42,9 @@ public class FlowModel extends BaseAppEntity {
             flowModel.setName(name);
         }
 
-        flowModel.setContent(content);
+        if(StringUtils.isNoneEmpty(content)){
+            flowModel.setContent(content);
+        }
 
         if(flowModel.getIsNew()){
             flowModel.setAppId(appId);

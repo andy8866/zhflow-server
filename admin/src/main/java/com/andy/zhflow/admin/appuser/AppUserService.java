@@ -22,6 +22,15 @@ public class AppUserService {
         return App.getById(appId);
     }
 
+    public String getSelectAppId() {
+       App app=getSelectApp();
+       if(app!=null){
+           return app.getId();
+       }
+
+       return null;
+    }
+
     public void setSelectApp(String appId) {
         redisService.set("selectApp." + UserUtil.getUserId(),appId);
     }
