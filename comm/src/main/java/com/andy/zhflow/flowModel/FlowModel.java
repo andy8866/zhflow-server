@@ -1,8 +1,6 @@
 package com.andy.zhflow.flowModel;
 
-import com.andy.zhflow.appuser.AppUser;
 import com.andy.zhflow.entity.BaseAppEntity;
-import com.andy.zhflow.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -27,7 +25,9 @@ public class FlowModel extends BaseAppEntity {
     private String name;
     private String content;
 
-    public static String save(String id,String appId,String name,String content) throws Exception {
+    private String processKey;
+
+    public static String save(String id,String appId,String name,String content,String key) throws Exception {
         FlowModel flowModel =new FlowModel();
         if(StringUtils.isNoneEmpty(id)){
             flowModel = flowModelMapper.selectById(id);
@@ -44,6 +44,10 @@ public class FlowModel extends BaseAppEntity {
 
         if(StringUtils.isNoneEmpty(content)){
             flowModel.setContent(content);
+        }
+
+        if(StringUtils.isNoneEmpty(key)){
+            flowModel.setProcessKey(key);
         }
 
         if(flowModel.getIsNew()){

@@ -5,6 +5,7 @@ import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.flowModel.FlowModel;
 import com.andy.zhflow.response.ResultResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.camunda.bpm.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +16,13 @@ public class FlowModelController {
     @Autowired
     private AppUserService appUserService;
 
+    @Autowired
+    private FlowModelService flowModelService;
+
+
     @PostMapping(value="/save")
     public ResultResponse<String> save(@RequestBody() FlowModelInputVO inputVO) throws Exception {
-        String appId=appUserService.getSelectAppId();
-        String id= FlowModel.save(inputVO.getId(),appId,inputVO.getName(),inputVO.getContent());
+        String id= flowModelService.save(inputVO);
         return ResultResponse.success(id);
     }
 
