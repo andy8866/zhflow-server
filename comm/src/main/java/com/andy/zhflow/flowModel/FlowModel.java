@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Data
 @Component
 @TableName("flow_model")
@@ -26,6 +28,8 @@ public class FlowModel extends BaseAppEntity {
     private String content;
 
     private String processKey;
+
+    private Date deploymentTime;
 
     public static String save(String id,String appId,String name,String content,String key) throws Exception {
         FlowModel flowModel =new FlowModel();
@@ -59,6 +63,19 @@ public class FlowModel extends BaseAppEntity {
         }
 
         return flowModel.getId();
+    }
+
+    public String save(){
+        setBase(true);
+
+        if(getIsNew()){
+            flowModelMapper.insert(this);
+        }
+        else{
+            flowModelMapper.updateById(this);
+        }
+
+        return getId();
     }
 
     public static IPage<FlowModel> selectPage(Integer page, Integer perPage,

@@ -57,14 +57,23 @@ public class FlowModelService {
         redisService.set("selectApp." + UserUtil.getUserId(),appId);
     }
 
-    public void deploymentFlow(String flowModelId){
+    public Deployment deploymentFlow(String flowModelId) throws Exception {
         FlowModel flowModel=FlowModel.getById(flowModelId);
+
+        if(StringUtils.isEmpty(flowModel.getContent())){
+            throw new Exception("无模型内容");
+        }
 
         Deployment deployment = repositoryService.createDeployment()
                 .name(flowModel.getName())
                 .tenantId(flowModel.getAppId())
                 .addString(flowModel.getId()+".bpmn", flowModel.getContent())
                 .deploy();
+
+        flowModel.setDeploymentTime(deployment.getDeploymentTime());
+        flowModel.save();
+
+        return deployment;
     }
 
     public String save(FlowModelInputVO inputVO) throws Exception {

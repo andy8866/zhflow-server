@@ -6,6 +6,7 @@ import com.andy.zhflow.flowModel.FlowModel;
 import com.andy.zhflow.response.ResultResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +45,11 @@ public class FlowModelController {
     public ResultResponse<Void> del(@RequestParam("id") String id) {
         FlowModel.del(id);
         return ResultResponse.success();
+    }
+
+    @GetMapping(value="/deploymentFlow")
+    public ResultResponse<String> deploymentFlow(@RequestParam("id") String id) throws Exception {
+        Deployment deployment = flowModelService.deploymentFlow(id);
+        return ResultResponse.success(deployment.getId());
     }
 }
