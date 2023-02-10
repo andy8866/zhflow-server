@@ -98,4 +98,10 @@ public class ProcessModel extends BaseAppEntity {
         return processModelMapper.selectById(id);
     }
 
+    public static ProcessModel getByKey(String key) {
+        LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ProcessModel::getProcessKey,key);
+        return processModelMapper.selectOne(lambdaQueryWrapper);
+    }
+
 }
