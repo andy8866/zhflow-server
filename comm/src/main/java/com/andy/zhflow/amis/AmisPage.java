@@ -17,4 +17,11 @@ public class AmisPage<T> {
         amisPage.setTotal(page.getTotal());
         return amisPage;
     }
+
+    public static <T> AmisPage<T> transitionPage(List<T> list,Long total){
+        AmisPage<T> amisPage=new AmisPage<>();
+        amisPage.setItems(list);
+        amisPage.setTotal(total);
+        return amisPage;
+    }
 }

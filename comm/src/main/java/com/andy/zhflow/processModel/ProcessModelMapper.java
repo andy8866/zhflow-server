@@ -1,8 +1,8 @@
-package com.andy.zhflow.flowModel;
+package com.andy.zhflow.processModel;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FlowModelMapper extends BaseMapper<FlowModel> {
+public interface ProcessModelMapper extends BaseMapper<ProcessModel> {
 }

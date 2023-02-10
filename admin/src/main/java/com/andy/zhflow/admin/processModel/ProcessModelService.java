@@ -1,30 +1,25 @@
-package com.andy.zhflow.admin.flowModel;
+package com.andy.zhflow.admin.processModel;
 
 import com.andy.zhflow.admin.appuser.AppUserService;
 import com.andy.zhflow.app.App;
-import com.andy.zhflow.flowModel.FlowModel;
+import com.andy.zhflow.processModel.ProcessModel;
 import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.security.utils.UserUtil;
-import io.jsonwebtoken.lang.Collections;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 @Component
-public class FlowModelService {
+public class ProcessModelService {
 
     @Autowired
     private RedisService redisService;
@@ -58,25 +53,25 @@ public class FlowModelService {
     }
 
     public Deployment deploymentFlow(String flowModelId) throws Exception {
-        FlowModel flowModel=FlowModel.getById(flowModelId);
+        ProcessModel processModel = ProcessModel.getById(flowModelId);
 
-        if(StringUtils.isEmpty(flowModel.getContent())){
+        if(StringUtils.isEmpty(processModel.getContent())){
             throw new Exception("无模型内容");
         }
 
         Deployment deployment = repositoryService.createDeployment()
-                .name(flowModel.getName())
-                .tenantId(flowModel.getAppId())
-                .addString(flowModel.getId()+".bpmn", flowModel.getContent())
+                .name(processModel.getName())
+                .tenantId(processModel.getAppId())
+                .addString(processModel.getId()+".bpmn", processModel.getContent())
                 .deploy();
 
-        flowModel.setDeploymentTime(deployment.getDeploymentTime());
-        flowModel.save();
+        processModel.setDeploymentTime(deployment.getDeploymentTime());
+        processModel.save();
 
         return deployment;
     }
 
-    public String save(FlowModelInputVO inputVO) throws Exception {
+    public String save(ProcessModelInputVO inputVO) throws Exception {
         String appId=appUserService.getSelectAppId();
 
         String processKey=null;
@@ -88,6 +83,6 @@ public class FlowModelService {
             }
         }
 
-        return FlowModel.save(inputVO.getId(),appId,inputVO.getName(),inputVO.getContent(),processKey);
+        return ProcessModel.save(inputVO.getId(),appId,inputVO.getName(),inputVO.getContent(),processKey);
     }
 }
