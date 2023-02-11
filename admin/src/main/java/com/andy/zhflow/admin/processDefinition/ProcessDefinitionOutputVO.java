@@ -18,12 +18,6 @@ public class ProcessDefinitionOutputVO {
     private String deploymentId;
 
     private boolean isSuspended;
-    public boolean getIsSuspended(){
-        return isSuspended;
-    }
-    public void setIsSuspended(Boolean b){
-        isSuspended=b;
-    }
 
     private String description;
     private String versionTag;
