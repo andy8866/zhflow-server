@@ -54,4 +54,13 @@ public class User extends BaseEntity {
         Page<User> suggestPage = userMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
         return suggestPage;
     }
+
+    public static String getNameById(String id){
+        User user = userMapper.selectById(id);
+        if(user!=null){
+            return user.getUserName();
+        }
+
+        return null;
+    }
 }
