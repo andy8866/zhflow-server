@@ -58,10 +58,6 @@ public class ProcessModelService {
             }
         }
 
-        if(inputVO.getIsTemplate()){
-            inputVO.setAppId(null);
-        }
-
         return ProcessModel.save(inputVO);
     }
 }

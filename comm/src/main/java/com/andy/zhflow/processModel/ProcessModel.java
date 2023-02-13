@@ -40,6 +40,8 @@ public class ProcessModel extends BaseAppEntity {
             if(processModel ==null){
                 throw new Exception("未查到id数据");
             }
+
+            inputVO.setTemplate(processModel.isTemplate);
         }
 
         processModel.setBase(true);
@@ -56,9 +58,9 @@ public class ProcessModel extends BaseAppEntity {
             processModel.setProcessKey(inputVO.getProcessKey());
         }
 
-        if(inputVO.getIsTemplate()){
+        if(inputVO.isTemplate()){
             inputVO.setAppId("0");
-            processModel.setIsTemplate(inputVO.getIsTemplate());
+            processModel.setIsTemplate(inputVO.isTemplate());
         }
 
         LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();

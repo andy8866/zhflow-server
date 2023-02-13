@@ -7,7 +7,7 @@ public class ProcessModelInputVO {
     private String id;
     private String name;
     private String content;
-    private Boolean isTemplate;
+    private boolean isTemplate;
     private String processKey;
 
     private String appId="0";
