@@ -3,6 +3,7 @@ package com.andy.zhflow.admin.processModel;
 import com.andy.zhflow.admin.appuser.AppUserService;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.processModel.ProcessModel;
+import com.andy.zhflow.processModel.ProcessModelInputVO;
 import com.andy.zhflow.response.ResultResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -27,9 +28,11 @@ public class ProcessModelController {
     }
 
     @GetMapping(value="/getList")
-    public ResultResponse<AmisPage<ProcessModel>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
+    public ResultResponse<AmisPage<ProcessModel>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage,
+            @RequestParam(value = "isTemplate" ,required = false) Boolean isTemplate) {
+
         String appId=appUserService.getSelectAppId();
-        IPage<ProcessModel> appPage = ProcessModel.selectPage(page, perPage,appId);
+        IPage<ProcessModel> appPage = ProcessModel.selectPage(page, perPage,appId,isTemplate);
 
         return ResultResponse.success(AmisPage.transitionPage(appPage));
     }

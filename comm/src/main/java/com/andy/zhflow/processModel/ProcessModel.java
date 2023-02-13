@@ -31,10 +31,12 @@ public class ProcessModel extends BaseAppEntity {
 
     private Date deploymentTime;
 
-    public static String save(String id,String appId,String name,String content,String key) throws Exception {
+    private Boolean isTemplate=false;
+
+    public static String save(ProcessModelInputVO inputVO) throws Exception {
         ProcessModel processModel =new ProcessModel();
-        if(StringUtils.isNoneEmpty(id)){
-            processModel = processModelMapper.selectById(id);
+        if(StringUtils.isNoneEmpty(inputVO.getId())){
+            processModel = processModelMapper.selectById(inputVO.getId());
             if(processModel ==null){
                 throw new Exception("未查到id数据");
             }
@@ -42,20 +44,33 @@ public class ProcessModel extends BaseAppEntity {
 
         processModel.setBase(true);
 
-        if(StringUtils.isNoneEmpty(name)){
-            processModel.setName(name);
+        if(StringUtils.isNoneEmpty(inputVO.getName())){
+            processModel.setName(inputVO.getName());
         }
 
-        if(StringUtils.isNoneEmpty(content)){
-            processModel.setContent(content);
+        if(StringUtils.isNoneEmpty(inputVO.getContent())){
+            processModel.setContent(inputVO.getContent());
         }
 
-        if(StringUtils.isNoneEmpty(key)){
-            processModel.setProcessKey(key);
+        if(StringUtils.isNoneEmpty(inputVO.getProcessKey())){
+            processModel.setProcessKey(inputVO.getProcessKey());
+        }
+
+        if(inputVO.getIsTemplate()){
+            inputVO.setAppId("0");
+            processModel.setIsTemplate(inputVO.getIsTemplate());
+        }
+
+        LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ProcessModel::getAppId,inputVO.getAppId())
+                .eq(ProcessModel::getName,inputVO.getName());
+
+        if(processModelMapper.exists(lambdaQueryWrapper)){
+            throw new Exception("名称已存在");
         }
 
         if(processModel.getIsNew()){
-            processModel.setAppId(appId);
+            processModel.setAppId(inputVO.getAppId());
             processModelMapper.insert(processModel);
         }
         else{
@@ -79,13 +94,19 @@ public class ProcessModel extends BaseAppEntity {
     }
 
     public static IPage<ProcessModel> selectPage(Integer page, Integer perPage,
-                                                 String appId){
+                                                 String appId,Boolean isTemplate){
         LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.orderByDesc(ProcessModel::getCreateTime);
+
+        if(isTemplate!=null){
+            lambdaQueryWrapper.eq(ProcessModel::getIsTemplate,isTemplate);
+            appId=null;
+        }
 
         if(StringUtils.isNoneEmpty(appId)){
             lambdaQueryWrapper.eq(ProcessModel::getAppId,appId);
         }
+
         Page<ProcessModel> appPage = processModelMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
         return appPage;
     }
