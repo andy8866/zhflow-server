@@ -39,4 +39,11 @@ public class ProcessTaskController {
         processTaskService.doTask(inputVO);
         return ResultResponse.success();
     }
+
+    @GetMapping(value="/assignee")
+    public ResultResponse<Void> assignee(@RequestParam("taskId") String taskId,
+                                         @RequestParam("assigneeUserId") String assigneeUserId) throws Exception {
+        processTaskService.assignee(taskId,assigneeUserId);
+        return ResultResponse.success();
+    }
 }

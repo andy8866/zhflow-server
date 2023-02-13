@@ -86,4 +86,8 @@ public class ProcessTaskService {
         Map<String, Object> variables = new HashMap<>(BeanUtils.describe(inputVO));
         taskService.complete(inputVO.getTaskId(),variables);
     }
+
+    public void assignee(String taskId, String assigneeUserId) {
+        taskService.setAssignee(taskId,assigneeUserId);
+    }
 }
