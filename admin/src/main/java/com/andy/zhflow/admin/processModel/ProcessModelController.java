@@ -29,10 +29,10 @@ public class ProcessModelController {
 
     @GetMapping(value="/getList")
     public ResultResponse<AmisPage<ProcessModel>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage,
-            @RequestParam(value = "isTemplate" ,required = false) Boolean isTemplate) {
+            @RequestParam(value = "asTemplate",required = false) Boolean asTemplate) {
 
         String appId=appUserService.getSelectAppId();
-        IPage<ProcessModel> appPage = ProcessModel.selectPage(page, perPage,appId,isTemplate);
+        IPage<ProcessModel> appPage = ProcessModel.selectPage(page, perPage,appId, asTemplate);
 
         return ResultResponse.success(AmisPage.transitionPage(appPage));
     }

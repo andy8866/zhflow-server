@@ -31,7 +31,7 @@ public class ProcessModel extends BaseAppEntity {
 
     private Date deploymentTime;
 
-    private Boolean isTemplate=false;
+    private Boolean asTemplate;
 
     public static String save(ProcessModelInputVO inputVO) throws Exception {
         ProcessModel processModel =new ProcessModel();
@@ -40,8 +40,6 @@ public class ProcessModel extends BaseAppEntity {
             if(processModel ==null){
                 throw new Exception("未查到id数据");
             }
-
-            inputVO.setTemplate(processModel.isTemplate);
         }
 
         processModel.setBase(true);
@@ -58,21 +56,28 @@ public class ProcessModel extends BaseAppEntity {
             processModel.setProcessKey(inputVO.getProcessKey());
         }
 
-        if(inputVO.isTemplate()){
-            inputVO.setAppId("0");
-            processModel.setIsTemplate(inputVO.isTemplate());
+        if(inputVO.getAsTemplate()){
+            processModel.setAsTemplate(true);
         }
 
         LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(ProcessModel::getAppId,inputVO.getAppId())
-                .eq(ProcessModel::getName,inputVO.getName());
+        lambdaQueryWrapper.eq(ProcessModel::getName,inputVO.getName())
+                .ne(ProcessModel::getId,processModel.getId());
+
+        if(inputVO.getAsTemplate()){
+            lambdaQueryWrapper.eq(ProcessModel::getAppId,"0");
+        }else {
+            lambdaQueryWrapper.eq(ProcessModel::getAppId, inputVO.getAppId());
+        }
 
         if(processModelMapper.exists(lambdaQueryWrapper)){
             throw new Exception("名称已存在");
         }
 
         if(processModel.getIsNew()){
-            processModel.setAppId(inputVO.getAppId());
+            if(!processModel.getAsTemplate()){
+                processModel.setAppId(inputVO.getAppId());
+            }
             processModelMapper.insert(processModel);
         }
         else{
@@ -96,12 +101,12 @@ public class ProcessModel extends BaseAppEntity {
     }
 
     public static IPage<ProcessModel> selectPage(Integer page, Integer perPage,
-                                                 String appId,Boolean isTemplate){
+                                                 String appId,Boolean asTemplate){
         LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.orderByDesc(ProcessModel::getCreateTime);
 
-        if(isTemplate!=null){
-            lambdaQueryWrapper.eq(ProcessModel::getIsTemplate,isTemplate);
+        if(asTemplate!=null){
+            lambdaQueryWrapper.eq(ProcessModel::getAsTemplate,asTemplate);
             appId=null;
         }
 
