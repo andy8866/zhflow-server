@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class ProcessUi extends BaseEntity {
     private static ProcessUiMapper processUiMapper;
 
+
     @Autowired
     public void setProcessUiMapper(ProcessUiMapper mapper){
         processUiMapper =mapper;
@@ -45,4 +46,17 @@ public class ProcessUi extends BaseEntity {
         return processUi.getId();
     }
 
+
+    public static void del(String id) {
+        if(StringUtils.isEmpty(id)){
+            return ;
+        }
+
+        processUiMapper.deleteById(id);
+    }
+
+
+    public static ProcessUi getById(String id) {
+        return processUiMapper.selectById(id);
+    }
 }

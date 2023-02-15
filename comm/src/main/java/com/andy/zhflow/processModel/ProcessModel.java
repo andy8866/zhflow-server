@@ -31,7 +31,15 @@ public class ProcessModel extends BaseAppEntity {
 
     private Date deploymentTime;
 
-    private Boolean asTemplate;
+    public boolean getAsTemplate() {
+        return asTemplate;
+    }
+
+    public void setAsTemplate(boolean asTemplate) {
+        this.asTemplate = asTemplate;
+    }
+
+    private boolean asTemplate;
 
     public static String save(ProcessModelInputVO inputVO) throws Exception {
         ProcessModel processModel =new ProcessModel();
