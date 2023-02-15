@@ -1,11 +1,13 @@
 package com.andy.zhflow.security.config;
 
-import com.andy.zhflow.security.filter.JWTAuthorizationFilter;
+import com.andy.zhflow.redis.service.RedisService;
+import com.andy.zhflow.security.jwt.JwtAuthorizationFilter;
 import com.andy.zhflow.security.handler.LoginFailureHandler;
-import com.andy.zhflow.security.handler.LoginSuccessHandler;
 import com.andy.zhflow.security.handler.SecurityAuthenticationEntryPoint;
+import com.andy.zhflow.security.jwt.JwtLoginSuccessHandler;
+import com.andy.zhflow.security.token.TokenAuthorizationFilter;
+import com.andy.zhflow.security.token.TokenLoginSuccessHandler;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
@@ -21,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -31,6 +32,10 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityStarterAutoConfigure {
+
+    // 过期时间是3600秒，既是1个小时
+    public static final long EXPIRATION = 24*60 * 60L;
+
     @Bean
     public static PasswordEncoder passwordEncoder(){
         return NoOpPasswordEncoder.getInstance();
@@ -43,7 +48,8 @@ public class SecurityStarterAutoConfigure {
 
     // configure SecurityFilterChain
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,AuthenticationManager authenticationManager,
+                                           RedisService redisService) throws Exception {
         http.csrf().disable();
 
         http.cors().configurationSource(corsConfigurationSource());
@@ -59,12 +65,18 @@ public class SecurityStarterAutoConfigure {
 
         UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter=new UsernamePasswordAuthenticationFilter(authenticationManager);
         usernamePasswordAuthenticationFilter.setFilterProcessesUrl("/api/login");
-        usernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler());
+//        usernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(new JwtLoginSuccessHandler());
+        usernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(new TokenLoginSuccessHandler(redisService));
         usernamePasswordAuthenticationFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
         http.addFilterAt(usernamePasswordAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
 
-        JWTAuthorizationFilter jwtAuthorizationFilter=new JWTAuthorizationFilter(authenticationManager,new SecurityAuthenticationEntryPoint());
-        http.addFilterAt(jwtAuthorizationFilter, BasicAuthenticationFilter.class);
+//        JwtAuthorizationFilter authorizationFilter=new JwtAuthorizationFilter(authenticationManager,new SecurityAuthenticationEntryPoint());
+//        http.addFilterAt(authorizationFilter, BasicAuthenticationFilter.class);
+
+        TokenAuthorizationFilter authorizationFilter=new TokenAuthorizationFilter(authenticationManager,
+                new SecurityAuthenticationEntryPoint(),
+                redisService);
+        http.addFilterAt(authorizationFilter, BasicAuthenticationFilter.class);
 
         return http.build();
     }

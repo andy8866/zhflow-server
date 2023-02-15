@@ -1,6 +1,5 @@
-package com.andy.zhflow.security.filter;
+package com.andy.zhflow.security.jwt;
 
-import com.andy.zhflow.security.jwt.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
-public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, AuthenticationEntryPoint authenticationEntryPoint) {
+public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, AuthenticationEntryPoint authenticationEntryPoint) {
         super(authenticationManager,authenticationEntryPoint);
     }
 

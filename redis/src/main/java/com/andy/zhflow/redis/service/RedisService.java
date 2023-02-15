@@ -18,12 +18,16 @@ public class RedisService {
     /**
      * 根据key读取数据
      */
-    public Object get(final String key) {
+    public String get(final String key) {
         if (StringUtils.isBlank(key)) {
             return null;
         }
         try {
-            return redisTemplate.opsForValue().get(key);
+            Object o= redisTemplate.opsForValue().get(key);
+            if(o instanceof String){
+                return (String) o;
+            }
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
         }

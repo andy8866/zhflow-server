@@ -1,6 +1,6 @@
 package com.andy.zhflow.security.service;
 
-import com.andy.zhflow.security.jwt.JwtUser;
+import com.andy.zhflow.security.SecurityUser;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +18,6 @@ public class LoginUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("账号不存在");
         }
 
-        return new JwtUser(user.getId(),user.getUserName(),user.getPassword(),"ROLE_admin");
+        return new SecurityUser(user.getId(),user.getUserName(),user.getPassword(),"ROLE_admin");
     }
 }

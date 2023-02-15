@@ -1,6 +1,5 @@
 package com.andy.zhflow.security.utils;
 
-import com.andy.zhflow.security.jwt.JwtUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

@@ -1,5 +1,6 @@
 package com.andy.zhflow.security.jwt;
 
+import com.andy.zhflow.security.config.SecurityStarterAutoConfigure;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,9 +20,6 @@ public class JwtTokenUtils {
     // 角色的key
     private static final String ROLE_CLAIMS = "role";
 
-    // 过期时间是3600秒，既是1个小时
-    private static final long EXPIRATION = 24*60 * 60L;
-
     // 选择了记住我之后的过期时间为7天
     private static final long EXPIRATION_REMEMBER = 7 * 24 * 60 * 60L;
 
@@ -34,7 +32,7 @@ public class JwtTokenUtils {
      * @return
      */
     public static String createToken(String userId,String username, String role, boolean isRememberMe) {
-        long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
+        long expiration = isRememberMe ? EXPIRATION_REMEMBER : SecurityStarterAutoConfigure.EXPIRATION;
         HashMap<String, Object> map = new HashMap<>();
         map.put(ROLE_CLAIMS, role);
         map.put("userId", userId);

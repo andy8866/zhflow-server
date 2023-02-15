@@ -1,4 +1,4 @@
-package com.andy.zhflow.security.jwt;
+package com.andy.zhflow.security;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,18 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Data
-public class JwtUser implements UserDetails {
+public class SecurityUser implements UserDetails {
 
     private String id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser() {
+    public SecurityUser() {
     }
 
     // 写一个能直接使用user创建jwtUser的构造器
-    public JwtUser(String userid, String username, String password, String... authorities) {
+    public SecurityUser(String userid, String username, String password, String... authorities) {
         this.id = userid;
         this.username = username;
         this.password = password;
@@ -48,7 +48,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String toString() {
-        return "JwtUser{" +
+        return "SecurityUser{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
