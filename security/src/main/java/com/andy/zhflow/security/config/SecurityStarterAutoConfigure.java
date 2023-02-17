@@ -58,6 +58,7 @@ public class SecurityStarterAutoConfigure {
                 .antMatchers("/api/admin/index/**").permitAll()
                 .antMatchers("/api/admin/website/**").permitAll()
                 .antMatchers("/error/**").permitAll()
+                .antMatchers("/api/admin/uiPage/getUiByCode/**").permitAll()
                 .antMatchers("/**").hasAnyRole("admin", "user")
         );
 
