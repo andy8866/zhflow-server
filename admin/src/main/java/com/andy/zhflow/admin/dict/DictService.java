@@ -9,9 +9,7 @@ public class DictService {
 
     public void delGroupById(String id) {
         DictGroup group = DictGroup.getById(id);
-        if(group==null){
-            return ;
-        }
+        if(group==null) return ;
 
         DictGroup.del(id);
         DictValue.delByType(group.getType());

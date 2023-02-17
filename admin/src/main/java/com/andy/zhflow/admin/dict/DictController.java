@@ -24,8 +24,8 @@ public class DictController {
     }
 
     @GetMapping(value="/getGroupList")
-    public ResultResponse<List<DictGroup>> getGroupList(@RequestParam(value = "appId",required = false) String appId) {
-        List<DictGroup> list = DictGroup.getList(appId);
+    public ResultResponse<List<DictGroup>> getGroupList() {
+        List<DictGroup> list = DictGroup.getList();
         return ResultResponse.success(list);
     }
 
@@ -42,9 +42,8 @@ public class DictController {
     }
 
     @GetMapping(value="/getValueList")
-    public ResultResponse<List<DictValue>> getValueList(@RequestParam(value = "appId",required = false) String appId,
-                                                        @RequestParam("groupType") String groupType) {
-        List<DictValue> list = DictValue.getListByGroupType(appId,groupType);
+    public ResultResponse<List<DictValue>> getValueList(@RequestParam("groupType") String groupType) {
+        List<DictValue> list = DictValue.getListByGroupType(groupType);
         return ResultResponse.success(list);
     }
 

@@ -1,10 +1,8 @@
 package com.andy.zhflow.dict;
 
-import com.andy.zhflow.entity.BaseAppEntity;
+import com.andy.zhflow.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,7 @@ import java.util.List;
 @Data
 @Component
 @TableName("dict_group")
-public class DictGroup extends BaseAppEntity {
+public class DictGroup extends BaseEntity {
     private static DictGroupMapper dictGroupMapper;
 
     @Autowired
@@ -29,23 +27,8 @@ public class DictGroup extends BaseAppEntity {
 
     public static String save(DictGroupInputVO inputVO) throws Exception {
 
-        if(StringUtils.isEmpty(inputVO.getType())){
-            throw new Exception("缺少类型");
-        }
-
-        if(StringUtils.isEmpty(inputVO.getName())){
-            throw new Exception("缺少名称");
-        }
-
         DictGroup item =new DictGroup();
-        if(StringUtils.isNotEmpty(inputVO.getId())){
-            item = dictGroupMapper.selectById(inputVO.getId());
-            if(item ==null){
-                throw new Exception("未查到id数据");
-            }
-        }
-
-        item.setBase(true, inputVO.getAppId());
+        if(StringUtils.isNotEmpty(inputVO.getId())) item = dictGroupMapper.selectById(inputVO.getId());
 
         item.setType(inputVO.getType());
         item.setName(inputVO.getName());
@@ -67,9 +50,8 @@ public class DictGroup extends BaseAppEntity {
        return dictGroupMapper.selectById(id);
     }
 
-    public static List<DictGroup> getList(String appId) {
+    public static List<DictGroup> getList() {
         LambdaQueryWrapper<DictGroup> wrapper=new LambdaQueryWrapper<DictGroup>().orderByDesc(DictGroup::getCreateTime);
-        if(StringUtils.isNotEmpty(appId)) wrapper.eq(DictGroup::getAppId,appId);
         return dictGroupMapper.selectList(wrapper);
     }
 }

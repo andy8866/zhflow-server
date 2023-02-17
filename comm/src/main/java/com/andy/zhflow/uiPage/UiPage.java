@@ -30,12 +30,7 @@ public class UiPage extends BaseEntity {
     public static String save(UiPageInputVO inputVO) throws Exception {
 
         UiPage item =new UiPage();
-        if(StringUtils.isNotEmpty(inputVO.getId())){
-            item = uiPageMapper.selectById(inputVO.getId());
-            if(item ==null){
-                throw new Exception("未查到id数据");
-            }
-        }
+        if(StringUtils.isNotEmpty(inputVO.getId())) item = uiPageMapper.selectById(inputVO.getId());
 
         item.setBase(true);
 
@@ -69,9 +64,7 @@ public class UiPage extends BaseEntity {
                 .eq(UiPage::getCode,code)
                 .last("limit 1");
         UiPage uiPage = uiPageMapper.selectOne(wrapper);
-        if(uiPage!=null){
-            return uiPage.getContent();
-        }
+        if(uiPage!=null) return uiPage.getContent();
         return null;
     }
 }

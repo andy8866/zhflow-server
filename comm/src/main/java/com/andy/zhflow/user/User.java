@@ -30,36 +30,27 @@ public class User extends BaseEntity {
     private String password;
 
     public static User getByUserName(String userName){
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper
-                .eq(User::getUserName,userName);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>().eq(User::getUserName,userName);
         return userMapper.selectOne(queryWrapper);
     }
 
     public boolean matchingPassword(String password){
-        if(StringUtils.isEmpty(password)){
-            return false;
-        }
+        if(StringUtils.isEmpty(password)) return false;
 
-        if(password.equals(this.password)){
-            return true;
-        }
+        if(password.equals(this.password)) return true;
 
         return false;
     }
 
     public static IPage<User> selectPage(Integer page, Integer perPage){
-        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.orderByDesc(User::getCreateTime);
+        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime);
         Page<User> suggestPage = userMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
         return suggestPage;
     }
 
     public static String getNameById(String id){
         User user = userMapper.selectById(id);
-        if(user!=null){
-            return user.getUserName();
-        }
+        if(user!=null) return user.getUserName();
 
         return null;
     }

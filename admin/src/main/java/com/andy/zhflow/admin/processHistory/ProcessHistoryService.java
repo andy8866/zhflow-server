@@ -1,7 +1,5 @@
 package com.andy.zhflow.admin.processHistory;
 
-import com.andy.zhflow.admin.appuser.AppUserService;
-import com.andy.zhflow.admin.processInstance.ProcessInstanceOutputVO;
 import com.andy.zhflow.amis.AmisPage;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
@@ -12,8 +10,6 @@ import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.DeploymentQuery;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,21 +22,14 @@ public class ProcessHistoryService {
     private HistoryService historyService;
 
     @Autowired
-    private AppUserService appUserService;
-
-    @Autowired
     private RuntimeService runtimeService;
 
     @Autowired
     private RepositoryService repositoryService;
 
     public AmisPage<ProcessHistoryOutputVO> getList(Integer page, Integer perPage) {
-        String appId=appUserService.getSelectAppId();
 
-        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery()
-                .tenantIdIn(appId)
-                .finished()
-                ;
+        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().finished();
 
         Long total=query.count();
 

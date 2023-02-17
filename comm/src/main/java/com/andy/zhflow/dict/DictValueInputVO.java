@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class DictValueInputVO {
     private String id;
-    private String appId;
     private String groupType;
 
     private String name;

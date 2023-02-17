@@ -1,9 +1,6 @@
 package com.andy.zhflow.admin.processInstance;
 
-import com.andy.zhflow.admin.appuser.AppUserService;
-import com.andy.zhflow.admin.processDeployment.ProcessDeploymentOutputVO;
 import com.andy.zhflow.amis.AmisPage;
-import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -26,18 +23,13 @@ public class ProcessInstanceService {
     @Autowired
     private RepositoryService repositoryService;
 
-    @Autowired
-    private AppUserService appUserService;
-
     public void startProcess(String processKey) {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey);
     }
 
     public AmisPage<ProcessInstanceOutputVO> getList(Integer page, Integer perPage) {
-        String appId=appUserService.getSelectAppId();
 
-        ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery()
-                .tenantIdIn(appId);
+        ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
 
         Long total=processInstanceQuery.count();
 

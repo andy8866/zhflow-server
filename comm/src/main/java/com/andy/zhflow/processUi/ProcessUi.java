@@ -23,18 +23,11 @@ public class ProcessUi extends BaseEntity {
 
     public static String save(String id,String content) throws Exception {
         ProcessUi processUi =new ProcessUi();
-        if(StringUtils.isNoneEmpty(id)){
-            processUi = processUiMapper.selectById(id);
-            if(processUi ==null){
-                throw new Exception("未查到id数据");
-            }
-        }
+        if(StringUtils.isNoneEmpty(id)) processUi = processUiMapper.selectById(id);
 
         processUi.setBase(true);
 
-        if(StringUtils.isNoneEmpty(content)){
-            processUi.setContent(content);
-        }
+        if(StringUtils.isNotEmpty(content)) processUi.setContent(content);
 
         if(processUi.getIsNew()){
             processUiMapper.insert(processUi);
@@ -46,15 +39,9 @@ public class ProcessUi extends BaseEntity {
         return processUi.getId();
     }
 
-
     public static void del(String id) {
-        if(StringUtils.isEmpty(id)){
-            return ;
-        }
-
         processUiMapper.deleteById(id);
     }
-
 
     public static ProcessUi getById(String id) {
         return processUiMapper.selectById(id);

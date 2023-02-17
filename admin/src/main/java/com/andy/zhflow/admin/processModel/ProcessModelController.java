@@ -1,6 +1,5 @@
 package com.andy.zhflow.admin.processModel;
 
-import com.andy.zhflow.admin.appuser.AppUserService;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.processModel.ProcessModel;
 import com.andy.zhflow.processModel.ProcessModelInputVO;
@@ -13,9 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController()
 @RequestMapping(value = "/api/admin/processModel")
 public class ProcessModelController {
-
-    @Autowired
-    private AppUserService appUserService;
 
     @Autowired
     private ProcessModelService processModelService;
@@ -31,10 +27,9 @@ public class ProcessModelController {
     public ResultResponse<AmisPage<ProcessModel>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage,
             @RequestParam(value = "asTemplate",required = false) Boolean asTemplate) {
 
-        String appId=appUserService.getSelectAppId();
-        IPage<ProcessModel> appPage = ProcessModel.selectPage(page, perPage,appId, asTemplate);
+        IPage<ProcessModel> item = ProcessModel.selectPage(page, perPage, asTemplate);
 
-        return ResultResponse.success(AmisPage.transitionPage(appPage));
+        return ResultResponse.success(AmisPage.transitionPage(item));
     }
 
     @GetMapping(value="/getById")

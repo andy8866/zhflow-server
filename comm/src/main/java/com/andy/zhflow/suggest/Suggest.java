@@ -38,8 +38,7 @@ public class Suggest extends BaseEntity {
     }
 
     public static IPage<Suggest> selectPage(Integer page,Integer perPage){
-        LambdaQueryWrapper<Suggest> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.orderByDesc(Suggest::getCreateTime);
+        LambdaQueryWrapper<Suggest> lambdaQueryWrapper=new LambdaQueryWrapper<Suggest>().orderByDesc(Suggest::getCreateTime);
         Page<Suggest> suggestPage = suggestMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
         return suggestPage;
     }

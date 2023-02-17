@@ -1,6 +1,5 @@
 package com.andy.zhflow.admin.processTask;
 
-import com.andy.zhflow.admin.appuser.AppUserService;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.User;
@@ -22,16 +21,9 @@ public class ProcessTaskService {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private AppUserService appUserService;
-
     public AmisPage<ProcessTaskOutputVO> getAgendaTaskList(Integer page, Integer perPage,String userId) {
-        String appId=appUserService.getSelectAppId();
 
-        TaskQuery taskQuery = taskService.createTaskQuery()
-                .tenantIdIn(appId)
-                .taskAssignee(userId)
-                ;
+        TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(userId);
 
         Long total=taskQuery.count();
 
@@ -43,12 +35,8 @@ public class ProcessTaskService {
     }
 
     public AmisPage<ProcessTaskOutputVO> getClaimList(Integer page, Integer perPage,String userId) {
-        String appId=appUserService.getSelectAppId();
 
-        TaskQuery taskQuery = taskService.createTaskQuery()
-                .tenantIdIn(appId)
-                .withoutCandidateUsers()
-               ;
+        TaskQuery taskQuery = taskService.createTaskQuery().withoutCandidateUsers();
 
         Long total=taskQuery.count();
 
@@ -66,13 +54,9 @@ public class ProcessTaskService {
     private List<ProcessTaskOutputVO> convertList(List<Task> list){
         List<ProcessTaskOutputVO> outList = ProcessTaskOutputVO.convertList(list);
         for (ProcessTaskOutputVO outputVO:outList){
-            if(StringUtils.isNoneEmpty(outputVO.getOwner())){
-                outputVO.setOwnerName(User.getNameById(outputVO.getOwner()));
-            }
+            if(StringUtils.isNoneEmpty(outputVO.getOwner())) outputVO.setOwnerName(User.getNameById(outputVO.getOwner()));
 
-            if(StringUtils.isNoneEmpty(outputVO.getAssignee())){
-                outputVO.setAssigneeName(User.getNameById(outputVO.getAssignee()));
-            }
+            if(StringUtils.isNoneEmpty(outputVO.getAssignee()))  outputVO.setAssigneeName(User.getNameById(outputVO.getAssignee()));
         }
         return outList;
     }
