@@ -30,6 +30,8 @@ public class DictGroup extends BaseEntity {
         DictGroup item =new DictGroup();
         if(StringUtils.isNotEmpty(inputVO.getId())) item = dictGroupMapper.selectById(inputVO.getId());
 
+        item.setBase(true);
+
         item.setType(inputVO.getType());
         item.setName(inputVO.getName());
 

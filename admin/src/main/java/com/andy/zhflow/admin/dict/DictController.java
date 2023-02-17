@@ -42,8 +42,8 @@ public class DictController {
     }
 
     @GetMapping(value="/getValueList")
-    public ResultResponse<List<DictValue>> getValueList(@RequestParam("groupType") String groupType) {
-        List<DictValue> list = DictValue.getListByGroupType(groupType);
+    public ResultResponse<List<DictValue>> getValueList(@RequestParam("type") String type) {
+        List<DictValue> list = DictValue.getListByType(type);
         return ResultResponse.success(list);
     }
 

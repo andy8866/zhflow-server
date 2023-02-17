@@ -3,7 +3,9 @@ package com.andy.zhflow.dict;
 import com.andy.zhflow.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,18 +23,21 @@ public class DictValue extends BaseEntity {
         dictValueMapper =mapper;
     }
 
-    private String groupType;
+    private String type;
 
     private String name;
 
     private String value;
+
 
     public static String save(DictValueInputVO inputVO) throws Exception {
 
         DictValue item =new DictValue();
         if(StringUtils.isNotEmpty(inputVO.getId())) item = dictValueMapper.selectById(inputVO.getId());
 
-        item.setGroupType(inputVO.getGroupType());
+        item.setBase(true);
+
+        item.setType(inputVO.getType());
         item.setName(inputVO.getName());
         item.setValue(inputVO.getValue());
 
@@ -50,14 +55,14 @@ public class DictValue extends BaseEntity {
         dictValueMapper.deleteById(id);
     }
     public static void delByType(String type) {
-        LambdaQueryWrapper<DictValue> wrapper=new LambdaQueryWrapper<DictValue>().eq(DictValue::getGroupType,type);
+        LambdaQueryWrapper<DictValue> wrapper=new LambdaQueryWrapper<DictValue>().eq(DictValue::getType,type);
         dictValueMapper.delete(wrapper);
     }
 
 
-    public static List<DictValue> getListByGroupType( String groupType) {
+    public static List<DictValue> getListByType(String type) {
         LambdaQueryWrapper<DictValue> wrapper=new LambdaQueryWrapper<DictValue>().orderByDesc(DictValue::getCreateTime)
-                .eq(DictValue::getGroupType,groupType);
+                .eq(DictValue::getType,type);
 
         return dictValueMapper.selectList(wrapper);
     }
