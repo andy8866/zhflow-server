@@ -71,12 +71,10 @@ public class ProcessModel extends BaseEntity {
     }
 
     public static IPage<ProcessModel> selectPage(Integer page, Integer perPage,Boolean asTemplate){
-        LambdaQueryWrapper<ProcessModel> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.orderByDesc(ProcessModel::getCreateTime);
+        LambdaQueryWrapper<ProcessModel> wrapper=new LambdaQueryWrapper<ProcessModel>().orderByDesc(ProcessModel::getCreateTime);
+        if(asTemplate!=null) wrapper.eq(ProcessModel::getAsTemplate,asTemplate);
 
-        if(asTemplate!=null) lambdaQueryWrapper.eq(ProcessModel::getAsTemplate,asTemplate);
-
-        Page<ProcessModel> item = processModelMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
+        Page<ProcessModel> item = processModelMapper.selectPage(new Page<>(page, perPage), wrapper);
         return item;
     }
 

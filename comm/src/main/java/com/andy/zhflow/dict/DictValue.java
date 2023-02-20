@@ -10,13 +10,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Component
 @TableName("dict_value")
 public class DictValue extends BaseEntity {
     private static DictValueMapper dictValueMapper;
+
+
 
     @Autowired
     public void setDictGroupMapper(DictValueMapper mapper){
@@ -65,5 +69,15 @@ public class DictValue extends BaseEntity {
                 .eq(DictValue::getType,type);
 
         return dictValueMapper.selectList(wrapper);
+    }
+
+    public static Map<String, String> getValueMap(String type) {
+        List<DictValue> list=getListByType(type);
+        Map<String,String> map=new HashMap<>();
+        for (DictValue dictValue:list){
+            map.put(dictValue.getValue(),dictValue.getName());
+        }
+
+        return map;
     }
 }

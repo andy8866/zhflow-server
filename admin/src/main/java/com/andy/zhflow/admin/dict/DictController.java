@@ -8,7 +8,9 @@ import com.andy.zhflow.response.ResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController()
 @RequestMapping(value = "/api/admin/dict")
@@ -45,6 +47,12 @@ public class DictController {
     public ResultResponse<List<DictValue>> getValueList(@RequestParam("type") String type) {
         List<DictValue> list = DictValue.getListByType(type);
         return ResultResponse.success(list);
+    }
+
+    @GetMapping(value="/getValueMap")
+    public ResultResponse<Map<String,String>> getValueMap(@RequestParam("type") String type) {
+        Map<String,String> map = DictValue.getValueMap(type);
+        return ResultResponse.success(map);
     }
 
     @GetMapping(value="/delValue")

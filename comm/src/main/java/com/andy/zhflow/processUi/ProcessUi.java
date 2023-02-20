@@ -1,11 +1,15 @@
 package com.andy.zhflow.processUi;
 
 import com.andy.zhflow.entity.BaseEntity;
+import com.andy.zhflow.processModel.ProcessModel;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Data
 @Component
@@ -19,15 +23,19 @@ public class ProcessUi extends BaseEntity {
         processUiMapper =mapper;
     }
 
+    private String name;
+    private String type;
     private String content;
 
-    public static String save(String id,String content) throws Exception {
+    public static String save(ProcessUiInputVO inputVO) throws Exception {
         ProcessUi processUi =new ProcessUi();
-        if(StringUtils.isNoneEmpty(id)) processUi = processUiMapper.selectById(id);
+        if(StringUtils.isNotEmpty(inputVO.getId())) processUi = processUiMapper.selectById(inputVO.getId());
 
         processUi.setBase(true);
 
-        if(StringUtils.isNotEmpty(content)) processUi.setContent(content);
+        if(StringUtils.isNotEmpty(inputVO.getName())) processUi.setName(inputVO.getName());
+        if(StringUtils.isNotEmpty(inputVO.getType())) processUi.setType(inputVO.getType());
+        if(StringUtils.isNotEmpty(inputVO.getContent())) processUi.setContent(inputVO.getContent());
 
         if(processUi.getIsNew()){
             processUiMapper.insert(processUi);
@@ -39,11 +47,15 @@ public class ProcessUi extends BaseEntity {
         return processUi.getId();
     }
 
-    public static void del(String id) {
-        processUiMapper.deleteById(id);
-    }
-
     public static ProcessUi getById(String id) {
         return processUiMapper.selectById(id);
     }
+
+    public static List<ProcessUi> getList(String name) {
+        LambdaQueryWrapper<ProcessUi> wrapper=new LambdaQueryWrapper<ProcessUi>().orderByDesc(ProcessUi::getCreateTime);
+        if(StringUtils.isNotEmpty(name)) wrapper.eq(ProcessUi::getName,name);
+
+        return processUiMapper.selectList(wrapper);
+    }
+
 }
