@@ -45,7 +45,7 @@ public class ProcessModel extends BaseEntity {
 
         if(StringUtils.isNotEmpty(inputVO.getProcessKey())) processModel.setProcessKey(inputVO.getProcessKey());
 
-        if(inputVO.getAsTemplate()) processModel.setAsTemplate(true);
+        if(inputVO.getAsTemplate()!=null) processModel.setAsTemplate(inputVO.getAsTemplate());
 
         if(processModel.getIsNew()){
             processModelMapper.insert(processModel);

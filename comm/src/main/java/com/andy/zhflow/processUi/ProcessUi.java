@@ -51,9 +51,10 @@ public class ProcessUi extends BaseEntity {
         return processUiMapper.selectById(id);
     }
 
-    public static List<ProcessUi> getList(String name) {
+    public static List<ProcessUi> getList(String name,String type) {
         LambdaQueryWrapper<ProcessUi> wrapper=new LambdaQueryWrapper<ProcessUi>().orderByDesc(ProcessUi::getCreateTime);
-        if(StringUtils.isNotEmpty(name)) wrapper.eq(ProcessUi::getName,name);
+        if(StringUtils.isNotEmpty(name)) wrapper.like(ProcessUi::getName,name);
+        if(StringUtils.isNotEmpty(type)) wrapper.eq(ProcessUi::getType,type);
 
         return processUiMapper.selectList(wrapper);
     }

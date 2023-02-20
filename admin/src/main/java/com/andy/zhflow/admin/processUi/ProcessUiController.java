@@ -16,8 +16,9 @@ public class ProcessUiController {
     private ProcessUiService processUiService;
 
     @GetMapping(value="/getList")
-    public ResultResponse<List<ProcessUi>> getList(@RequestParam(value = "name",required = false) String name) throws Exception {
-        List<ProcessUi> list = ProcessUi.getList(name);
+    public ResultResponse<List<ProcessUi>> getList(@RequestParam(value = "name",required = false) String name,
+                                                   @RequestParam(value = "type",required = false) String type) throws Exception {
+        List<ProcessUi> list = ProcessUi.getList(name,type);
         return ResultResponse.success(list);
     }
 
