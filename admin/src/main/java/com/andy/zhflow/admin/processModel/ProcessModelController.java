@@ -24,10 +24,9 @@ public class ProcessModelController {
     }
 
     @GetMapping(value="/getList")
-    public ResultResponse<AmisPage<ProcessModel>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage,
-            @RequestParam(value = "asTemplate",required = false) Boolean asTemplate) {
+    public ResultResponse<AmisPage<ProcessModel>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
 
-        IPage<ProcessModel> item = ProcessModel.selectPage(page, perPage, asTemplate);
+        IPage<ProcessModel> item = ProcessModel.selectPage(page, perPage);
 
         return ResultResponse.success(AmisPage.transitionPage(item));
     }

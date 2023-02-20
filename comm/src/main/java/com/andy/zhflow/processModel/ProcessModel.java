@@ -31,7 +31,7 @@ public class ProcessModel extends BaseEntity {
 
     private Date deploymentTime;
 
-    private Boolean asTemplate=null;
+    private String type;
 
     public static String save(ProcessModelInputVO inputVO) throws Exception {
         ProcessModel processModel =new ProcessModel();
@@ -45,7 +45,7 @@ public class ProcessModel extends BaseEntity {
 
         if(StringUtils.isNotEmpty(inputVO.getProcessKey())) processModel.setProcessKey(inputVO.getProcessKey());
 
-        if(inputVO.getAsTemplate()!=null) processModel.setAsTemplate(inputVO.getAsTemplate());
+        if(StringUtils.isNotEmpty(inputVO.getType())) processModel.setType(inputVO.getType());
 
         if(processModel.getIsNew()){
             processModelMapper.insert(processModel);
@@ -70,9 +70,8 @@ public class ProcessModel extends BaseEntity {
         return getId();
     }
 
-    public static IPage<ProcessModel> selectPage(Integer page, Integer perPage,Boolean asTemplate){
+    public static IPage<ProcessModel> selectPage(Integer page, Integer perPage){
         LambdaQueryWrapper<ProcessModel> wrapper=new LambdaQueryWrapper<ProcessModel>().orderByDesc(ProcessModel::getCreateTime);
-        if(asTemplate!=null) wrapper.eq(ProcessModel::getAsTemplate,asTemplate);
 
         Page<ProcessModel> item = processModelMapper.selectPage(new Page<>(page, perPage), wrapper);
         return item;
