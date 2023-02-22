@@ -1,7 +1,6 @@
 package com.andy.zhflow.processUi;
 
 import com.andy.zhflow.entity.BaseEntity;
-import com.andy.zhflow.processModel.ProcessModel;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Data;
@@ -25,6 +24,7 @@ public class ProcessUi extends BaseEntity {
 
     private String name;
     private String type;
+    private String code;
     private String content;
 
     public static String save(ProcessUiInputVO inputVO) throws Exception {
@@ -36,6 +36,7 @@ public class ProcessUi extends BaseEntity {
         if(StringUtils.isNotEmpty(inputVO.getName())) processUi.setName(inputVO.getName());
         if(StringUtils.isNotEmpty(inputVO.getType())) processUi.setType(inputVO.getType());
         if(StringUtils.isNotEmpty(inputVO.getContent())) processUi.setContent(inputVO.getContent());
+        if(StringUtils.isNotEmpty(inputVO.getCode())) processUi.setCode(inputVO.getCode());
 
         if(processUi.getIsNew()){
             processUiMapper.insert(processUi);
@@ -51,12 +52,20 @@ public class ProcessUi extends BaseEntity {
         return processUiMapper.selectById(id);
     }
 
-    public static List<ProcessUi> getList(String name,String type) {
+    public static List<ProcessUi> getList(String name,String type,String noType) {
         LambdaQueryWrapper<ProcessUi> wrapper=new LambdaQueryWrapper<ProcessUi>().orderByDesc(ProcessUi::getCreateTime);
         if(StringUtils.isNotEmpty(name)) wrapper.like(ProcessUi::getName,name);
         if(StringUtils.isNotEmpty(type)) wrapper.eq(ProcessUi::getType,type);
+        if(StringUtils.isNotEmpty(noType)) wrapper.notIn(ProcessUi::getType,noType.split(","));
 
         return processUiMapper.selectList(wrapper);
     }
+
+
+    public static ProcessUi getByCode(String code) {
+        LambdaQueryWrapper<ProcessUi> wrapper=new LambdaQueryWrapper<ProcessUi>().eq(ProcessUi::getCode,code);
+        return processUiMapper.selectOne(wrapper);
+    }
+
 
 }

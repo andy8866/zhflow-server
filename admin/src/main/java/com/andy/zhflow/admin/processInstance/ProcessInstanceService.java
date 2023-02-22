@@ -1,6 +1,11 @@
 package com.andy.zhflow.admin.processInstance;
 
+import com.andy.zhflow.admin.doProcess.DoProcessService;
+import com.andy.zhflow.admin.doProcess.ProcessLeaveService;
+import com.andy.zhflow.admin.user.UserService;
 import com.andy.zhflow.amis.AmisPage;
+import com.andy.zhflow.security.utils.UserUtil;
+import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -12,19 +17,32 @@ import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Component
 public class ProcessInstanceService {
 
-    @Autowired
+    @Resource
     private RuntimeService runtimeService;
 
-    @Autowired
+    @Resource
     private RepositoryService repositoryService;
 
+    @Resource
+    protected IdentityService identityService;
+
+    @Autowired
+    protected UserService userService;
+
+    @Autowired
+    protected DoProcessService doProcessService;
+
     public void startProcess(String processKey) {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey);
+        String userId=UserUtil.getUserId();
+        identityService.setAuthenticatedUserId(userId);
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey,doProcessService.initProcVarMap());
     }
 
     public AmisPage<ProcessInstanceOutputVO> getList(Integer page, Integer perPage) {

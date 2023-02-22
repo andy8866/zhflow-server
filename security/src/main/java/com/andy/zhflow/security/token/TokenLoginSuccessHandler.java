@@ -7,6 +7,7 @@ import com.andy.zhflow.response.ResultResponse;
 import com.andy.zhflow.security.SecurityUser;
 import com.andy.zhflow.security.config.SecurityStarterAutoConfigure;
 import com.andy.zhflow.utils.UUIDUtil;
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,7 +34,7 @@ public class TokenLoginSuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("用户:" + securityUser.toString());
 
         // 创建令牌
-        String token = UUIDUtil.generate();
+        String token = NanoIdUtils.randomNanoId();
         String json= JSON.toJSONString(securityUser);
 
         redisService.set(token,json, SecurityStarterAutoConfigure.EXPIRATION, TimeUnit.SECONDS);

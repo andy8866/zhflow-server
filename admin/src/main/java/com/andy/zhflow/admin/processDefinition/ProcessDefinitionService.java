@@ -19,6 +19,7 @@ public class ProcessDefinitionService {
 
     public AmisPage<ProcessDefinitionOutputVO> getList(Integer page, Integer perPage) {
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+                .orderByDeploymentTime().desc()
                 .latestVersion();
 
         Long total=processDefinitionQuery.count();

@@ -16,11 +16,10 @@ public class ProcessTaskOutputVO {
 
     private String processInstanceId;
     private String processDefinitionId;
+    private String taskDefinitionKey;
     private String deploymentId;
 
     private String name;
-    private String owner;
-    private String ownerName;
 
     private String assignee;
     private String assigneeName;
@@ -32,6 +31,8 @@ public class ProcessTaskOutputVO {
     private Date lastUpdated;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date dueDate;
+
+    private String formKey;
 
     public static ProcessTaskOutputVO convert(Task task){
         ProcessTaskOutputVO processTaskOutputVO =new ProcessTaskOutputVO();

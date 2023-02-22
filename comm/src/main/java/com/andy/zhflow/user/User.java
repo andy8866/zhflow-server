@@ -12,12 +12,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Data
 @Component
 @TableName("user")
 public class User extends BaseEntity {
 
     private static UserMapper userMapper;
+
 
     @Autowired
     public void setUserMapper(UserMapper mapper){
@@ -43,15 +46,32 @@ public class User extends BaseEntity {
     }
 
     public static IPage<User> selectPage(Integer page, Integer perPage){
-        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime);
-        Page<User> suggestPage = userMapper.selectPage(new Page<>(page, perPage), lambdaQueryWrapper);
+        LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime);
+        Page<User> suggestPage = userMapper.selectPage(new Page<>(page, perPage), wrapper);
         return suggestPage;
     }
 
+    public static List<User> getListNoPage(String name) {
+        LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime);
+        if(StringUtils.isNotEmpty(name)) wrapper.like(User::getUserName,name);
+        return userMapper.selectList(wrapper);
+    }
+
     public static String getNameById(String id){
-        User user = userMapper.selectById(id);
+        User user = getById(id);
         if(user!=null) return user.getUserName();
 
         return null;
     }
+
+    public static User getById(String id){
+        return userMapper.selectById(id);
+    }
+
+    public static List<User> getListByIds(String ids) {
+        LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime)
+                .in(User::getId,ids.split(","));
+        return userMapper.selectList(wrapper);
+    }
+
 }

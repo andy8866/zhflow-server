@@ -6,6 +6,9 @@ import com.andy.zhflow.security.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController()
 @RequestMapping(value = "/api/admin/processTask")
 public class ProcessTaskController {
@@ -34,9 +37,16 @@ public class ProcessTaskController {
         return ResultResponse.success();
     }
 
-    @PostMapping(value="/doTask")
-    public ResultResponse<Void> doTask(@RequestBody() DoTaskInputVO inputVO) throws Exception {
-        processTaskService.doTask(inputVO);
+    @GetMapping(value="/getTaskUi")
+    public ResultResponse<Void> getTaskUi(@RequestParam("taskId") String taskId) throws Exception {
+        processTaskService.getTaskUi(taskId);
+        return ResultResponse.success();
+    }
+
+    @PostMapping(value="/completeTask")
+    public ResultResponse<Void> completeTask(@RequestParam("taskId") String taskId,
+                                             @RequestBody() Map<String,Object> inputVO) throws Exception {
+        processTaskService.completeTask(taskId,inputVO);
         return ResultResponse.success();
     }
 
@@ -45,5 +55,18 @@ public class ProcessTaskController {
                                          @RequestParam("assigneeUserId") String assigneeUserId) throws Exception {
         processTaskService.assignee(taskId,assigneeUserId);
         return ResultResponse.success();
+    }
+
+    @GetMapping(value="/getTaskInfo")
+    public ResultResponse<Map<String,Object>> getTaskInfo(@RequestParam("taskId") String taskId) throws Exception {
+        Map<String,Object> map=processTaskService.getTaskBaseInfo(taskId);
+        return ResultResponse.success(map);
+    }
+
+    @GetMapping(value="/getApprovalProcessDiagramData")
+    public ResultResponse<List<ApprovalProcessDiagramOutputItemVO>> getApprovalProcessDiagramData(
+            @RequestParam("taskId") String taskId) throws Exception {
+        List<ApprovalProcessDiagramOutputItemVO> list=processTaskService.getApprovalProcessDiagramData(taskId);
+        return ResultResponse.success(list);
     }
 }
