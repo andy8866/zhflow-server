@@ -70,7 +70,7 @@ public class DoProcessService {
         throw new Exception("未实现");
     }
 
-    protected Map<String,Object> historicDetailVarToMap(List<HistoricDetail> historicDetailList){
+    public Map<String,Object> historicDetailVarToMap(List<HistoricDetail> historicDetailList){
         Map<String,Object> map=new HashMap<>();
         for (HistoricDetail historicDetail:historicDetailList){
             HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetail;

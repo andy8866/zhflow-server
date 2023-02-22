@@ -9,12 +9,15 @@ import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.history.HistoricDetail;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +34,9 @@ public class ProcessTaskService {
 
     @Autowired
     private DoProcessService doProcessService;
+
+    @Autowired
+    protected HistoryService historyService;
 
     /**
      * 待办任务
@@ -92,11 +98,31 @@ public class ProcessTaskService {
     public void getTaskUi(String taskId) {
     }
 
-    public Map<String,Object> getTaskBaseInfo(String taskId) {
+    public Map<String,Object> getProcessVar(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         Map<String, Object> variables = runtimeService.getVariables(task.getProcessInstanceId());
         variables.remove("taskId");
         return variables;
+
+
+    }
+
+    public Map<String,Object> getTaskLastVar(String taskId) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+
+        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
+                .processInstanceId(task.getProcessInstanceId())
+                .taskDefinitionKey(task.getTaskDefinitionKey())
+                .finished().orderByHistoricTaskInstanceEndTime().desc()
+                .list();
+
+        if(list.size()==0) return new HashMap<>();
+
+        HistoricTaskInstance last=list.get(0);
+        List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery()
+                .processInstanceId(task.getProcessInstanceId())
+                .activityInstanceId(last.getActivityInstanceId()).list();
+        return doProcessService.historicDetailVarToMap(historicDetailList);
     }
 
     public List<ApprovalProcessDiagramOutputItemVO> getApprovalProcessDiagramData(String taskId) throws Exception {

@@ -57,9 +57,15 @@ public class ProcessTaskController {
         return ResultResponse.success();
     }
 
-    @GetMapping(value="/getTaskInfo")
-    public ResultResponse<Map<String,Object>> getTaskInfo(@RequestParam("taskId") String taskId) throws Exception {
-        Map<String,Object> map=processTaskService.getTaskBaseInfo(taskId);
+    @GetMapping(value="/getProcessVar")
+    public ResultResponse<Map<String,Object>> getProcessVar(@RequestParam("taskId") String taskId) throws Exception {
+        Map<String,Object> map=processTaskService.getProcessVar(taskId);
+        return ResultResponse.success(map);
+    }
+
+    @GetMapping(value="/getTaskLastVar")
+    public ResultResponse<Map<String,Object>> getTaskLastVar(@RequestParam("taskId") String taskId) throws Exception {
+        Map<String,Object> map=processTaskService.getTaskLastVar(taskId);
         return ResultResponse.success(map);
     }
 
