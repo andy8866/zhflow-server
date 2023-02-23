@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/zhflow?serverTimezone=GMT%2B8&useSSL=FALSE
-    username: zhflow
-    password: cY5EXMwtD8tRybWK
+    url: jdbc:mysql://dev:3306/zhflow?serverTimezone=GMT%2B8&useSSL=FALSE
+    username: root
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: localhost
+      host: dev
       port: 6379
       database: 1
       jedis:
@@ -20,4 +20,7 @@ spring:
           # 连接池中的最小空闲连接数
           min-idle: 5
       timeout: 5000ms     # 连接超时时间（毫秒）
-      password: rPmLWs9B
+      password: 123456
+
+feign:
+  url: http://localhost:${server.port}

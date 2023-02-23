@@ -1,0 +1,25 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: admin
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    org.camunda: debug
+
+security:
+  permits:
+    - /error/**
+    - /api/admin/index/**
+    - /api/admin/website/**
+    - /api/admin/uiPage/getUiByCode/**
+    - /api/security/validateToken**
