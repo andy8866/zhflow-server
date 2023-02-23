@@ -1,0 +1,6 @@
+security:
+  permits:
+    - /error/**
+    - /api/admin/index/**
+    - /api/admin/website/**
+    - /api/admin/uiPage/getUiByCode/**

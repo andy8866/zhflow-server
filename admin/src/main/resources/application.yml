@@ -39,3 +39,11 @@ logging:
 
 feign:
   url: http://localhost:${server.port}
+
+security:
+  permits:
+    - /error/**
+    - /api/admin/index/**
+    - /api/admin/website/**
+    - /api/admin/uiPage/getUiByCode/**
+    - /api/security/validateToken**

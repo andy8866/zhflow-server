@@ -5,6 +5,7 @@ import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.response.ResponseUtil;
 import com.andy.zhflow.response.ResultResponse;
 import com.andy.zhflow.security.SecurityUser;
+import com.andy.zhflow.security.config.SecurityConfig;
 import com.andy.zhflow.security.config.SecurityStarterAutoConfigure;
 import com.andy.zhflow.utils.UUIDUtil;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class TokenLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private RedisService redisService;
+
     public TokenLoginSuccessHandler(RedisService redisService){
         this.redisService=redisService;
     }

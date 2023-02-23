@@ -8,6 +8,8 @@ import com.andy.zhflow.security.jwt.JwtLoginSuccessHandler;
 import com.andy.zhflow.security.token.TokenAuthorizationFilter;
 import com.andy.zhflow.security.token.TokenLoginSuccessHandler;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
@@ -34,7 +36,15 @@ import java.util.List;
 public class SecurityStarterAutoConfigure {
 
     // 过期时间是3600秒，既是1个小时
-    public static final long EXPIRATION = 24*60 * 60L;
+    public static long EXPIRATION = 24*60 * 60L;
+
+
+    private SecurityConfig securityConfig;
+    @Autowired
+    public void setSecurityConfig(SecurityConfig securityConfig){
+        this.securityConfig=securityConfig;
+        EXPIRATION=securityConfig.getExpiration();
+    }
 
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -54,13 +64,12 @@ public class SecurityStarterAutoConfigure {
 
         http.cors().configurationSource(corsConfigurationSource());
 
-        http.authorizeHttpRequests((authorize) -> authorize
-                .antMatchers("/api/admin/index/**").permitAll()
-                .antMatchers("/api/admin/website/**").permitAll()
-                .antMatchers("/error/**").permitAll()
-                .antMatchers("/api/admin/uiPage/getUiByCode/**").permitAll()
-                .antMatchers("/**").hasAnyRole("admin", "user")
-        );
+        http.authorizeHttpRequests((authorize) -> {
+            for (String permit:securityConfig.getPermits()){
+                authorize.antMatchers(permit).permitAll();
+            }
+            authorize.antMatchers("/**").hasAnyRole("admin", "user");
+        });
 
         http.exceptionHandling().authenticationEntryPoint(new SecurityAuthenticationEntryPoint());
 
