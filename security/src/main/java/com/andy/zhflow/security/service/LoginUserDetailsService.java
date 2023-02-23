@@ -1,8 +1,9 @@
 package com.andy.zhflow.security.service;
 
 import com.andy.zhflow.security.SecurityUser;
-import com.andy.zhflow.user.User;
-import org.apache.commons.lang3.ObjectUtils;
+import com.andy.zhflow.service.user.IUserService;
+import com.andy.zhflow.service.user.UserOutVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,11 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginUserDetailsService implements UserDetailsService {
 
+    @Autowired
+    private IUserService userService;
+
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user=User.getByUserName(userName);
-        if(ObjectUtils.isEmpty(user)){
-            throw new UsernameNotFoundException("账号不存在");
+        UserOutVO user = userService.getByUserName(userName);
+        if(user==null){
+            throw new UsernameNotFoundException("");
         }
 
         return new SecurityUser(user.getId(),user.getUserName(),user.getPassword(),"ROLE_admin");

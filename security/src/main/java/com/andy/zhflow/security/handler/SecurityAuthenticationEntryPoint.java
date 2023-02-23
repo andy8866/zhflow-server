@@ -16,6 +16,6 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
             throws IOException, ServletException {
 //        response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        ResponseUtil.writeObject(response, ResultResponse.fail(2,"权限验证未通过",authException.getMessage()));
+        ResponseUtil.writeObject(response, ResultResponse.fail(2,"权限验证未通过",null));
     }
 }

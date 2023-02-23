@@ -40,14 +40,8 @@
 
         <dependency>
             <groupId>com.andy.zhflow</groupId>
-            <artifactId>flow</artifactId>
+            <artifactId>proc</artifactId>
             <version>${version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
         </dependency>
 
         <dependency>

@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+feign:
+  url: http://localhost:${server.port}

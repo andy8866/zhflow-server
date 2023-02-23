@@ -34,6 +34,9 @@ public class ResultResponse<T> {
     public static <B> ResultResponse<B> fail(Integer status,String msg,B data){
         return new ResultResponse(status,msg,data);
     }
+    public boolean isSuccess(){
+        return status==0;
+    }
 
     @Override
     public String toString() {

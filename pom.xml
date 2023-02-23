@@ -8,7 +8,10 @@
         <module>mysql</module>
         <module>redis</module>
         <module>security</module>
-        <module>flow</module>
+        <module>proc</module>
+        <module>user</module>
+        <module>feign</module>
+        <module>service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -51,6 +54,13 @@
             <artifactId>jnanoid</artifactId>
             <version>2.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
