@@ -41,8 +41,6 @@ public class TokenLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         redisService.set(token,json, SecurityStarterAutoConfigure.EXPIRATION, TimeUnit.SECONDS);
 
-        response.setHeader("token", token);
-
         ResponseUtil.writeObject(response, ResultResponse.success(token));
     }
 }

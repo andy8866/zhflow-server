@@ -45,7 +45,7 @@ public class TokenAuthorizationFilter extends BasicAuthenticationFilter {
         // 获取请求头信息
         String token = request.getHeader("token");
         // 如果请求头中没有Authorization信息则直接放行了
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token) || "null".equals(token)) {
             chain.doFilter(request, response);
             return;
         }
