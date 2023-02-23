@@ -1,9 +1,4 @@
-server:
-  port: 8081
-
 spring:
-  application:
-    name: admin
   datasource:
     url: jdbc:mysql://localhost:3306/zhflow?serverTimezone=GMT%2B8&useSSL=FALSE
     username: root
@@ -26,7 +21,3 @@ spring:
           min-idle: 5
       timeout: 5000ms     # 连接超时时间（毫秒）
       password: 123456
-
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
