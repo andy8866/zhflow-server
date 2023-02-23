@@ -35,6 +35,12 @@ public class UiController {
         return ResultResponse.success(ui);
     }
 
+    @GetMapping(value="/getContentById")
+    public void getContentById(HttpServletResponse response,
+                                   @RequestParam("id") String id) throws Exception {
+        ResponseUtil.writeString(response,Ui.getById(id).getContent());
+    }
+
     @GetMapping(value="/getContentByTaskId")
     public void getContentByTaskId(HttpServletResponse response,
                                @RequestParam("taskId") String taskId) throws Exception {

@@ -4,7 +4,6 @@ import com.andy.zhflow.proc.ApprovalProcDiagramOutputItemVO;
 import com.andy.zhflow.proc.BpmnModelUtil;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.user.User;
-import com.andy.zhflow.user.UserService;
 import com.andy.zhflow.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
@@ -27,9 +26,6 @@ import java.util.*;
 public class ApprovalProcService extends DoProcService {
 
     @Autowired
-    protected UserService userService;
-
-    @Autowired
     protected TaskService taskService;
 
     @Autowired
@@ -38,15 +34,7 @@ public class ApprovalProcService extends DoProcService {
     @Autowired
     private RepositoryService repositoryService;
 
-    public void setSuperiorUser(DelegateTask task){
-        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(task.getProcessInstanceId())
-                .orderByHistoricActivityInstanceStartTime().desc()
-                .list();
 
-        String userid=list.get(0).getAssignee();
-        String superiorUserId=userService.getSuperiorUser(userid);
-        task.setAssignee(superiorUserId);
-    }
 
     @Override
     public List<ApprovalProcDiagramOutputItemVO> getApprovalProcessDiagramData(String taskId) throws Exception {

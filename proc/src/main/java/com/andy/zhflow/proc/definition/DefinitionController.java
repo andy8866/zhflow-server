@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-@RequestMapping(value = "/api/admin/processDefinition")
+@RequestMapping(value = "/api/proc/definition")
 public class DefinitionController {
 
     @Autowired

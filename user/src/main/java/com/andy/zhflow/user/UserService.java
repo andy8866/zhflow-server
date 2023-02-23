@@ -42,7 +42,7 @@ public class UserService implements IUserService {
      * @param userId
      * @return
      */
-    public String getSuperiorUser(String userId) {
+    public String getSuperiorUserId(String userId) {
         return "Qsw0NCe5n1RxA5Xh1c-td";
     }
 
@@ -53,4 +53,5 @@ public class UserService implements IUserService {
         BeanUtils.copyProperties(user,outVO);
         return outVO;
     }
+
 }

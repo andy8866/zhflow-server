@@ -58,9 +58,9 @@ public class ProcTaskController {
         return ResultResponse.success();
     }
 
-    @GetMapping(value="/getProcessVar")
-    public ResultResponse<Map<String,Object>> getProcessVar(@RequestParam("taskId") String taskId) throws Exception {
-        Map<String,Object> map= procTaskService.getProcessVar(taskId);
+    @GetMapping(value="/getProcVar")
+    public ResultResponse<Map<String,Object>> getProcVar(@RequestParam("taskId") String taskId) throws Exception {
+        Map<String,Object> map= procTaskService.getProcVar(taskId);
         return ResultResponse.success(map);
     }
 
@@ -70,10 +70,10 @@ public class ProcTaskController {
         return ResultResponse.success(map);
     }
 
-    @GetMapping(value="/getApprovalProcessDiagramData")
-    public ResultResponse<List<ApprovalProcDiagramOutputItemVO>> getApprovalProcessDiagramData(
+    @GetMapping(value="/getApprovalProcDiagramData")
+    public ResultResponse<List<ApprovalProcDiagramOutputItemVO>> getApprovalProcDiagramData(
             @RequestParam("taskId") String taskId) throws Exception {
-        List<ApprovalProcDiagramOutputItemVO> list= procTaskService.getApprovalProcessDiagramData(taskId);
+        List<ApprovalProcDiagramOutputItemVO> list= procTaskService.getApprovalProcDiagramData(taskId);
         return ResultResponse.success(list);
     }
 }

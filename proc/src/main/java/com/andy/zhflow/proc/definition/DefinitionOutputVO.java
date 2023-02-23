@@ -22,6 +22,9 @@ public class DefinitionOutputVO {
     private String description;
     private String versionTag;
 
+    private Boolean hasStartFormKey=false;
+    private String startFormKey="";
+
     public static DefinitionOutputVO convert(ProcessDefinition processDefinition){
         DefinitionOutputVO processDeploymentOutputVO =new DefinitionOutputVO();
         BeanUtils.copyProperties(processDefinition, processDeploymentOutputVO);

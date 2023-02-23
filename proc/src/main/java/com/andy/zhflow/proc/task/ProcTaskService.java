@@ -3,12 +3,14 @@ package com.andy.zhflow.proc.task;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.ApprovalProcDiagramOutputItemVO;
 import com.andy.zhflow.proc.doProc.DoProcService;
+import com.andy.zhflow.proc.instance.InstanceService;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
@@ -25,9 +27,7 @@ import java.util.Map;
 public class ProcTaskService {
 
     @Resource
-    private org.camunda.bpm.engine.TaskService taskService;
-    @Resource
-    private FormService formService;
+    private TaskService taskService;
 
     @Resource
     private RuntimeService runtimeService;
@@ -98,7 +98,7 @@ public class ProcTaskService {
     public void getTaskUi(String taskId) {
     }
 
-    public Map<String,Object> getProcessVar(String taskId) {
+    public Map<String,Object> getProcVar(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         Map<String, Object> variables = runtimeService.getVariables(task.getProcessInstanceId());
         variables.remove("taskId");
@@ -110,22 +110,28 @@ public class ProcTaskService {
     public Map<String,Object> getTaskLastVar(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
+        Map<String, Object> procVar = getProcVar(taskId);
+
         List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
                 .processInstanceId(task.getProcessInstanceId())
                 .taskDefinitionKey(task.getTaskDefinitionKey())
                 .finished().orderByHistoricTaskInstanceEndTime().desc()
                 .list();
 
-        if(list.size()==0) return new HashMap<>();
+        if(list.size()==0) return procVar;
 
         HistoricTaskInstance last=list.get(0);
         List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery()
                 .processInstanceId(task.getProcessInstanceId())
                 .activityInstanceId(last.getActivityInstanceId()).list();
-        return doProcService.historicDetailVarToMap(historicDetailList);
+        Map<String, Object> lastVarMap = doProcService.historicDetailVarToMap(historicDetailList);
+
+        procVar.putAll(lastVarMap);
+
+        return procVar;
     }
 
-    public List<ApprovalProcDiagramOutputItemVO> getApprovalProcessDiagramData(String taskId) throws Exception {
+    public List<ApprovalProcDiagramOutputItemVO> getApprovalProcDiagramData(String taskId) throws Exception {
         DoProcService processServer = doProcService.getProcessServer(taskId);
         return processServer.getApprovalProcessDiagramData(taskId);
     }
