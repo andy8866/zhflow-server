@@ -71,4 +71,7 @@ public class InstanceService {
     }
 
 
+    public void cancelProc(String id) {
+        runtimeService.deleteProcessInstance(id,"取消");
+    }
 }

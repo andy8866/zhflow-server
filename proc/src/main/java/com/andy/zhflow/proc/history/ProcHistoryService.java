@@ -1,6 +1,7 @@
 package com.andy.zhflow.proc.history;
 
 import com.andy.zhflow.amis.AmisPage;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
@@ -26,20 +27,22 @@ public class ProcHistoryService {
     @Autowired
     private RepositoryService repositoryService;
 
-    public AmisPage<ProcHistoryOutputVO> getList(Integer page, Integer perPage) {
+    public AmisPage<ProcHistoryProcOutVO> getList(Integer page, Integer perPage,
+                                                  String userId) {
 
-        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().finished();
+        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc();
+        if(StringUtils.isNotEmpty(userId)) query.startedBy(userId);
 
         Long total=query.count();
 
         List<HistoricProcessInstance> list = query.listPage((page-1) * perPage, perPage);
 
-        List<ProcHistoryOutputVO> outList = ProcHistoryOutputVO.convertList(list);
+        List<ProcHistoryProcOutVO> outList = ProcHistoryProcOutVO.convertList(list);
 
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
-        for (ProcHistoryOutputVO outputVO:outList){
+        for (ProcHistoryProcOutVO outputVO:outList){
             ProcessDefinition processDefinition = processDefinitionQuery.processDefinitionId(outputVO.getProcessDefinitionId()).singleResult();
             Deployment deployment = deploymentQuery.deploymentId(processDefinition.getDeploymentId()).singleResult();
             outputVO.setName(deployment.getName());

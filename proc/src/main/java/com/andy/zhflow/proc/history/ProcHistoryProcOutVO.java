@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class ProcHistoryOutputVO {
+public class ProcHistoryProcOutVO {
 
     private String id;
 
@@ -26,15 +26,17 @@ public class ProcHistoryOutputVO {
     private Date endTime;
     private Long durationInMillis;
 
-    public static ProcHistoryOutputVO convert(HistoricProcessInstance historicProcessInstance){
-        ProcHistoryOutputVO procHistoryOutputVO =new ProcHistoryOutputVO();
-        BeanUtils.copyProperties(historicProcessInstance, procHistoryOutputVO);
+    private String state;
 
-        return procHistoryOutputVO;
+    public static ProcHistoryProcOutVO convert(HistoricProcessInstance historicProcessInstance){
+        ProcHistoryProcOutVO procHistoryProcOutVO =new ProcHistoryProcOutVO();
+        BeanUtils.copyProperties(historicProcessInstance, procHistoryProcOutVO);
+
+        return procHistoryProcOutVO;
     }
 
-    public static List<ProcHistoryOutputVO> convertList(List<HistoricProcessInstance> list){
-        List<ProcHistoryOutputVO> voList=new ArrayList<>();
+    public static List<ProcHistoryProcOutVO> convertList(List<HistoricProcessInstance> list){
+        List<ProcHistoryProcOutVO> voList=new ArrayList<>();
 
         for (HistoricProcessInstance historicProcessInstance:list){
             voList.add(convert(historicProcessInstance));

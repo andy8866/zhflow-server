@@ -26,4 +26,10 @@ public class InstanceController {
         AmisPage<InstanceOutputVO> appPage = instanceService.getList(page, perPage);
         return ResultResponse.success(appPage);
     }
+
+    @GetMapping(value="/cancelProc")
+    public ResultResponse<Void> cancelProc(@RequestParam("id") String id) {
+        instanceService.cancelProc(id);
+        return ResultResponse.success();
+    }
 }
