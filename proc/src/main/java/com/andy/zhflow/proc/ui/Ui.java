@@ -28,8 +28,19 @@ public class Ui extends BaseEntity {
     private String content;
 
     public static String save(UiInputVO inputVO) throws Exception {
+        boolean find=false;
+
         Ui ui =new Ui();
-        if(StringUtils.isNotEmpty(inputVO.getId())) ui = uiMapper.selectById(inputVO.getId());
+        if(StringUtils.isNotEmpty(inputVO.getId())) {
+            ui = uiMapper.selectById(inputVO.getId());
+            find=true;
+
+            if(ui==null){
+                ui=new Ui();
+                ui.setId(inputVO.getId());
+                find=false;
+            }
+        }
 
         ui.setBase(true);
 
@@ -37,7 +48,7 @@ public class Ui extends BaseEntity {
         if(StringUtils.isNotEmpty(inputVO.getCode())) ui.setCode(inputVO.getCode());
         if(StringUtils.isNotEmpty(inputVO.getContent())) ui.setContent(inputVO.getContent());
 
-        if(ui.getIsNew()){
+        if(ui.getIsNew() || !find){
             uiMapper.insert(ui);
         }
         else{

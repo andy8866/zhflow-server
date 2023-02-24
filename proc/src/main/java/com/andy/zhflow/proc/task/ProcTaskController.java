@@ -39,12 +39,6 @@ public class ProcTaskController {
         return ResultResponse.success();
     }
 
-    @GetMapping(value="/getTaskUi")
-    public ResultResponse<Void> getTaskUi(@RequestParam("taskId") String taskId) throws Exception {
-        procTaskService.getTaskUi(taskId);
-        return ResultResponse.success();
-    }
-
     @PostMapping(value="/completeTask")
     public ResultResponse<Void> completeTask(@RequestParam("taskId") String taskId,
                                              @RequestBody() Map<String,Object> inputVO) throws Exception {
@@ -61,13 +55,21 @@ public class ProcTaskController {
 
     @GetMapping(value="/getProcVar")
     public ResultResponse<Map<String,Object>> getProcVar(@RequestParam("taskId") String taskId) throws Exception {
-        Map<String,Object> map= procTaskService.getProcVar(taskId);
+        Map<String,Object> map= procTaskService.getProcVarByTaskId(taskId);
         return ResultResponse.success(map);
     }
 
     @GetMapping(value="/getTaskLastVar")
     public ResultResponse<Map<String,Object>> getTaskLastVar(@RequestParam("taskId") String taskId) throws Exception {
         Map<String,Object> map= procTaskService.getTaskLastVar(taskId);
+        return ResultResponse.success(map);
+    }
+
+    @GetMapping(value="/getTaskLastVarByTaskDefinitionKey")
+    public ResultResponse<Map<String,Object>> getTaskLastVarByTaskDefinitionKey(@RequestParam("taskId") String taskId,
+                                                             @RequestParam("taskDefinitionKey") String taskDefinitionKey
+                                                             ) throws Exception {
+        Map<String,Object> map= procTaskService.getTaskLastVarByTaskDefinitionKey(taskId,taskDefinitionKey);
         return ResultResponse.success(map);
     }
 
