@@ -112,8 +112,9 @@ public class ProcTaskService {
         return getProcVarByProcessInstanceId(task.getProcessInstanceId());
     }
 
-    public Map<String,Object> getTaskLastVar(String processInstanceId,String taskDefinitionKey) {
-        Map<String, Object> procVar = getProcVarByProcessInstanceId(processInstanceId);
+    public Map<String,Object> getTaskLastVar(String processInstanceId,String taskDefinitionKey,Boolean onlyTask) {
+
+        Map<String, Object> lastVarMap=new HashMap<>();
 
         List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
                 .processInstanceId(processInstanceId)
@@ -121,20 +122,26 @@ public class ProcTaskService {
                 .finished().orderByHistoricTaskInstanceEndTime().desc()
                 .list();
 
-        if(list.size()==0) return procVar;
+        if(list.size()>0){
+            HistoricTaskInstance last=list.get(0);
+            List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery()
+                    .processInstanceId(processInstanceId)
+                    .activityInstanceId(last.getActivityInstanceId()).list();
+            lastVarMap= doProcService.historicDetailVarToMap(historicDetailList);
+        }
 
-        HistoricTaskInstance last=list.get(0);
-        List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery()
-                .processInstanceId(processInstanceId)
-                .activityInstanceId(last.getActivityInstanceId()).list();
-        Map<String, Object> lastVarMap = doProcService.historicDetailVarToMap(historicDetailList);
+        if(onlyTask){
+            return lastVarMap;
+        }else{
+            Map<String, Object> procVar = getProcVarByProcessInstanceId(processInstanceId);
+            procVar.putAll(lastVarMap);
 
-        procVar.putAll(lastVarMap);
+            return procVar;
 
-        return procVar;
+        }
     }
 
-    public Map<String,Object> getTaskLastVar(String taskId) {
+    public Map<String,Object> getTaskLastVar(String taskId,boolean onlyTask) {
         String taskDefinitionKey=null;
         String processInstanceId=null;
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -147,7 +154,7 @@ public class ProcTaskService {
             processInstanceId=instance.getProcessInstanceId();
         }
 
-        return getTaskLastVar(processInstanceId,taskDefinitionKey);
+        return getTaskLastVar(processInstanceId,taskDefinitionKey,onlyTask);
     }
 
     public List<ApprovalProcDiagramOutputItemVO> getApprovalProcDiagramData(String taskId) throws Exception {
@@ -166,7 +173,7 @@ public class ProcTaskService {
             processInstanceId=instance.getProcessInstanceId();
         }
 
-        return getTaskLastVar(processInstanceId,taskDefinitionKey);
+        return getTaskLastVar(processInstanceId,taskDefinitionKey,false);
     }
 
     public List<ProcTaskOutputVO> getHistoryCompleteTask(String userId) {

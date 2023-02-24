@@ -60,8 +60,12 @@ public class ProcTaskController {
     }
 
     @GetMapping(value="/getTaskLastVar")
-    public ResultResponse<Map<String,Object>> getTaskLastVar(@RequestParam("taskId") String taskId) throws Exception {
-        Map<String,Object> map= procTaskService.getTaskLastVar(taskId);
+    public ResultResponse<Map<String,Object>> getTaskLastVar(@RequestParam("taskId") String taskId,
+                                                             @RequestParam(value = "onlyTask",required = false) Boolean onlyTask) throws Exception {
+
+        if(onlyTask==null) onlyTask=true;
+
+        Map<String,Object> map= procTaskService.getTaskLastVar(taskId,onlyTask);
         return ResultResponse.success(map);
     }
 
