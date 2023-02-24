@@ -14,10 +14,10 @@ public class InstanceController {
     @Autowired
     private InstanceService instanceService;
 
-    @PostMapping(value="/startProcess")
-    public ResultResponse<Void> startProcess(@RequestParam("processKey") String processKey,
+    @PostMapping(value="/startProc")
+    public ResultResponse<Void> startProc(@RequestParam("procKey") String procKey,
                                              @RequestBody(required = false) Map<String,Object> vars) throws Exception {
-        instanceService.startProcess(processKey,vars);
+        instanceService.startProc(procKey,vars);
         return ResultResponse.success();
     }
 

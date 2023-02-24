@@ -7,6 +7,7 @@ import com.andy.zhflow.security.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +75,15 @@ public class ProcTaskController {
     public ResultResponse<List<ApprovalProcDiagramOutputItemVO>> getApprovalProcDiagramData(
             @RequestParam("taskId") String taskId) throws Exception {
         List<ApprovalProcDiagramOutputItemVO> list= procTaskService.getApprovalProcDiagramData(taskId);
+        return ResultResponse.success(list);
+    }
+
+    @GetMapping(value="/getHistoryTask")
+    public ResultResponse<List<String>> getHistoryTask(
+            @RequestParam("taskId") String taskId) throws Exception {
+        List<String> list=new ArrayList<>();
+        list.add("NUVh1nOug36Rn4nm7-iYD");
+        list.add("NUVh1nOug36Rn4nm7-iYD");
         return ResultResponse.success(list);
     }
 }

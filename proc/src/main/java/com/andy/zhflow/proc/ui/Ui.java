@@ -17,13 +17,13 @@ public class Ui extends BaseEntity {
     private static UiMapper uiMapper;
 
 
+
     @Autowired
     public void setUiMapper(UiMapper mapper){
         uiMapper =mapper;
     }
 
     private String name;
-    private String type;
     private String code;
     private String content;
 
@@ -34,9 +34,8 @@ public class Ui extends BaseEntity {
         ui.setBase(true);
 
         if(StringUtils.isNotEmpty(inputVO.getName())) ui.setName(inputVO.getName());
-        if(StringUtils.isNotEmpty(inputVO.getType())) ui.setType(inputVO.getType());
-        if(StringUtils.isNotEmpty(inputVO.getContent())) ui.setContent(inputVO.getContent());
         if(StringUtils.isNotEmpty(inputVO.getCode())) ui.setCode(inputVO.getCode());
+        if(StringUtils.isNotEmpty(inputVO.getContent())) ui.setContent(inputVO.getContent());
 
         if(ui.getIsNew()){
             uiMapper.insert(ui);
@@ -52,12 +51,9 @@ public class Ui extends BaseEntity {
         return uiMapper.selectById(id);
     }
 
-    public static List<Ui> getList(String name, String type, String noType) {
-        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().orderByDesc(Ui::getCreateTime);
+    public static List<Ui> getCompList(String name) {
+        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().orderByDesc(Ui::getCreateTime).isNotNull(Ui::getCode);
         if(StringUtils.isNotEmpty(name)) wrapper.like(Ui::getName,name);
-        if(StringUtils.isNotEmpty(type)) wrapper.eq(Ui::getType,type);
-        if(StringUtils.isNotEmpty(noType)) wrapper.notIn(Ui::getType,noType.split(","));
-
         return uiMapper.selectList(wrapper);
     }
 
@@ -67,5 +63,7 @@ public class Ui extends BaseEntity {
         return uiMapper.selectOne(wrapper);
     }
 
-
+    public static void deleteById(String id) {
+        uiMapper.deleteById(id);
+    }
 }

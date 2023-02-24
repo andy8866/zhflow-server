@@ -15,11 +15,9 @@ public class UiController {
     @Autowired
     private UiService uiService;
 
-    @GetMapping(value="/getList")
-    public ResultResponse<List<Ui>> getList(@RequestParam(value = "name",required = false) String name,
-                                            @RequestParam(value = "type",required = false) String type,
-                                            @RequestParam(value = "noType",required = false) String noType) throws Exception {
-        List<Ui> list = Ui.getList(name,type,noType);
+    @GetMapping(value="/getCompList")
+    public ResultResponse<List<Ui>> getCompList(@RequestParam(value = "name",required = false) String name) throws Exception {
+        List<Ui> list = Ui.getCompList(name);
         return ResultResponse.success(list);
     }
 
@@ -27,6 +25,12 @@ public class UiController {
     public ResultResponse<String> save(@RequestBody() UiInputVO inputVO) throws Exception {
         String id= Ui.save(inputVO);
         return ResultResponse.success(id);
+    }
+
+    @GetMapping(value="/deleteById")
+    public ResultResponse<Void> deleteById(@RequestParam(value = "id") String id) throws Exception {
+        Ui.deleteById(id);
+        return ResultResponse.success();
     }
 
     @GetMapping(value="/getById")
@@ -43,8 +47,18 @@ public class UiController {
 
     @GetMapping(value="/getContentByTaskId")
     public void getContentByTaskId(HttpServletResponse response,
-                               @RequestParam("taskId") String taskId) throws Exception {
+                           @RequestParam(value = "taskId") String taskId) throws Exception {
         String content= uiService.getContentByTaskId(taskId);
+        ResponseUtil.writeString(response,content);
+    }
+
+    @GetMapping(value="/getContent")
+    public void getContent(HttpServletResponse response,
+                           @RequestParam(value = "id",required = false) String id,
+                           @RequestParam(value = "taskId",required = false) String taskId,
+                           @RequestParam(value = "code",required = false) String code
+                           ) throws Exception {
+        String content= uiService.getContent(id,taskId,code);
         ResponseUtil.writeString(response,content);
     }
 

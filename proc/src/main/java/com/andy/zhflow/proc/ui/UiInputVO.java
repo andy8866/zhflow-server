@@ -7,7 +7,6 @@ public class UiInputVO {
 
     private String id;
     private String name;
-    private String type;
     private String code;
     private String content;
 }

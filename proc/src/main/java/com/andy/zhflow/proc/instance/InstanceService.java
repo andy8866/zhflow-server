@@ -4,7 +4,6 @@ import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -15,8 +14,6 @@ import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,14 +38,14 @@ public class InstanceService {
     @Autowired
     protected DoProcService doProcService;
 
-    public void startProcess(String processKey,Map<String,Object> vars) {
+    public void startProc(String procKey, Map<String,Object> vars) {
         String userId=UserUtil.getUserId();
         identityService.setAuthenticatedUserId(userId);
 
         VariableMap variableMap = doProcService.initProcVarMap();
         if(vars!=null) variableMap.putAll(vars);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey,variableMap );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(procKey,variableMap );
     }
 
     public AmisPage<InstanceOutputVO> getList(Integer page, Integer perPage) {
