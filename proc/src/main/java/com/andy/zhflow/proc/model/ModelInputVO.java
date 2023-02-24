@@ -7,6 +7,6 @@ public class ModelInputVO {
     private String id;
     private String name;
     private String content;
-    private String processKey;
+    private String procKey;
     private String type;
 }

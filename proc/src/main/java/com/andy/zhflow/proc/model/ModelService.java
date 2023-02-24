@@ -42,7 +42,7 @@ public class ModelService {
         if(StringUtils.isNoneEmpty(inputVO.getContent())){
             BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(IOUtils.toInputStream(inputVO.getContent(), StandardCharsets.UTF_8));
             Collection<Process> collections = bpmnModelInstance.getModelElementsByType(Process.class);
-            if(collections.size()>0) inputVO.setProcessKey(collections.stream().toList().get(0).getId());
+            if(collections.size()>0) inputVO.setProcKey(collections.stream().toList().get(0).getId());
         }
 
         return Model.save(inputVO);

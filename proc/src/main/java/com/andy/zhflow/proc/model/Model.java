@@ -27,7 +27,7 @@ public class Model extends BaseEntity {
     private String name;
     private String content;
 
-    private String processKey;
+    private String procKey;
 
     private Date deploymentTime;
 
@@ -43,7 +43,7 @@ public class Model extends BaseEntity {
 
         if(StringUtils.isNotEmpty(inputVO.getContent())) model.setContent(inputVO.getContent());
 
-        if(StringUtils.isNotEmpty(inputVO.getProcessKey())) model.setProcessKey(inputVO.getProcessKey());
+        if(StringUtils.isNotEmpty(inputVO.getProcKey())) model.setProcKey(inputVO.getProcKey());
 
         if(StringUtils.isNotEmpty(inputVO.getType())) model.setType(inputVO.getType());
 
@@ -86,7 +86,7 @@ public class Model extends BaseEntity {
     }
 
     public static Model getByKey(String key) {
-        LambdaQueryWrapper<Model> lambdaQueryWrapper=new LambdaQueryWrapper<Model>().eq(Model::getProcessKey,key);
+        LambdaQueryWrapper<Model> lambdaQueryWrapper=new LambdaQueryWrapper<Model>().eq(Model::getProcKey,key);
         return modelMapper.selectOne(lambdaQueryWrapper);
     }
 
