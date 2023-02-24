@@ -1,9 +1,12 @@
 package com.andy.zhflow.proc.ui;
 
+import com.andy.zhflow.proc.definition.DefinitionService;
 import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.proc.BpmnConstant;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,25 +20,27 @@ public class UiService {
     private TaskService taskService;
 
     @Autowired
-    private DoProcService doProcService;
+    private HistoryService historyService;
+
+    @Autowired
+    private DefinitionService definitionService;
 
     public String getContentByTaskId(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).initializeFormKeys().singleResult();
 
-        if(StringUtils.isNotEmpty(task.getFormKey())) {
-            return Ui.getById(task.getFormKey()).getContent();
-        }
-
-        String processType = doProcService.getProcessType(taskId);
-        String code=null;
-        switch (processType){
-            case BpmnConstant.PROC_TYPE_LEAVE :{
-                code="defaultApproval";
-                break;
+        if(task!=null){
+            if(StringUtils.isNotEmpty(task.getFormKey())) {
+                return Ui.getById(task.getFormKey()).getContent();
+            }
+        }else {
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            String id= definitionService.getUserTaskFormKey(instance.getProcessDefinitionId(),instance.getTaskDefinitionKey());
+            if(StringUtils.isNotEmpty(id)){
+                return Ui.getById(id).getContent();
             }
         }
 
-        return Ui.getByCode(code).getContent();
+        return null;
     }
 
     public String getContent(String id, String taskId, String code) {

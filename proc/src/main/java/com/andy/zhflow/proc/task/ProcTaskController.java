@@ -80,12 +80,9 @@ public class ProcTaskController {
         return ResultResponse.success(list);
     }
 
-    @GetMapping(value="/getHistoryTask")
-    public ResultResponse<List<String>> getHistoryTask(
-            @RequestParam("taskId") String taskId) throws Exception {
-        List<String> list=new ArrayList<>();
-        list.add("NUVh1nOug36Rn4nm7-iYD");
-        list.add("NUVh1nOug36Rn4nm7-iYD");
+    @GetMapping(value="/getHistoryCompleteTask")
+    public ResultResponse<List<ProcTaskOutputVO>> getHistoryCompleteTask(){
+        List<ProcTaskOutputVO> list=procTaskService.getHistoryCompleteTask(UserUtil.getUserId());
         return ResultResponse.success(list);
     }
 }

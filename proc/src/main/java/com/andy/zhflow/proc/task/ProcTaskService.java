@@ -13,6 +13,7 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
+import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +97,13 @@ public class ProcTaskService {
     }
 
     public Map<String,Object> getProcVarByProcessInstanceId(String processInstanceId) {
-        Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
-        variables.remove("taskId");
+        List<HistoricVariableInstance> list = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstanceId).list();
+
+        Map<String, Object> variables = new HashMap<>();
+        for (HistoricVariableInstance variableInstance:list){
+            variables.put(variableInstance.getName(),variableInstance.getValue());
+        }
+
         return variables;
     }
 
@@ -129,9 +135,19 @@ public class ProcTaskService {
     }
 
     public Map<String,Object> getTaskLastVar(String taskId) {
+        String taskDefinitionKey=null;
+        String processInstanceId=null;
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if(task!=null){
+            taskDefinitionKey=task.getTaskDefinitionKey();
+            processInstanceId=task.getProcessInstanceId();
+        }else{
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            taskDefinitionKey=instance.getTaskDefinitionKey();
+            processInstanceId=instance.getProcessInstanceId();
+        }
 
-        return getTaskLastVar(task.getProcessInstanceId(),task.getTaskDefinitionKey());
+        return getTaskLastVar(processInstanceId,taskDefinitionKey);
     }
 
     public List<ApprovalProcDiagramOutputItemVO> getApprovalProcDiagramData(String taskId) throws Exception {
@@ -140,9 +156,25 @@ public class ProcTaskService {
     }
 
     public Map<String, Object> getTaskLastVarByTaskDefinitionKey(String taskId,String taskDefinitionKey) {
+        String processInstanceId=null;
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        String processInstanceId = task.getProcessInstanceId();
+        if(task!=null){
+            processInstanceId = task.getProcessInstanceId();
+        }
+        else{
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            processInstanceId=instance.getProcessInstanceId();
+        }
 
         return getTaskLastVar(processInstanceId,taskDefinitionKey);
+    }
+
+    public List<ProcTaskOutputVO> getHistoryCompleteTask(String userId) {
+        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().taskAssignee(userId).finished()
+                .orderByHistoricTaskInstanceEndTime().desc()
+                .list();
+
+        List<ProcTaskOutputVO> outList = ProcTaskOutputVO.convertListFromHistory(list);
+        return outList;
     }
 }

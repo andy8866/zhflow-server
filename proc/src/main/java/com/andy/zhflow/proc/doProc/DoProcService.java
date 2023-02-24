@@ -7,9 +7,11 @@ import com.andy.zhflow.proc.model.Model;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.utils.DateUtil;
+import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.history.HistoricDetail;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.history.HistoricVariableUpdate;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.Task;
@@ -33,12 +35,25 @@ public class DoProcService {
     private RepositoryService repositoryService;
 
     @Autowired
+    private HistoryService historyService;
+
+    @Autowired
     private BeanService beanService;
 
     public String getProcessType(String taskId){
+        String processDefinitionKey=null;
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(task.getProcessDefinitionId()).singleResult();
-        Model model = Model.getByKey(processDefinition.getKey());
+
+        if(task!=null){
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                    .processDefinitionId(task.getProcessDefinitionId()).singleResult();
+            if(processDefinition!=null) processDefinitionKey=processDefinition.getKey();
+        }else{
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).finished().singleResult();
+            processDefinitionKey=instance.getProcessDefinitionKey();
+        }
+
+        Model model = Model.getByKey(processDefinitionKey);
         return model.getType();
     }
 
@@ -46,7 +61,7 @@ public class DoProcService {
 
         String type=getProcessType(taskId);
         switch (type){
-            case BpmnConstant.PROC_TYPE_LEAVE :{
+            case BpmnConstant.PROC_TYPE_APPROVAL:{
                 return beanService.getClassBean(ApprovalProcService.class);
             }
         }

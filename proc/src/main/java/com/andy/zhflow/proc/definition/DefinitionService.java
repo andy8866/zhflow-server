@@ -9,6 +9,8 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +56,15 @@ public class DefinitionService {
             }
         }
 
+        return null;
+    }
+
+    public String getUserTaskFormKey(String processDefinitionKey,String taskDefinitionKey) {
+        BpmnModelInstance bpmnModelInstance = repositoryService.getBpmnModelInstance(processDefinitionKey);
+        UserTask userTask =(UserTask) bpmnModelInstance.getModelElementById(taskDefinitionKey);
+        if(userTask!=null){
+            return userTask.getCamundaFormKey();
+        }
         return null;
     }
 }

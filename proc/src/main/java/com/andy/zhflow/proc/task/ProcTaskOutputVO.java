@@ -2,6 +2,7 @@ package com.andy.zhflow.proc.task;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.BeanUtils;
 
@@ -29,6 +30,10 @@ public class ProcTaskOutputVO {
 
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date lastUpdated;
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date endTime;
+
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date dueDate;
 
@@ -45,6 +50,23 @@ public class ProcTaskOutputVO {
         List<ProcTaskOutputVO> voList=new ArrayList<>();
 
         for (Task task:list){
+            voList.add(convert(task));
+        }
+
+        return voList;
+    }
+
+    public static ProcTaskOutputVO convert(HistoricTaskInstance task){
+        ProcTaskOutputVO procTaskOutputVO =new ProcTaskOutputVO();
+        BeanUtils.copyProperties(task, procTaskOutputVO);
+
+        return procTaskOutputVO;
+    }
+
+    public static List<ProcTaskOutputVO> convertListFromHistory(List<HistoricTaskInstance> list){
+        List<ProcTaskOutputVO> voList=new ArrayList<>();
+
+        for (HistoricTaskInstance task:list){
             voList.add(convert(task));
         }
 

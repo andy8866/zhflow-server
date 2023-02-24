@@ -39,10 +39,21 @@ public class ApprovalProcService extends DoProcService {
     @Override
     public List<ApprovalProcDiagramOutputItemVO> getApprovalProcessDiagramData(String taskId) throws Exception {
         List<ApprovalProcDiagramOutputItemVO> list=new ArrayList<>();
+        String processInstanceId=null;
+        String processDefinitionId=null;
 
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        String processInstanceId=task.getProcessInstanceId();
-        BpmnModelInstance bpmnModelInstance = repositoryService.getBpmnModelInstance(task.getProcessDefinitionId());
+        if(task!=null){
+            processInstanceId =task.getProcessInstanceId();
+            processDefinitionId=task.getProcessDefinitionId();
+        }
+        else{
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            processInstanceId=instance.getProcessInstanceId();
+            processDefinitionId=instance.getProcessDefinitionId();
+        }
+
+        BpmnModelInstance bpmnModelInstance = repositoryService.getBpmnModelInstance(processDefinitionId);
 
         ModelElementType type = bpmnModelInstance.getModel().getType(UserTask.class);
         List<FlowNode> flowList = BpmnModelUtil.getFlowList(bpmnModelInstance, type);

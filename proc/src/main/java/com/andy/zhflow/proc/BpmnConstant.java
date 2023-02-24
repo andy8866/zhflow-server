@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BpmnConstant {
-    public static final String PROC_TYPE_LEAVE = "leave";
+    public static final String PROC_TYPE_APPROVAL = "approval";
 
     public static final String ATTR_INITIATOR = "initiator";
 

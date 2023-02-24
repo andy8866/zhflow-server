@@ -63,7 +63,8 @@ public class Ui extends BaseEntity {
     }
 
     public static List<Ui> getCompList(String name) {
-        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().orderByDesc(Ui::getCreateTime).isNotNull(Ui::getCode);
+        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().orderByDesc(Ui::getCreateTime);
+//                isNotNull(Ui::getCode);
         if(StringUtils.isNotEmpty(name)) wrapper.like(Ui::getName,name);
         return uiMapper.selectList(wrapper);
     }
