@@ -73,4 +73,12 @@ public class User extends BaseEntity {
         return userMapper.selectList(wrapper);
     }
 
+    public static String getRoleNameById(String id){
+        return "testRole";
+    }
+
+    public static String getDeptNameById(String id){
+        return "testRole";
+    }
+
 }

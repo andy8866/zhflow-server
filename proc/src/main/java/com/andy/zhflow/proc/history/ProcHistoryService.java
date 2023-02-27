@@ -30,7 +30,7 @@ public class ProcHistoryService {
     public AmisPage<ProcHistoryProcOutVO> getList(Integer page, Integer perPage,
                                                   String userId) {
 
-        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc();
+        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc();
         if(StringUtils.isNotEmpty(userId)) query.startedBy(userId);
 
         Long total=query.count();

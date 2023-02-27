@@ -1,24 +1,38 @@
 package com.andy.zhflow.proc.instance;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateUtil;
+import com.andy.zhflow.proc.BpmnConstant;
+import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.user.User;
 import com.andy.zhflow.user.UserService;
-import org.camunda.bpm.engine.IdentityService;
-import org.camunda.bpm.engine.RepositoryService;
-import org.camunda.bpm.engine.RuntimeService;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.history.HistoricActivityInstance;
+import org.camunda.bpm.engine.history.HistoricIdentityLinkLog;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.DeploymentQuery;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
+import org.camunda.bpm.engine.task.Comment;
 import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.commons.utils.IoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InstanceService {
@@ -37,6 +51,12 @@ public class InstanceService {
 
     @Autowired
     protected DoProcService doProcService;
+
+    @Resource
+    protected HistoryService historyService;
+
+    @Resource
+    protected TaskService taskService;
 
     public void startProc(String procKey, Map<String,Object> vars) {
         String userId=UserUtil.getUserId();
@@ -73,5 +93,136 @@ public class InstanceService {
 
     public void cancelProc(String id) {
         runtimeService.deleteProcessInstance(id,"取消");
+    }
+
+    public void getDetail(String procInsId, String taskId) {
+        if(StringUtils.isEmpty(procInsId) && StringUtils.isNotEmpty(taskId)){
+            procInsId=historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult().getProcessInstanceId();
+        }
+    }
+
+    public ProcViewerVO getProcViewer(String procInsId){
+        // 构建查询条件
+        List<HistoricActivityInstance> allActivityInstanceList = historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(procInsId).list();
+        if (allActivityInstanceList.size()==0) {
+            return new ProcViewerVO();
+        }
+
+        String processDefinitionId=allActivityInstanceList.get(0).getProcessDefinitionId();
+        InputStream inputStream = repositoryService.getProcessModel(processDefinitionId);
+        String xmlData=IoUtil.inputStreamAsString(inputStream);
+
+        // 获取流程发布Id信息
+        BpmnModelInstance bpmnModel = repositoryService.getBpmnModelInstance(processDefinitionId);
+        // 查询所有已完成的元素
+        List<HistoricActivityInstance> finishedElementList = allActivityInstanceList.stream()
+                .filter(item -> ObjectUtils.isNotEmpty(item.getEndTime())).collect(Collectors.toList());
+        // 所有已完成的连线
+        Set<String> finishedSequenceFlowSet = new HashSet<>();
+        // 所有已完成的任务节点
+        Set<String> finishedTaskSet = new HashSet<>();
+        finishedElementList.forEach(item -> {
+            if (BpmnConstant.ELEMENT_SEQUENCE_FLOW.equals(item.getActivityType())) {
+                finishedSequenceFlowSet.add(item.getActivityId());
+            } else {
+                finishedTaskSet.add(item.getActivityId());
+            }
+        });
+        // 查询所有未结束的节点
+        Set<String> unfinishedTaskSet = allActivityInstanceList.stream()
+                .filter(item -> ObjectUtils.isEmpty(item.getEndTime()))
+                .map(HistoricActivityInstance::getActivityId)
+                .collect(Collectors.toSet());
+        // DFS 查询未通过的元素集合
+        Set<String> rejectedSet = BpmnUtil.dfsFindRejects(bpmnModel, unfinishedTaskSet, finishedSequenceFlowSet, finishedTaskSet);
+        return new ProcViewerVO(xmlData,historyProcNodeList(procInsId),finishedTaskSet, finishedSequenceFlowSet, unfinishedTaskSet, rejectedSet);
+    }
+
+    private List<ProcNodeVO> historyProcNodeList(String procInsId) {
+        List<HistoricActivityInstance> historicActivityInstanceList =  historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(procInsId)
+                .orderByHistoricActivityInstanceStartTime().desc()
+                .orderByHistoricActivityInstanceEndTime().desc()
+                .list();
+
+        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+                .processInstanceId(procInsId)
+                .singleResult();
+
+        List<Comment> commentList = taskService.getProcessInstanceComments(procInsId);
+        List<ProcCommentVO> procComments = ProcCommentVO.convertList(commentList);
+
+        List<ProcNodeVO> elementVoList = new ArrayList<>();
+        for (HistoricActivityInstance activityInstance : historicActivityInstanceList) {
+            if(BpmnConstant.ELEMENT_EVENT_START.equals(activityInstance.getActivityType()) &&
+                    BpmnConstant.ELEMENT_EVENT_END.equals(activityInstance.getActivityType()) &&
+                    BpmnConstant.ELEMENT_TASK_USER.equals(activityInstance.getActivityType()))
+            {
+                continue;
+            }
+
+            ProcNodeVO elementVo = new ProcNodeVO();
+            elementVo.setProcDefId(activityInstance.getProcessDefinitionId());
+            elementVo.setActivityId(activityInstance.getActivityId());
+            elementVo.setActivityName(activityInstance.getActivityName());
+            elementVo.setActivityType(activityInstance.getActivityType());
+            elementVo.setCreateTime(activityInstance.getStartTime());
+            elementVo.setEndTime(activityInstance.getEndTime());
+            if (activityInstance.getDurationInMillis()!=null) {
+                elementVo.setDuration(DateUtil.formatBetween(activityInstance.getDurationInMillis(), BetweenFormatter.Level.SECOND));
+            }
+
+            if (BpmnConstant.ELEMENT_EVENT_START.equals(activityInstance.getActivityType())) {
+                if (historicProcessInstance!=null) {
+                    String userId = historicProcessInstance.getStartUserId();
+                    elementVo.setAssigneeId(userId);
+                    elementVo.setAssigneeName(User.getNameById(userId));
+                }
+            } else if (BpmnConstant.ELEMENT_TASK_USER.equals(activityInstance.getActivityType())) {
+                if (StringUtils.isNotBlank(activityInstance.getAssignee())) {
+                    String userId=activityInstance.getAssignee();
+                    elementVo.setAssigneeId(userId);
+                    elementVo.setAssigneeName(User.getNameById(userId));
+                }
+                // 展示审批人员
+                List<HistoricIdentityLinkLog> linksForTask = historyService.createHistoricIdentityLinkLogQuery()
+                        .taskId(activityInstance.getTaskId())
+                        .list();
+                StringBuilder stringBuilder = new StringBuilder();
+                for (HistoricIdentityLinkLog identityLink : linksForTask) {
+                    if ("candidate".equals(identityLink.getType())) {
+                        if (StringUtils.isNotBlank(identityLink.getUserId())) {
+                            stringBuilder.append(User.getNameById(identityLink.getUserId())).append(",");
+                        }
+                        if (StringUtils.isNotBlank(identityLink.getGroupId())) {
+                            if (identityLink.getGroupId().startsWith(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX)) {
+                                String roleId = StringUtils.stripStart(identityLink.getGroupId(), BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX);
+                                stringBuilder.append(User.getRoleNameById(roleId)).append(",");
+                            } else if (identityLink.getGroupId().startsWith(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX)) {
+                                String deptId = StringUtils.stripStart(identityLink.getGroupId(), BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX);
+                                stringBuilder.append(User.getDeptNameById(deptId)).append(",");
+                            }
+                        }
+                    }
+                }
+                if (StringUtils.isNotBlank(stringBuilder)) {
+                    elementVo.setCandidate(stringBuilder.substring(0, stringBuilder.length() - 1));
+                }
+                // 获取意见评论内容
+                if (CollUtil.isNotEmpty(procComments)) {
+                    List<ProcCommentVO> comments = new ArrayList<>();
+                    for (ProcCommentVO comment : procComments) {
+
+                        if (comment.getTaskId().equals(activityInstance.getTaskId())) {
+                            comments.add(comment);
+                        }
+                    }
+                    elementVo.setCommentList(comments);
+                }
+            }
+            elementVoList.add(elementVo);
+        }
+        return elementVoList;
     }
 }

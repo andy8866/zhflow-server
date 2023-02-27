@@ -1,7 +1,6 @@
 package com.andy.zhflow.proc.doProc;
 
-import com.andy.zhflow.proc.ApprovalProcDiagramOutputItemVO;
-import com.andy.zhflow.proc.BpmnModelUtil;
+import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.utils.DateUtil;
@@ -9,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
@@ -56,7 +54,7 @@ public class ApprovalProcService extends DoProcService {
         BpmnModelInstance bpmnModelInstance = repositoryService.getBpmnModelInstance(processDefinitionId);
 
         ModelElementType type = bpmnModelInstance.getModel().getType(UserTask.class);
-        List<FlowNode> flowList = BpmnModelUtil.getFlowList(bpmnModelInstance, type);
+        List<FlowNode> flowList = BpmnUtil.getFlowList(bpmnModelInstance, type);
         for (int i = 0; i < flowList.size(); i++) {
             FlowNode flowNode= flowList.get(i);
 
@@ -100,7 +98,7 @@ public class ApprovalProcService extends DoProcService {
                         titleBuilder.append("未通过");
                         itemVO.setReject();
                     }
-                    detailBuilder.append(historicDetailVarToMap.get(BpmnConstant.VAR_REASON)).append(System.lineSeparator());
+                    detailBuilder.append(historicDetailVarToMap.get(BpmnConstant.VAR_COMMENT)).append(System.lineSeparator());
                 }
             }
 

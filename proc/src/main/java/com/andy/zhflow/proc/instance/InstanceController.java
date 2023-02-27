@@ -2,9 +2,12 @@ package com.andy.zhflow.proc.instance;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.response.ResultResponse;
+import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 @RestController()
@@ -13,6 +16,9 @@ public class InstanceController {
 
     @Autowired
     private InstanceService instanceService;
+
+    @Resource
+    protected HistoryService historyService;
 
     @PostMapping(value="/startProc")
     public ResultResponse<Void> startProc(@RequestParam("procKey") String procKey,
@@ -31,5 +37,18 @@ public class InstanceController {
     public ResultResponse<Void> cancelProc(@RequestParam("id") String id) {
         instanceService.cancelProc(id);
         return ResultResponse.success();
+    }
+
+    @GetMapping(value="/getProcViewer")
+    public ResultResponse<ProcViewerVO> getProcViewer(@RequestParam(value = "procInsId",required = false) String procInsId,
+                                                       @RequestParam(value = "taskId",required = false) String taskId
+                                          ) {
+
+        if(StringUtils.isEmpty(procInsId) && StringUtils.isNotEmpty(taskId)){
+            procInsId=historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult().getProcessInstanceId();
+        }
+
+        ProcViewerVO procViewer = instanceService.getProcViewer(procInsId);
+        return ResultResponse.success(procViewer);
     }
 }

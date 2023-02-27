@@ -1,13 +1,12 @@
 package com.andy.zhflow.proc.task;
 
 import com.andy.zhflow.amis.AmisPage;
-import com.andy.zhflow.proc.ApprovalProcDiagramOutputItemVO;
+import com.andy.zhflow.proc.doProc.ApprovalProcDiagramOutputItemVO;
+import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.doProc.DoProcService;
-import com.andy.zhflow.proc.instance.InstanceService;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -89,6 +88,11 @@ public class ProcTaskService {
     }
 
     public void completeTask(String taskId,Map<String,Object> inputVO) throws Exception {
+        String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
+        if(StringUtils.isNotEmpty(comment)){
+            Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+            taskService.createComment(taskId,task.getProcessInstanceId(),comment);
+        }
         taskService.complete(taskId,inputVO);
     }
 
