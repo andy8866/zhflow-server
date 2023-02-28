@@ -14,7 +14,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ProcCommentVO {
+public class ProcCommentOutVO {
     private String id;
     private String taskId;
 
@@ -29,7 +29,7 @@ public class ProcCommentVO {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date time;
 
-    public static ProcCommentVO convert(Comment comment){
+    public static ProcCommentOutVO convert(Comment comment){
         String type="";
         String typeName="";
         String fullMessage=comment.getFullMessage();
@@ -41,7 +41,7 @@ public class ProcCommentVO {
                 fullMessage=taskCommentVO.getComment();
             }
         }
-        return new ProcCommentVO(comment.getId(),
+        return new ProcCommentOutVO(comment.getId(),
                 comment.getTaskId(),
                 comment.getUserId(),
                 type,
@@ -50,8 +50,8 @@ public class ProcCommentVO {
                 comment.getTime());
     }
 
-    public static List<ProcCommentVO> convertList(List<Comment> list){
-        List<ProcCommentVO> voList=new ArrayList<>();
+    public static List<ProcCommentOutVO> convertList(List<Comment> list){
+        List<ProcCommentOutVO> voList=new ArrayList<>();
 
         for (Comment comment:list){
             voList.add(convert(comment));

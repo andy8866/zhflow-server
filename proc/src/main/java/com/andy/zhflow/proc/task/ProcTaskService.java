@@ -3,7 +3,6 @@ package com.andy.zhflow.proc.task;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.FlowCommentType;
-import com.andy.zhflow.proc.doProc.ApprovalProcDiagramOutputItemVO;
 import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.User;
@@ -238,11 +237,6 @@ public class ProcTaskService {
         }
 
         return getTaskLastVar(processInstanceId,taskDefinitionKey,onlyTask);
-    }
-
-    public List<ApprovalProcDiagramOutputItemVO> getApprovalProcDiagramData(String taskId) throws Exception {
-        DoProcService processServer = doProcService.getProcessServer(taskId);
-        return processServer.getApprovalProcessDiagramData(taskId);
     }
 
     public Map<String, Object> getTaskLastVarByTaskDefinitionKey(String taskId,String taskDefinitionKey) {

@@ -80,10 +80,6 @@ public class DoProcService {
         return variables;
     }
 
-    public List<ApprovalProcDiagramOutputItemVO> getApprovalProcessDiagramData(String taskId) throws Exception {
-        throw new Exception("未实现");
-    }
-
     public Map<String,Object> historicDetailVarToMap(List<HistoricDetail> historicDetailList){
         Map<String,Object> map=new HashMap<>();
         for (HistoricDetail historicDetail:historicDetailList){

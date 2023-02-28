@@ -9,7 +9,6 @@ import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.amis.AmisPage;
-import com.andy.zhflow.proc.ui.UiService;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.service.uiPage.IUiPageService;
 import com.andy.zhflow.user.User;
@@ -173,7 +172,7 @@ public class InstanceService {
                 .singleResult();
 
         List<Comment> commentList = taskService.getProcessInstanceComments(procInsId);
-        List<ProcCommentVO> procComments = ProcCommentVO.convertList(commentList);
+        List<ProcCommentOutVO> procComments = ProcCommentOutVO.convertList(commentList);
 
         List<ProcNodeVO> elementVoList = new ArrayList<>();
         for (HistoricActivityInstance activityInstance : historicActivityInstanceList) {
@@ -233,8 +232,8 @@ public class InstanceService {
                 }
                 // 获取意见评论内容
                 if (CollUtil.isNotEmpty(procComments)) {
-                    List<ProcCommentVO> comments = new ArrayList<>();
-                    for (ProcCommentVO comment : procComments) {
+                    List<ProcCommentOutVO> comments = new ArrayList<>();
+                    for (ProcCommentOutVO comment : procComments) {
 
                         if (comment.getTaskId().equals(activityInstance.getTaskId())) {
                             comments.add(comment);

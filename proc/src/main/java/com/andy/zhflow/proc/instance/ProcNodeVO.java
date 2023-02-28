@@ -2,7 +2,6 @@ package com.andy.zhflow.proc.instance;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.camunda.bpm.engine.task.Comment;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -49,7 +48,7 @@ public class ProcNodeVO implements Serializable {
     /**
      * 任务意见
      */
-    private List<ProcCommentVO> commentList;
+    private List<ProcCommentOutVO> commentList;
     /**
      * 创建时间
      */

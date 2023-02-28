@@ -1,7 +1,6 @@
 package com.andy.zhflow.proc.task;
 
 import com.andy.zhflow.amis.AmisPage;
-import com.andy.zhflow.proc.doProc.ApprovalProcDiagramOutputItemVO;
 import com.andy.zhflow.response.ResultResponse;
 import com.andy.zhflow.security.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,13 +101,6 @@ public class ProcTaskController {
                                                              ) throws Exception {
         Map<String,Object> map= procTaskService.getTaskLastVarByTaskDefinitionKey(taskId,taskDefinitionKey);
         return ResultResponse.success(map);
-    }
-
-    @GetMapping(value="/getApprovalProcDiagramData")
-    public ResultResponse<List<ApprovalProcDiagramOutputItemVO>> getApprovalProcDiagramData(
-            @RequestParam("taskId") String taskId) throws Exception {
-        List<ApprovalProcDiagramOutputItemVO> list= procTaskService.getApprovalProcDiagramData(taskId);
-        return ResultResponse.success(list);
     }
 
     @GetMapping(value="/getHistoryCompleteTask")
