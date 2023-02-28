@@ -61,8 +61,11 @@ public class InstanceController {
     }
 
     @GetMapping(value="/getProcFlowRecord")
-    public ResultResponse<List<ProcFlowRecordOutItemVO>> getProcFlowRecord(@RequestParam("taskId") String taskId) {
-        List<ProcFlowRecordOutItemVO> list = instanceService.getProcFlowRecord(taskId);
+    public ResultResponse<List<ProcFlowRecordOutItemVO>> getProcFlowRecord(
+            @RequestParam(value = "taskId",required = false) String taskId,
+            @RequestParam(value = "procInsId",required = false) String procInsId
+    ) {
+        List<ProcFlowRecordOutItemVO> list = instanceService.getProcFlowRecord(taskId,procInsId);
         return ResultResponse.success(list);
     }
 

@@ -247,12 +247,16 @@ public class InstanceService {
         return elementVoList;
     }
 
-    public List<ProcFlowRecordOutItemVO> getProcFlowRecord(String taskId) {
+    public List<ProcFlowRecordOutItemVO> getProcFlowRecord(String taskId,String procInsId) {
         List<ProcFlowRecordOutItemVO> list=new ArrayList<>();
 
         String procFlowRecordItemContent = uiPageService.getContentByCode("procFlowRecordItem");
 
-        List<ProcNodeVO> procNodeVOList = historyProcNodeListByTaskId(taskId);
+        List<ProcNodeVO> procNodeVOList=new ArrayList<>() ;
+
+        if(StringUtils.isNotEmpty(taskId)) procNodeVOList= historyProcNodeListByTaskId(taskId);
+        if(StringUtils.isNotEmpty(procInsId)) procNodeVOList= historyProcNodeList(procInsId);
+
         for (int i = 0; i < procNodeVOList.size(); i++) {
             ProcNodeVO procNodeVO=procNodeVOList.get(i);
 
