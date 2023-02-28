@@ -86,20 +86,20 @@ public class ApprovalProcService extends DoProcService {
                     titleBuilder.append("未指定审批人").append(" ");
                 }
 
-                List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId)
-                        .activityInstanceId(historicTaskInstance.getActivityInstanceId()).list();
-                Map<String, Object> historicDetailVarToMap = historicDetailVarToMap(historicDetailList);
-                if(historicDetailVarToMap.containsKey(BpmnConstant.VAR_APPROVAL)){
-                    if((boolean) historicDetailVarToMap.get(BpmnConstant.VAR_APPROVAL)){
-                        titleBuilder.append("通过");
-                        itemVO.setAgree();
-                    }
-                    else{
-                        titleBuilder.append("未通过");
-                        itemVO.setReject();
-                    }
-                    detailBuilder.append(historicDetailVarToMap.get(BpmnConstant.VAR_COMMENT)).append(System.lineSeparator());
-                }
+//                List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId)
+//                        .activityInstanceId(historicTaskInstance.getActivityInstanceId()).list();
+//                Map<String, Object> historicDetailVarToMap = historicDetailVarToMap(historicDetailList);
+//                if(historicDetailVarToMap.containsKey(BpmnConstant.VAR_APPROVAL)){
+//                    if((boolean) historicDetailVarToMap.get(BpmnConstant.VAR_APPROVAL)){
+//                        titleBuilder.append("通过");
+//                        itemVO.setAgree();
+//                    }
+//                    else{
+//                        titleBuilder.append("未通过");
+//                        itemVO.setReject();
+//                    }
+//                    detailBuilder.append(historicDetailVarToMap.get(BpmnConstant.VAR_COMMENT)).append(System.lineSeparator());
+//                }
             }
 
             if(historicTaskInstance==null){

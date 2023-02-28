@@ -1,18 +1,21 @@
 package com.andy.zhflow.proc.task;
 
 import com.andy.zhflow.amis.AmisPage;
-import com.andy.zhflow.proc.doProc.ApprovalProcDiagramOutputItemVO;
 import com.andy.zhflow.proc.BpmnConstant;
+import com.andy.zhflow.proc.FlowCommentType;
+import com.andy.zhflow.proc.doProc.ApprovalProcDiagramOutputItemVO;
 import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
+import org.camunda.bpm.engine.task.DelegationState;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +33,16 @@ public class ProcTaskService {
     private TaskService taskService;
 
     @Resource
-    private RuntimeService runtimeService;
+    private RepositoryService repositoryService;
 
     @Autowired
     private DoProcService doProcService;
 
     @Autowired
     protected HistoryService historyService;
+
+    @Autowired
+    protected RuntimeService runtimeService;
 
     /**
      * 待办任务
@@ -87,14 +93,87 @@ public class ProcTaskService {
         return outList;
     }
 
-    public void completeTask(String taskId,Map<String,Object> inputVO) throws Exception {
-        String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
-        if(StringUtils.isNotEmpty(comment)){
-            Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-            taskService.createComment(taskId,task.getProcessInstanceId(),comment);
+
+
+    public void completeTask(String taskId,Map<String,Object> inputVO){
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.NORMAL);
+
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.NORMAL,inputVO).toJson());
+
+        if(DelegationState.PENDING.equals(task.getDelegationState())){
+            taskService.resolveTask(taskId,inputVO);
+        }else{
+            taskService.complete(taskId,inputVO);
         }
-        taskService.complete(taskId,inputVO);
     }
+
+
+
+    public void passTask(String taskId,Map<String,Object> inputVO) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.PASS);
+
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.PASS,inputVO).toJson());
+
+        if(DelegationState.PENDING.equals(task.getDelegationState())){
+            taskService.resolveTask(taskId,inputVO);
+        }else{
+            taskService.complete(taskId,inputVO);
+        }
+    }
+
+    public void rejectTask(String taskId,Map<String,Object> inputVO) throws Exception {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.REJECT);
+
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REJECT,inputVO).toJson());
+
+        taskService.setVariables(taskId,inputVO);
+
+        runtimeService.deleteProcessInstance(task.getProcessInstanceId(),"审批拒绝");
+    }
+
+    public void delegateTask(String taskId,Map<String,Object> inputVO) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.DELEGATE);
+
+        String toUserId= (String) inputVO.getOrDefault("toUserId","");
+        StringBuilder commentBuilder = new StringBuilder(User.getNameById(UserUtil.getUserId())).append("->").append(User.getNameById(toUserId));
+
+        String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
+        if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
+        inputVO.put(BpmnConstant.VAR_COMMENT,commentBuilder.toString());
+
+        taskService.createComment(taskId,task.getProcessInstanceId(),
+                TaskCommentVO.createComment(FlowCommentType.DELEGATE,inputVO).toJson());
+
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REJECT,inputVO).toJson());
+
+        taskService.setOwner(taskId,UserUtil.getUserId());
+        taskService.delegateTask(taskId, toUserId);
+    }
+
+    public void transferTask(String taskId,Map<String,Object> inputVO) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.TRANSFER);
+
+        String toUserId= (String) inputVO.getOrDefault("toUserId","");
+        StringBuilder commentBuilder = new StringBuilder(User.getNameById(UserUtil.getUserId())).append("->").append(User.getNameById(toUserId));
+
+        String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
+        if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
+        inputVO.put(BpmnConstant.VAR_COMMENT,commentBuilder.toString());
+
+        taskService.createComment(taskId,task.getProcessInstanceId(),
+                TaskCommentVO.createComment(FlowCommentType.TRANSFER,inputVO).toJson());
+
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REJECT,inputVO).toJson());
+
+        taskService.setOwner(taskId,UserUtil.getUserId());
+        taskService.setAssignee(taskId,toUserId);
+    }
+
 
     public void assignee(String taskId, String assigneeUserId) {
         taskService.setAssignee(taskId,assigneeUserId);

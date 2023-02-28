@@ -1,8 +1,7 @@
 package com.andy.zhflow.proc.ui;
 
 import com.andy.zhflow.proc.definition.DefinitionService;
-import com.andy.zhflow.proc.doProc.DoProcService;
-import com.andy.zhflow.proc.BpmnConstant;
+import com.andy.zhflow.proc.instance.ProcFlowRecordOutItemVO;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.TaskService;
@@ -12,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UiService {
@@ -49,4 +50,6 @@ public class UiService {
         if(StringUtils.isNotEmpty(code)) return Ui.getByCode(code).getContent();
         return null;
     }
+
+
 }

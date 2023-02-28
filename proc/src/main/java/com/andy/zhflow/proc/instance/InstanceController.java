@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 @RestController()
@@ -51,4 +52,18 @@ public class InstanceController {
         ProcViewerVO procViewer = instanceService.getProcViewer(procInsId);
         return ResultResponse.success(procViewer);
     }
+
+
+    @GetMapping(value="/historyProcNodeList")
+    public ResultResponse<List<ProcNodeVO>> historyProcNodeList(@RequestParam("taskId") String taskId) {
+        List<ProcNodeVO> list = instanceService.historyProcNodeListByTaskId(taskId);
+        return ResultResponse.success(list);
+    }
+
+    @GetMapping(value="/getProcFlowRecord")
+    public ResultResponse<List<ProcFlowRecordOutItemVO>> getProcFlowRecord(@RequestParam("taskId") String taskId) {
+        List<ProcFlowRecordOutItemVO> list = instanceService.getProcFlowRecord(taskId);
+        return ResultResponse.success(list);
+    }
+
 }

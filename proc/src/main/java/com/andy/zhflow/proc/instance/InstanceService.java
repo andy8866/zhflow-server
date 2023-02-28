@@ -3,11 +3,15 @@ package com.andy.zhflow.proc.instance;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.doProc.DoProcService;
 import com.andy.zhflow.amis.AmisPage;
+import com.andy.zhflow.proc.ui.UiService;
 import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.service.uiPage.IUiPageService;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.user.UserService;
 import org.apache.commons.lang3.ObjectUtils;
@@ -16,6 +20,7 @@ import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricIdentityLinkLog;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.DeploymentQuery;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -23,6 +28,7 @@ import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.camunda.bpm.engine.task.Comment;
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.commons.utils.IoUtil;
@@ -57,6 +63,9 @@ public class InstanceService {
 
     @Resource
     protected TaskService taskService;
+
+    @Autowired
+    protected IUiPageService uiPageService;
 
     public void startProc(String procKey, Map<String,Object> vars) {
         String userId=UserUtil.getUserId();
@@ -139,7 +148,20 @@ public class InstanceService {
         return new ProcViewerVO(xmlData,historyProcNodeList(procInsId),finishedTaskSet, finishedSequenceFlowSet, unfinishedTaskSet, rejectedSet);
     }
 
-    private List<ProcNodeVO> historyProcNodeList(String procInsId) {
+    public List<ProcNodeVO> historyProcNodeListByTaskId(String taskId) {
+        String procInsId="";
+
+        Task task=taskService.createTaskQuery().taskId(taskId).singleResult();
+        if(task!=null){
+            procInsId=task.getProcessInstanceId();
+        }else{
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            procInsId=instance.getProcessInstanceId();
+        }
+        return historyProcNodeList(procInsId);
+    }
+
+    public List<ProcNodeVO> historyProcNodeList(String procInsId) {
         List<HistoricActivityInstance> historicActivityInstanceList =  historyService.createHistoricActivityInstanceQuery()
                 .processInstanceId(procInsId)
                 .orderByHistoricActivityInstanceStartTime().desc()
@@ -224,5 +246,39 @@ public class InstanceService {
             elementVoList.add(elementVo);
         }
         return elementVoList;
+    }
+
+    public List<ProcFlowRecordOutItemVO> getProcFlowRecord(String taskId) {
+        List<ProcFlowRecordOutItemVO> list=new ArrayList<>();
+
+        String procFlowRecordItemContent = uiPageService.getContentByCode("procFlowRecordItem");
+
+        List<ProcNodeVO> procNodeVOList = historyProcNodeListByTaskId(taskId);
+        for (int i = 0; i < procNodeVOList.size(); i++) {
+            ProcNodeVO procNodeVO=procNodeVOList.get(i);
+
+            ProcFlowRecordOutItemVO itemVO=new ProcFlowRecordOutItemVO();
+
+            if(StringUtils.isNotEmpty(procNodeVO.getActivityName())){
+                itemVO.setTime(procNodeVO.getActivityName());
+            }else{
+                if(BpmnConstant.ACTIVITY_TYPE_START_EVENT.equals(procNodeVO.getActivityType())){
+                    itemVO.setTime("开始");
+                } else if (BpmnConstant.ACTIVITY_TYPE_END_EVENT.equals(procNodeVO.getActivityType())) {
+                    itemVO.setTime("结束");
+                }
+            }
+
+            if(procNodeVO.getEndTime()!=null) itemVO.setComplete();
+
+            JSONObject jsonObject = JSON.parseObject(procFlowRecordItemContent);
+            jsonObject.put("data",procNodeVO);
+
+            itemVO.setTitle(jsonObject);
+
+            list.add(itemVO);
+        }
+
+        return list;
     }
 }

@@ -28,6 +28,8 @@ public class ProcHistoryProcOutVO {
 
     private String state;
 
+    private String deleteReason;
+
     public static ProcHistoryProcOutVO convert(HistoricProcessInstance historicProcessInstance){
         ProcHistoryProcOutVO procHistoryProcOutVO =new ProcHistoryProcOutVO();
         BeanUtils.copyProperties(historicProcessInstance, procHistoryProcOutVO);

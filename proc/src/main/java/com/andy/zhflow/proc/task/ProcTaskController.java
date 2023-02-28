@@ -45,6 +45,34 @@ public class ProcTaskController {
         return ResultResponse.success();
     }
 
+    @PostMapping(value="/passTask")
+    public ResultResponse<Void> passTask(@RequestParam("taskId") String taskId,
+                                             @RequestBody() Map<String,Object> inputVO) throws Exception {
+        procTaskService.passTask(taskId,inputVO);
+        return ResultResponse.success();
+    }
+
+    @PostMapping(value="/rejectTask")
+    public ResultResponse<Void> rejectTask(@RequestParam("taskId") String taskId,
+                                             @RequestBody() Map<String,Object> inputVO) throws Exception {
+        procTaskService.rejectTask(taskId,inputVO);
+        return ResultResponse.success();
+    }
+
+    @PostMapping(value="/delegateTask")
+    public ResultResponse<Void> delegateTask(@RequestParam("taskId") String taskId,
+                                           @RequestBody() Map<String,Object> inputVO) throws Exception {
+        procTaskService.delegateTask(taskId,inputVO);
+        return ResultResponse.success();
+    }
+
+    @PostMapping(value="/transferTask")
+    public ResultResponse<Void> transferTask(@RequestParam("taskId") String taskId,
+                                             @RequestBody() Map<String,Object> inputVO) throws Exception {
+        procTaskService.transferTask(taskId,inputVO);
+        return ResultResponse.success();
+    }
+
     @GetMapping(value="/assignee")
     public ResultResponse<Void> assignee(@RequestParam("taskId") String taskId,
                                          @RequestParam("assigneeUserId") String assigneeUserId) throws Exception {

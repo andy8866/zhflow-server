@@ -13,7 +13,7 @@ public class BpmnConstant {
     public static final String VAR_START_USER_NAME = "startUserName";
 
     public static final String VAR_PROC_CREATE_TIME = "procCreateTime";
-    public static final String VAR_APPROVAL = "approval";
+    public static final String VAR_COMMENT_TYPE = "commentType";
     public static final String VAR_REASON = "reason";
     public static final String VAR_COMMENT = "comment";
 
@@ -40,4 +40,7 @@ public class BpmnConstant {
      */
     public static final String CANDIDATE_DEPT_GROUP_PREFIX = "DEPT";
 
+
+    public static final String ACTIVITY_TYPE_START_EVENT="startEvent";
+    public static final String ACTIVITY_TYPE_END_EVENT="noneEndEvent";
 }

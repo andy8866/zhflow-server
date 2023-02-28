@@ -45,6 +45,7 @@ public class ProcNodeVO implements Serializable {
      * 候选执行人
      */
     private String candidate;
+    private String candidateName;
     /**
      * 任务意见
      */

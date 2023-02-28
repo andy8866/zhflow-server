@@ -201,4 +201,24 @@ public class BpmnUtil {
         }
         return sequenceFlows;
     }
+
+    public static EndEvent getEndEvent(BpmnModelInstance bpmnModel) {
+        List<Process> processes = bpmnModel.getModelElementsByType(Process.class).stream().toList();
+        return getEndEvent(processes.get(0).getFlowElements());
+    }
+
+    /**
+     * 获取结束节点
+     *
+     * @param flowElements 流程元素集合
+     * @return 结束节点（未找到开始节点，返回null）
+     */
+    public static EndEvent getEndEvent(Collection<FlowElement> flowElements) {
+        for (FlowElement flowElement : flowElements) {
+            if (flowElement instanceof EndEvent) {
+                return (EndEvent) flowElement;
+            }
+        }
+        return null;
+    }
 }
