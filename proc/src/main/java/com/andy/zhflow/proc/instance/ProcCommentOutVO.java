@@ -1,7 +1,7 @@
 package com.andy.zhflow.proc.instance;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.andy.zhflow.proc.task.TaskCommentVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,12 +33,14 @@ public class ProcCommentOutVO {
         String type="";
         String typeName="";
         String fullMessage=comment.getFullMessage();
-        if(StringUtils.isNotEmpty(comment.getFullMessage())){
-            TaskCommentVO taskCommentVO = JSON.parseObject(comment.getFullMessage(), TaskCommentVO.class);
-            if(taskCommentVO!=null){
+        if(StringUtils.isNotEmpty(fullMessage)){
+            try{
+                TaskCommentVO taskCommentVO = JSON.parseObject(comment.getFullMessage(), TaskCommentVO.class);
                 type=taskCommentVO.getType();
                 typeName=taskCommentVO.getTypeName();
                 fullMessage=taskCommentVO.getComment();
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         return new ProcCommentOutVO(comment.getId(),
