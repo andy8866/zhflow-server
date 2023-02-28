@@ -55,7 +55,7 @@ public class UiPage extends BaseEntity {
        return uiPageMapper.selectById(id);
     }
     public static List<UiPage> getList() {
-        LambdaQueryWrapper<UiPage> wrapper=new LambdaQueryWrapper<UiPage>().orderByDesc(UiPage::getCreateTime);
+        LambdaQueryWrapper<UiPage> wrapper=new LambdaQueryWrapper<UiPage>().orderByDesc(UiPage::getUpdateTime);
         return uiPageMapper.selectList(wrapper);
     }
 
