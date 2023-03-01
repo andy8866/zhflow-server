@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -54,6 +55,17 @@ public class User extends BaseEntity {
         LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime);
         if(StringUtils.isNotEmpty(name)) wrapper.like(User::getUserName,name);
         return userMapper.selectList(wrapper);
+    }
+
+    public static List<UserSelectOutVO> getListToSelect(String name) {
+        List<User> list=getListNoPage(name);
+
+        List<UserSelectOutVO> outList=new ArrayList<>();
+        for (User user:list){
+            outList.add(new UserSelectOutVO(user.getId(),user.getUserName()));
+        }
+
+        return outList;
     }
 
     public static String getNameById(String id){

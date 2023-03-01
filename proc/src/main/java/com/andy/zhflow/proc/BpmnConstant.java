@@ -14,8 +14,8 @@ public class BpmnConstant {
 
     public static final String VAR_PROC_CREATE_TIME = "procCreateTime";
     public static final String VAR_COMMENT_TYPE = "commentType";
-    public static final String VAR_REASON = "reason";
     public static final String VAR_COMMENT = "comment";
+    public static final String VAR_COPY_USER_IDS = "copyUserIds";
 
 
     public static final String ELEMENT_SEQUENCE_FLOW = "sequenceFlow";
@@ -40,7 +40,4 @@ public class BpmnConstant {
      */
     public static final String CANDIDATE_DEPT_GROUP_PREFIX = "DEPT";
 
-
-    public static final String ACTIVITY_TYPE_START_EVENT="startEvent";
-    public static final String ACTIVITY_TYPE_END_EVENT="noneEndEvent";
 }

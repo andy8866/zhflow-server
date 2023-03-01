@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class ProcTaskOutputVO {
+public class ProcTaskOutVO {
 
     private String id;
 
@@ -39,15 +39,15 @@ public class ProcTaskOutputVO {
 
     private String formKey;
 
-    public static ProcTaskOutputVO convert(Task task){
-        ProcTaskOutputVO procTaskOutputVO =new ProcTaskOutputVO();
-        BeanUtils.copyProperties(task, procTaskOutputVO);
+    public static ProcTaskOutVO convert(Task task){
+        ProcTaskOutVO procTaskOutVO =new ProcTaskOutVO();
+        BeanUtils.copyProperties(task, procTaskOutVO);
 
-        return procTaskOutputVO;
+        return procTaskOutVO;
     }
 
-    public static List<ProcTaskOutputVO> convertList(List<Task> list){
-        List<ProcTaskOutputVO> voList=new ArrayList<>();
+    public static List<ProcTaskOutVO> convertList(List<Task> list){
+        List<ProcTaskOutVO> voList=new ArrayList<>();
 
         for (Task task:list){
             voList.add(convert(task));
@@ -56,15 +56,15 @@ public class ProcTaskOutputVO {
         return voList;
     }
 
-    public static ProcTaskOutputVO convert(HistoricTaskInstance task){
-        ProcTaskOutputVO procTaskOutputVO =new ProcTaskOutputVO();
-        BeanUtils.copyProperties(task, procTaskOutputVO);
+    public static ProcTaskOutVO convert(HistoricTaskInstance task){
+        ProcTaskOutVO procTaskOutVO =new ProcTaskOutVO();
+        BeanUtils.copyProperties(task, procTaskOutVO);
 
-        return procTaskOutputVO;
+        return procTaskOutVO;
     }
 
-    public static List<ProcTaskOutputVO> convertListFromHistory(List<HistoricTaskInstance> list){
-        List<ProcTaskOutputVO> voList=new ArrayList<>();
+    public static List<ProcTaskOutVO> convertListFromHistory(List<HistoricTaskInstance> list){
+        List<ProcTaskOutVO> voList=new ArrayList<>();
 
         for (HistoricTaskInstance task:list){
             voList.add(convert(task));

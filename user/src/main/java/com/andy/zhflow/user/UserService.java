@@ -54,4 +54,9 @@ public class UserService implements IUserService {
         return outVO;
     }
 
+    @Override
+    public String getNameById(String id) {
+        return User.getNameById(id);
+    }
+
 }

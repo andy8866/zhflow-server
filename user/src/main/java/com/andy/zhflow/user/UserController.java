@@ -49,4 +49,10 @@ public class UserController {
         return ResultResponse.success(token);
     }
 
+    @GetMapping(value="/getListToSelect")
+    public ResultResponse<List<UserSelectOutVO>> getListToSelect(@RequestParam(value = "name",required = false) String name) {
+        List<UserSelectOutVO> list = User.getListToSelect(name);
+        return ResultResponse.success(list);
+    }
+
 }

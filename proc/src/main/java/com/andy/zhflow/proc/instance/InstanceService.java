@@ -7,7 +7,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.BpmnUtil;
-import com.andy.zhflow.proc.doProc.DoProcService;
+import com.andy.zhflow.proc.doProc.ProcService;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.security.utils.UserUtil;
 import com.andy.zhflow.service.uiPage.IUiPageService;
@@ -55,7 +55,7 @@ public class InstanceService {
     protected UserService userService;
 
     @Autowired
-    protected DoProcService doProcService;
+    protected ProcService procService;
 
     @Resource
     protected HistoryService historyService;
@@ -70,7 +70,7 @@ public class InstanceService {
         String userId=UserUtil.getUserId();
         identityService.setAuthenticatedUserId(userId);
 
-        VariableMap variableMap = doProcService.initProcVarMap();
+        VariableMap variableMap = procService.initProcVarMap();
         if(vars!=null) variableMap.putAll(vars);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(procKey,variableMap );
@@ -112,7 +112,8 @@ public class InstanceService {
     public ProcViewerVO getProcViewer(String procInsId){
         // 构建查询条件
         List<HistoricActivityInstance> allActivityInstanceList = historyService.createHistoricActivityInstanceQuery()
-                .processInstanceId(procInsId).list();
+                .processInstanceId(procInsId).orderByActivityId().desc().orderByHistoricActivityInstanceEndTime().desc()
+                .list();
         if (allActivityInstanceList.size()==0) {
             return new ProcViewerVO();
         }
@@ -124,24 +125,39 @@ public class InstanceService {
         // 获取流程发布Id信息
         BpmnModelInstance bpmnModel = repositoryService.getBpmnModelInstance(processDefinitionId);
         // 查询所有已完成的元素
-        List<HistoricActivityInstance> finishedElementList = allActivityInstanceList.stream()
-                .filter(item -> ObjectUtils.isNotEmpty(item.getEndTime())).collect(Collectors.toList());
+        List<HistoricActivityInstance> finishedElementList =new ArrayList<>();
+        Set<String> finishedElementIdList=new HashSet<>();
+
         // 所有已完成的连线
         Set<String> finishedSequenceFlowSet = new HashSet<>();
         // 所有已完成的任务节点
         Set<String> finishedTaskSet = new HashSet<>();
-        finishedElementList.forEach(item -> {
-            if (BpmnConstant.ELEMENT_SEQUENCE_FLOW.equals(item.getActivityType())) {
-                finishedSequenceFlowSet.add(item.getActivityId());
-            } else {
-                finishedTaskSet.add(item.getActivityId());
-            }
-        });
+
         // 查询所有未结束的节点
-        Set<String> unfinishedTaskSet = allActivityInstanceList.stream()
-                .filter(item -> ObjectUtils.isEmpty(item.getEndTime()))
-                .map(HistoricActivityInstance::getActivityId)
-                .collect(Collectors.toSet());
+        Set<String> unfinishedTaskSet=new HashSet<>();
+
+        for (int i = 0; i < allActivityInstanceList.size(); i++) {
+            HistoricActivityInstance item=allActivityInstanceList.get(i);
+
+            if(item.getEndTime()!=null &&
+                    !finishedElementIdList.contains(item.getActivityId()) &&
+                    !unfinishedTaskSet.contains(item.getActivityId())){
+
+                finishedElementIdList.add(item.getActivityId());
+                finishedElementList.add(item);
+
+                if (BpmnConstant.ELEMENT_SEQUENCE_FLOW.equals(item.getActivityType())) {
+                    finishedSequenceFlowSet.add(item.getActivityId());
+                } else {
+                    finishedTaskSet.add(item.getActivityId());
+                }
+            }
+
+            if(item.getEndTime()==null && !finishedElementIdList.contains(item.getActivityId())){
+                unfinishedTaskSet.add(item.getActivityId());
+            }
+        }
+
         // DFS 查询未通过的元素集合
         Set<String> rejectedSet = BpmnUtil.dfsFindRejects(bpmnModel, unfinishedTaskSet, finishedSequenceFlowSet, finishedTaskSet);
         return new ProcViewerVO(xmlData,historyProcNodeList(procInsId),finishedTaskSet, finishedSequenceFlowSet, unfinishedTaskSet, rejectedSet);
@@ -265,9 +281,9 @@ public class InstanceService {
             if(StringUtils.isNotEmpty(procNodeVO.getActivityName())){
                 itemVO.setTime(procNodeVO.getActivityName());
             }else{
-                if(BpmnConstant.ACTIVITY_TYPE_START_EVENT.equals(procNodeVO.getActivityType())){
+                if(ActivityTypes.START_EVENT.equals(procNodeVO.getActivityType())){
                     itemVO.setTime("开始");
-                } else if (BpmnConstant.ACTIVITY_TYPE_END_EVENT.equals(procNodeVO.getActivityType())) {
+                } else if (ActivityTypes.END_EVENT_NONE.equals(procNodeVO.getActivityType())) {
                     itemVO.setTime("结束");
                 }
             }
