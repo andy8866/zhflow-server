@@ -72,6 +72,13 @@ public class ProcTaskController {
         return ResultResponse.success();
     }
 
+    @PostMapping(value="/rebackTask")
+    public ResultResponse<Void> rebackTask(@RequestParam("taskId") String taskId,
+                                             @RequestBody() Map<String,Object> inputVO) throws Exception {
+        procTaskService.rebackTask(taskId,inputVO);
+        return ResultResponse.success();
+    }
+
     @GetMapping(value="/assignee")
     public ResultResponse<Void> assignee(@RequestParam("taskId") String taskId,
                                          @RequestParam("assigneeUserId") String assigneeUserId) throws Exception {

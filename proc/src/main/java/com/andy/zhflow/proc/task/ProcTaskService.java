@@ -11,6 +11,7 @@ import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
@@ -144,10 +145,7 @@ public class ProcTaskService {
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
         inputVO.put(BpmnConstant.VAR_COMMENT,commentBuilder.toString());
 
-        taskService.createComment(taskId,task.getProcessInstanceId(),
-                TaskCommentVO.createComment(FlowCommentType.DELEGATE,inputVO).toJson());
-
-        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REJECT,inputVO).toJson());
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.DELEGATE,inputVO).toJson());
 
         taskService.setOwner(taskId,UserUtil.getUserId());
         taskService.delegateTask(taskId, toUserId);
@@ -164,13 +162,29 @@ public class ProcTaskService {
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
         inputVO.put(BpmnConstant.VAR_COMMENT,commentBuilder.toString());
 
-        taskService.createComment(taskId,task.getProcessInstanceId(),
-                TaskCommentVO.createComment(FlowCommentType.TRANSFER,inputVO).toJson());
-
-        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REJECT,inputVO).toJson());
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.TRANSFER,inputVO).toJson());
 
         taskService.setOwner(taskId,UserUtil.getUserId());
         taskService.setAssignee(taskId,toUserId);
+    }
+
+    public void rebackTask(String taskId,Map<String,Object> inputVO) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.REBACK);
+
+        taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REBACK,inputVO).toJson());
+
+        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery()
+                .taskId(taskId)
+                .singleResult();
+
+        HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().processInstanceId(task.getProcessInstanceId())
+                .orderByHistoricActivityInstanceStartTime().asc().list().get(0);
+
+        runtimeService.createProcessInstanceModification(task.getProcessInstanceId())
+                .cancelAllForActivity(historicTaskInstance.getActivityInstanceId())
+                .startBeforeActivity(historicActivityInstance.getActivityId())
+                .execute();
     }
 
 
