@@ -75,8 +75,5 @@ public class ProcService {
         return getProcVarByProcessInstanceId(task.getProcessInstanceId());
     }
 
-    public String getAttributeValue(ModelElementInstance modelElementInstance,String name){
-        return modelElementInstance.getDomElement().getAttribute(BpmnConstant.NAMASPASE_ATTR,name);
-    }
 
 }

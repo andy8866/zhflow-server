@@ -5,16 +5,16 @@ import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.doProc.ProcService;
-import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.service.dept.IDeptService;
+import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.service.uiPage.IUiPageService;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.user.UserService;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
@@ -39,7 +39,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class InstanceService {
@@ -67,6 +66,12 @@ public class InstanceService {
 
     @Autowired
     protected IUiPageService uiPageService;
+
+    @Autowired
+    protected IRoleService roleService;
+
+    @Autowired
+    protected IDeptService deptService;
 
     public void startProc(String procKey, Map<String,Object> vars) {
         String userId=UserUtil.getUserId();
@@ -230,10 +235,10 @@ public class InstanceService {
                         if (StringUtils.isNotBlank(identityLink.getGroupId())) {
                             if (identityLink.getGroupId().startsWith(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX)) {
                                 String roleId = StringUtils.stripStart(identityLink.getGroupId(), BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX);
-                                stringBuilder.append(User.getRoleNameById(roleId)).append(",");
-                            } else if (identityLink.getGroupId().startsWith(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX)) {
-                                String deptId = StringUtils.stripStart(identityLink.getGroupId(), BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX);
-                                stringBuilder.append(User.getDeptNameById(deptId)).append(",");
+                                stringBuilder.append(roleService.getRoleNameById(roleId)).append(",");
+                            } else if (identityLink.getGroupId().startsWith(BpmnConstant.CANDIDATE_DEPT_GROUP_PREFIX)) {
+                                String deptId = StringUtils.stripStart(identityLink.getGroupId(), BpmnConstant.CANDIDATE_DEPT_GROUP_PREFIX);
+                                stringBuilder.append(deptService.getDeptNameById(deptId)).append(",");
                             }
                         }
                     }

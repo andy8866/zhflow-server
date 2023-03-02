@@ -33,11 +33,9 @@ public class ProcTaskController {
         return ResultResponse.success(map);
     }
 
-    @GetMapping(value="/getTaskLastVarByTaskDefinitionKey")
-    public ResultResponse<Map<String,Object>> getTaskLastVarByTaskDefinitionKey(@RequestParam("taskId") String taskId,
-                                                                                @RequestParam("taskDefinitionKey") String taskDefinitionKey
-    ) throws Exception {
-        Map<String,Object> map= procTaskService.getTaskLastVarByTaskDefinitionKey(taskId,taskDefinitionKey);
+    @GetMapping(value="/getStartTaskLastVar")
+    public ResultResponse<Map<String,Object>> getStartTaskLastVar(@RequestParam("taskId") String taskId) throws Exception {
+        Map<String,Object> map= procTaskService.getStartTaskLastVar(taskId);
         return ResultResponse.success(map);
     }
 

@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.andy.zhflow</groupId>
-    <artifactId>user</artifactId>
+    <artifactId>role</artifactId>
 
     <dependencies>
         <dependency>

@@ -3,6 +3,7 @@ package com.andy.zhflow.proc.doProc;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.FlowCommentType;
 import com.andy.zhflow.proc.copy.CopyService;
+import com.andy.zhflow.proc.definition.DefinitionService;
 import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
 import com.andy.zhflow.user.User;
@@ -44,6 +45,9 @@ public class ProcTaskService extends ProcService{
     @Autowired
     protected CopyService copyService;
 
+    @Autowired
+    protected DefinitionService definitionService;
+
     public List<ProcTaskOutVO> convertTaskOutList(List<Task> list){
         List<ProcTaskOutVO> outList = ProcTaskOutVO.convertList(list);
 
@@ -56,10 +60,10 @@ public class ProcTaskService extends ProcService{
     public ProcRuntimeVO getProcRuntimeVO(String taskId){
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if(task!=null){
-            return new ProcRuntimeVO(task.getProcessInstanceId(),task.getTaskDefinitionKey());
+            return new ProcRuntimeVO(task.getProcessInstanceId(),task.getTaskDefinitionKey(),task.getProcessDefinitionId());
         }else{
             HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-            return new ProcRuntimeVO(instance.getProcessInstanceId(),instance.getTaskDefinitionKey());
+            return new ProcRuntimeVO(instance.getProcessInstanceId(),instance.getTaskDefinitionKey(),instance.getProcessDefinitionId());
         }
     }
 
@@ -111,9 +115,10 @@ public class ProcTaskService extends ProcService{
         return getTaskLastVar(procRuntimeVO.getProcessInstanceId(),procRuntimeVO.getTaskDefinitionKey(),onlyTask);
     }
 
-    public Map<String, Object> getTaskLastVarByTaskDefinitionKey(String taskId,String taskDefinitionKey) {
+    public Map<String, Object> getStartTaskLastVar(String taskId) {
         ProcRuntimeVO procRuntimeVO = getProcRuntimeVO(taskId);
-        return getTaskLastVar(procRuntimeVO.getProcessInstanceId(),taskDefinitionKey,false);
+        String firstTaskDefinitionKey = definitionService.getFirstTaskDefinitionKey(procRuntimeVO.getProcessDefinitionId());
+        return getTaskLastVar(procRuntimeVO.getProcessInstanceId(),firstTaskDefinitionKey,false);
     }
 
     public List<ProcTaskOutVO> getHistoryCompleteTask(String userId) {

@@ -4,11 +4,14 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
+import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.FlowCommentType;
 import com.andy.zhflow.proc.copy.CopyService;
 import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
 import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.service.dept.IDeptService;
+import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.service.user.IUserService;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +60,13 @@ public class ProcUserTaskService extends ProcService {
     @Autowired
     protected IUserService userService;
 
+    @Autowired
+    protected IRoleService roleService;
+
+    @Autowired
+    protected IDeptService deptService;
+
+
     /**
      * 待办任务
      * @param page
@@ -81,8 +91,8 @@ public class ProcUserTaskService extends ProcService {
 
     public AmisPage<ProcTaskOutVO> getClaimList(Integer page, Integer perPage, String userId) {
 
-        TaskQuery taskQuery = taskService.createTaskQuery().withoutCandidateUsers()
-                .orderByTaskCreateTime().desc();
+        TaskQuery taskQuery = taskService.createTaskQuery().initializeFormKeys().orderByTaskCreateTime().desc()
+                .or().taskCandidateUser(userId).taskCandidateGroupIn(getCandidateGroup(userId)).endOr();
 
         Long total=taskQuery.count();
 
@@ -170,15 +180,12 @@ public class ProcUserTaskService extends ProcService {
 
         taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.REBACK,inputVO).toJson());
 
-        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery()
-                .taskId(taskId)
-                .singleResult();
-
         HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery()
-                .processInstanceId(task.getProcessInstanceId()).orderByHistoricActivityInstanceStartTime().asc().list().get(0);
+                .processInstanceId(task.getProcessInstanceId()).orderByHistoricActivityInstanceStartTime().asc()
+                .list().get(0);
 
         runtimeService.createProcessInstanceModification(task.getProcessInstanceId())
-                .cancelAllForActivity(historicTaskInstance.getActivityInstanceId())
+                .cancelAllForActivity(task.getTaskDefinitionKey())
                 .startBeforeActivity(historicActivityInstance.getActivityId())
                 .execute();
 
@@ -212,32 +219,45 @@ public class ProcUserTaskService extends ProcService {
 
         if (ObjectUtil.isNotEmpty(flowElement) && flowElement instanceof UserTask) {
             UserTask userTask = (UserTask) flowElement;
-            String dataType =  getAttributeValue(userTask,BpmnConstant.BPMN_CUSTOM_DATA_TYPE);
-            if ("USERS".equals(dataType) && CollUtil.isNotEmpty(userTask.getCamundaCandidateUsersList())) {
+            String dataType = BpmnUtil.getAttributeValue(userTask,BpmnConstant.BPMN_CUSTOM_DATA_TYPE);
+            if (BpmnConstant.BPMN_CUSTOM_DATA_TYPE_USERS.equals(dataType) && CollUtil.isNotEmpty(userTask.getCamundaCandidateUsersList())) {
                 candidateUserIds.addAll(userTask.getCamundaCandidateUsersList());
             }
-//            else if (CollUtil.isNotEmpty(userTask.getCandidateGroups())) {
-//                List<String> groups = userTask.getCandidateGroups()
-//                        .stream().map(item -> item.substring(4)).collect(Collectors.toList());
-//                if ("ROLES".equals(dataType)) {
-//                    SysUserRoleMapper userRoleMapper = SpringUtils.getBean(SysUserRoleMapper.class);
-//                    groups.forEach(item -> {
-//                        List<String> userIds = userRoleMapper.selectUserIdsByRoleId(Long.parseLong(item))
-//                                .stream().map(String::valueOf).collect(Collectors.toList());
-//                        candidateUserIds.addAll(userIds);
-//                    });
-//                } else if ("DEPTS".equals(dataType)) {
-//                    SysUserMapper userMapper = SpringUtils.getBean(SysUserMapper.class);
-//                    LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<SysUser>()
-//                            .select(SysUser::getUserId).in(SysUser::getDeptId, groups);
-//                    List<String> userIds = userMapper.selectList(lambdaQueryWrapper)
-//                            .stream().map(k -> String.valueOf(k.getUserId())).collect(Collectors.toList());
-//                    candidateUserIds.addAll(userIds);
-//                }
-//            }
+            else if (CollUtil.isNotEmpty(userTask.getCamundaCandidateGroupsList())) {
+                List<String> groups = userTask.getCamundaCandidateGroupsList();
+                if (BpmnConstant.BPMN_CUSTOM_DATA_TYPE_ROLES.equals(dataType)) {
+                    groups.forEach(item -> {
+                        String roleId=item.replace(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX,"");
+                        List<String> userIds = roleService.getUserIdsByRoleId(roleId);
+                        candidateUserIds.addAll(userIds);
+                    });
+                } else if (BpmnConstant.BPMN_CUSTOM_DATA_TYPE_DEPTS.equals(dataType)) {
+                    groups.forEach(item -> {
+                        String deptId=item.replace(BpmnConstant.CANDIDATE_DEPT_GROUP_PREFIX,"");
+                        List<String> userIds = deptService.getUserIdsByDeptId(deptId);
+                        candidateUserIds.addAll(userIds);
+                    });
+                }
+            }
         }
 
         execution.getProcessInstance().setVariable(BpmnConstant.VAR_MULTI_INSTANCE_LOOP_USER_LIST,candidateUserIds);
         return candidateUserIds;
+    }
+
+    public  List<String> getCandidateGroup(String userId) {
+        List<String> list = new ArrayList<>();
+
+        List<String> userRoleIds = roleService.getUserRoleIds(userId);
+        if (ObjectUtil.isNotEmpty(userRoleIds)) {
+            userRoleIds.forEach(item -> list.add(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX + item));
+        }
+
+        List<String> userDeptIds = deptService.getUserDeptIds(userId);
+        if (ObjectUtil.isNotEmpty(userDeptIds)) {
+            userDeptIds.forEach(item -> list.add(BpmnConstant.CANDIDATE_DEPT_GROUP_PREFIX + item));
+        }
+
+        return list;
     }
 }

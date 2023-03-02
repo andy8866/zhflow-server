@@ -90,13 +90,4 @@ public class User extends BaseEntity {
         List<User> list=getListByIds(ids);
         return list.stream().map(User::getUserName).collect(Collectors.joining(","));
     }
-
-    public static String getRoleNameById(String id){
-        return "testRole";
-    }
-
-    public static String getDeptNameById(String id){
-        return "testRole";
-    }
-
 }

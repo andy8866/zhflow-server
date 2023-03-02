@@ -9,6 +9,10 @@ public class BpmnConstant {
 
     public static final String BPMN_CUSTOM_DATA_TYPE = "dataType";
 
+    public static final String BPMN_CUSTOM_DATA_TYPE_USERS = "USERS";
+    public static final String BPMN_CUSTOM_DATA_TYPE_ROLES = "ROLES";
+    public static final String BPMN_CUSTOM_DATA_TYPE_DEPTS = "DEPTS";
+
     public static final String PROC_TYPE_APPROVAL = "approval";
 
     public static final String ATTR_INITIATOR = "initiator";

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.util.*;
@@ -221,4 +222,9 @@ public class BpmnUtil {
         }
         return null;
     }
+
+    public static String getAttributeValue(ModelElementInstance modelElementInstance, String name){
+        return modelElementInstance.getDomElement().getAttribute(BpmnConstant.NAMASPASE_ATTR,name);
+    }
+
 }

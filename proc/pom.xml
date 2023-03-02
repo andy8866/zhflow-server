@@ -55,7 +55,7 @@
 
         <dependency>
             <groupId>com.andy.zhflow</groupId>
-            <artifactId>user</artifactId>
+            <artifactId>role</artifactId>
             <version>${version}</version>
         </dependency>
 
