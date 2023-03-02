@@ -268,8 +268,16 @@ public class InstanceService {
         if(StringUtils.isNotEmpty(taskId)) procNodeVOList= historyProcNodeListByTaskId(taskId);
         if(StringUtils.isNotEmpty(procInsId)) procNodeVOList= historyProcNodeList(procInsId);
 
+        List<String> typeList= Arrays.asList(
+                ActivityTypes.START_EVENT,
+                ActivityTypes.END_EVENT_NONE,
+                ActivityTypes.TASK_USER_TASK
+        );
+
         for (int i = 0; i < procNodeVOList.size(); i++) {
             ProcNodeVO procNodeVO=procNodeVOList.get(i);
+
+            if(!typeList.contains(procNodeVO.getActivityType())) continue;
 
             ProcFlowRecordOutItemVO itemVO=new ProcFlowRecordOutItemVO();
 
@@ -283,7 +291,7 @@ public class InstanceService {
                 }
             }
 
-            if(procNodeVO.getEndTime()!=null || i>0) itemVO.setComplete();
+            if(procNodeVO.getEndTime()!=null) itemVO.setComplete();
 
             JSONObject jsonObject = JSON.parseObject(procFlowRecordItemContent);
             jsonObject.put("data",procNodeVO);

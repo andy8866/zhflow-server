@@ -42,7 +42,7 @@ public class Copy extends BaseEntity {
 
         return getId();
     }
-    
+
     public static List<Copy> getList(String userId) {
         LambdaQueryWrapper<Copy> wrapper=new LambdaQueryWrapper<Copy>().orderByDesc(Copy::getUpdateTime);
         if(StringUtils.isNotEmpty(userId)) wrapper.eq(Copy::getUserId,userId);

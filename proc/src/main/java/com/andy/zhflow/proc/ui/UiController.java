@@ -22,6 +22,12 @@ public class UiController {
         return ResultResponse.success(list);
     }
 
+    @GetMapping(value="/getListToSelect")
+    public ResultResponse<List<UiSelectOutVO>> getListToSelect(@RequestParam(value = "name",required = false) String name) throws Exception {
+        List<UiSelectOutVO> list = Ui.getListToSelect(name);
+        return ResultResponse.success(list);
+    }
+
     @PostMapping(value="/save")
     public ResultResponse<String> save(@RequestBody() UiInputVO inputVO) throws Exception {
         String id= Ui.save(inputVO);

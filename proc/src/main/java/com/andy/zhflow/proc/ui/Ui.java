@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,7 +16,6 @@ import java.util.List;
 @TableName("proc_ui")
 public class Ui extends BaseEntity {
     private static UiMapper uiMapper;
-
 
 
     @Autowired
@@ -67,6 +67,18 @@ public class Ui extends BaseEntity {
         if(StringUtils.isNotEmpty(name)) wrapper.like(Ui::getName,name);
         return uiMapper.selectList(wrapper);
     }
+
+
+    public static List<UiSelectOutVO> getListToSelect(String name) {
+        List<Ui> list =getCompList(name);
+
+        List<UiSelectOutVO> outList=new ArrayList<>();
+        for (Ui item:list){
+            outList.add(new UiSelectOutVO(item.getId(),item.getName()));
+        }
+        return outList;
+    }
+
 
 
     public static Ui getByCode(String code) {

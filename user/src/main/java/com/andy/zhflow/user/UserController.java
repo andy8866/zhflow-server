@@ -38,6 +38,12 @@ public class UserController {
         return ResultResponse.success(list);
     }
 
+    @GetMapping(value="/getNameListByIds")
+    public ResultResponse<String> getNameListByIds(@RequestParam(value = "ids") String ids) {
+        String names = User.getNameListByIds(ids);
+        return ResultResponse.success(names);
+    }
+
     @GetMapping(value="/getCurrentUser")
     public ResultResponse<User> getCurrentUser() {
         return ResultResponse.success(userService.getCurrentUser());

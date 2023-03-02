@@ -14,6 +14,7 @@ import org.camunda.bpm.engine.history.HistoricVariableUpdate;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,9 +43,7 @@ public class ProcService {
 
         VariableMap variables = Variables.createVariables();
         variables.put(BpmnConstant.ATTR_INITIATOR, userId);
-
-        variables.put(BpmnConstant.VAR_START_USER, userId);
-        variables.put(BpmnConstant.VAR_START_USER_NAME, User.getNameById(userId));
+        variables.put(BpmnConstant.ATTR_INITIATOR_NAME, User.getNameById(userId));
 
         variables.put(BpmnConstant.VAR_PROC_CREATE_TIME, DateUtil.format(new Date()));
 
@@ -74,6 +73,10 @@ public class ProcService {
     public Map<String,Object> getProcVarByTaskId(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         return getProcVarByProcessInstanceId(task.getProcessInstanceId());
+    }
+
+    public String getAttributeValue(ModelElementInstance modelElementInstance,String name){
+        return modelElementInstance.getDomElement().getAttribute(BpmnConstant.NAMASPASE_ATTR,name);
     }
 
 }

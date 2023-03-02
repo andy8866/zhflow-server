@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Component
@@ -83,6 +84,11 @@ public class User extends BaseEntity {
         LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime)
                 .in(User::getId,ids.split(","));
         return userMapper.selectList(wrapper);
+    }
+
+    public static String getNameListByIds(String ids) {
+        List<User> list=getListByIds(ids);
+        return list.stream().map(User::getUserName).collect(Collectors.joining(","));
     }
 
     public static String getRoleNameById(String id){

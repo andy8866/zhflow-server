@@ -4,18 +4,23 @@ import lombok.Data;
 
 @Data
 public class BpmnConstant {
+
+    public static final String NAMASPASE_ATTR = "http://camunda.org/schema/1.0/bpmn";
+
+    public static final String BPMN_CUSTOM_DATA_TYPE = "dataType";
+
     public static final String PROC_TYPE_APPROVAL = "approval";
 
     public static final String ATTR_INITIATOR = "initiator";
+    public static final String ATTR_INITIATOR_NAME = "initiatorName";
     public static final String ATTR_ASSIGNEE = "assignee";
-
-    public static final String VAR_START_USER = "startUser";
-    public static final String VAR_START_USER_NAME = "startUserName";
 
     public static final String VAR_PROC_CREATE_TIME = "procCreateTime";
     public static final String VAR_COMMENT_TYPE = "commentType";
     public static final String VAR_COMMENT = "comment";
     public static final String VAR_COPY_USER_IDS = "copyUserIds";
+
+    public static final String VAR_MULTI_INSTANCE_LOOP_USER_LIST = "multiInstanceLoopUserList";
 
 
     public static final String ELEMENT_SEQUENCE_FLOW = "sequenceFlow";

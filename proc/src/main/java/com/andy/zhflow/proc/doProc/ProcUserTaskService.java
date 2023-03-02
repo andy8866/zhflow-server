@@ -1,5 +1,7 @@
 package com.andy.zhflow.proc.doProc;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.FlowCommentType;
@@ -14,16 +16,20 @@ import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
+import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 import org.camunda.bpm.engine.task.DelegationState;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ProcUserTaskService extends ProcService {
@@ -182,5 +188,56 @@ public class ProcUserTaskService extends ProcService {
 
     public void assignee(String taskId, String assigneeUserId) {
         taskService.setAssignee(taskId,assigneeUserId);
+    }
+
+    public void setSuperiorUser(DelegateTask task){
+        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(task.getProcessInstanceId())
+                .orderByHistoricActivityInstanceStartTime().desc()
+                .list();
+
+        String userid=list.get(0).getAssignee();
+        String superiorUserId=userService.getSuperiorUserId(userid);
+        task.setAssignee(superiorUserId);
+    }
+
+    public HashSet<String> getMultiInstanceUserIds(DelegateExecution execution) {
+        HashSet<String> candidateUserIds = new LinkedHashSet<>();
+        ModelElementInstance flowElement=null;
+        if(((ExecutionEntity)execution).getActivity()!=null){
+            String activityId=((ExecutionEntity)execution).getActivity().getActivities().get(0).getActivityId();
+            flowElement= execution.getBpmnModelInstance().getModelElementById(activityId);
+        }else{
+            return (HashSet<String>) execution.getProcessInstance().getVariable(BpmnConstant.VAR_MULTI_INSTANCE_LOOP_USER_LIST);
+        }
+
+        if (ObjectUtil.isNotEmpty(flowElement) && flowElement instanceof UserTask) {
+            UserTask userTask = (UserTask) flowElement;
+            String dataType =  getAttributeValue(userTask,BpmnConstant.BPMN_CUSTOM_DATA_TYPE);
+            if ("USERS".equals(dataType) && CollUtil.isNotEmpty(userTask.getCamundaCandidateUsersList())) {
+                candidateUserIds.addAll(userTask.getCamundaCandidateUsersList());
+            }
+//            else if (CollUtil.isNotEmpty(userTask.getCandidateGroups())) {
+//                List<String> groups = userTask.getCandidateGroups()
+//                        .stream().map(item -> item.substring(4)).collect(Collectors.toList());
+//                if ("ROLES".equals(dataType)) {
+//                    SysUserRoleMapper userRoleMapper = SpringUtils.getBean(SysUserRoleMapper.class);
+//                    groups.forEach(item -> {
+//                        List<String> userIds = userRoleMapper.selectUserIdsByRoleId(Long.parseLong(item))
+//                                .stream().map(String::valueOf).collect(Collectors.toList());
+//                        candidateUserIds.addAll(userIds);
+//                    });
+//                } else if ("DEPTS".equals(dataType)) {
+//                    SysUserMapper userMapper = SpringUtils.getBean(SysUserMapper.class);
+//                    LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<SysUser>()
+//                            .select(SysUser::getUserId).in(SysUser::getDeptId, groups);
+//                    List<String> userIds = userMapper.selectList(lambdaQueryWrapper)
+//                            .stream().map(k -> String.valueOf(k.getUserId())).collect(Collectors.toList());
+//                    candidateUserIds.addAll(userIds);
+//                }
+//            }
+        }
+
+        execution.getProcessInstance().setVariable(BpmnConstant.VAR_MULTI_INSTANCE_LOOP_USER_LIST,candidateUserIds);
+        return candidateUserIds;
     }
 }
