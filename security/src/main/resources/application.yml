@@ -4,3 +4,9 @@ security:
     - /api/admin/index/**
     - /api/admin/website/**
     - /api/admin/uiPage/getUiByCode/**
+  app-permits:
+    - /api/proc/**
+    - /api/admin/dict/**
+    - /api/dept/**
+    - /api/role/**
+    - /api/user/**

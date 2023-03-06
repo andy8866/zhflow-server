@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
-@RequestMapping(value = "/api/frame/proc/model")
+@RequestMapping(value = "/api/proc/model")
 public class ModelController {
 
     @Autowired

@@ -57,10 +57,8 @@ public class SecurityStarterAutoConfigure {
         http.cors().configurationSource(corsConfigurationSource());
 
         http.authorizeHttpRequests((authorize) -> {
-            for (String permit:securityConfig.getPermits()){
-                authorize.antMatchers(permit).permitAll();
-            }
-            authorize.antMatchers("/api/frame/**","/api/admin/dict/**").hasAnyRole("app");
+            authorize.antMatchers(securityConfig.getPermits().toArray(String[]::new)).permitAll();
+            authorize.antMatchers(securityConfig.getAppPermits().toArray(String[]::new)).hasAnyRole("app","admin","user");
             authorize.antMatchers("/**").hasAnyRole("admin", "user");
         });
 

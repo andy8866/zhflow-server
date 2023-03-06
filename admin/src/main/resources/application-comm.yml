@@ -24,6 +24,12 @@ security:
     - /api/admin/uiPage/getUiByCode/**
     - /api/security/validateToken**
     - /api/third/**
+  app-permits:
+    - /api/proc/**
+    - /api/admin/dict/**
+    - /api/dept/**
+    - /api/role/**
+    - /api/user/**
 
 base-config:
   expire: 86400
