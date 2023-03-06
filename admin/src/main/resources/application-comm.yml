@@ -23,3 +23,4 @@ security:
     - /api/admin/website/**
     - /api/admin/uiPage/getUiByCode/**
     - /api/security/validateToken**
+    - /api/third/**

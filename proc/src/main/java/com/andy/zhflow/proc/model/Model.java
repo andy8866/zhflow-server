@@ -32,6 +32,8 @@ public class Model extends BaseEntity {
     private Date deploymentTime;
 
     private String type;
+    private String appId;
+    private String createUserId;
 
     public static String save(ModelInputVO inputVO) throws Exception {
         Model model =new Model();
@@ -46,6 +48,9 @@ public class Model extends BaseEntity {
         if(StringUtils.isNotEmpty(inputVO.getProcKey())) model.setProcKey(inputVO.getProcKey());
 
         if(StringUtils.isNotEmpty(inputVO.getType())) model.setType(inputVO.getType());
+
+        if(StringUtils.isNotEmpty(inputVO.getAppId())) model.setAppId(inputVO.getAppId());
+        if(StringUtils.isNotEmpty(inputVO.getCurrentUserId())) model.setCreateUserId(inputVO.getCurrentUserId());
 
         if(model.getIsNew()){
             modelMapper.insert(model);
@@ -70,8 +75,9 @@ public class Model extends BaseEntity {
         return getId();
     }
 
-    public static IPage<Model> selectPage(Integer page, Integer perPage){
+    public static IPage<Model> selectPage(Integer page, Integer perPage,String appId){
         LambdaQueryWrapper<Model> wrapper=new LambdaQueryWrapper<Model>().orderByDesc(Model::getCreateTime);
+        if(StringUtils.isNotEmpty(appId)) wrapper.eq(Model::getAppId,appId);
 
         Page<Model> item = modelMapper.selectPage(new Page<>(page, perPage), wrapper);
         return item;

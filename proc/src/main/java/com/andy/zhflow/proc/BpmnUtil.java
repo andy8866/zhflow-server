@@ -1,12 +1,15 @@
 package com.andy.zhflow.proc;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class BpmnUtil {
@@ -227,4 +230,10 @@ public class BpmnUtil {
         return modelElementInstance.getDomElement().getAttribute(BpmnConstant.NAMASPASE_ATTR,name);
     }
 
+    public static String getProcKey(String bpmnContent){
+        BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(IOUtils.toInputStream(bpmnContent, StandardCharsets.UTF_8));
+        Collection<Process> collections = bpmnModelInstance.getModelElementsByType(Process.class);
+        if(collections.size()>0) return collections.stream().toList().get(0).getId();
+        return "";
+    }
 }

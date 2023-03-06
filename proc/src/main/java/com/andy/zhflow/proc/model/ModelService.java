@@ -1,5 +1,6 @@
 package com.andy.zhflow.proc.model;
 
+import com.andy.zhflow.proc.BpmnUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
@@ -19,8 +20,8 @@ public class ModelService {
     @Autowired
     private RepositoryService repositoryService;
 
-    public Deployment deploymentFlow(String flowModelId) throws Exception {
-        Model model = Model.getById(flowModelId);
+    public Deployment deploymentFlow(String id) throws Exception {
+        Model model = Model.getById(id);
 
         if(StringUtils.isEmpty(model.getContent())){
             throw new Exception("无模型内容");
@@ -29,6 +30,7 @@ public class ModelService {
         Deployment deployment = repositoryService.createDeployment()
                 .name(model.getName())
                 .addString(model.getId()+".bpmn", model.getContent())
+                .tenantId(model.getAppId())
                 .deploy();
 
         model.setDeploymentTime(deployment.getDeploymentTime());
@@ -40,9 +42,8 @@ public class ModelService {
     public String save(ModelInputVO inputVO) throws Exception {
 
         if(StringUtils.isNoneEmpty(inputVO.getContent())){
-            BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(IOUtils.toInputStream(inputVO.getContent(), StandardCharsets.UTF_8));
-            Collection<Process> collections = bpmnModelInstance.getModelElementsByType(Process.class);
-            if(collections.size()>0) inputVO.setProcKey(collections.stream().toList().get(0).getId());
+            String key=BpmnUtil.getProcKey(inputVO.getContent());
+            inputVO.setProcKey(key);
         }
 
         return Model.save(inputVO);

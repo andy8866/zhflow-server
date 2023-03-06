@@ -1,6 +1,8 @@
 package com.andy.zhflow.response;
 
 import com.alibaba.fastjson2.JSON;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -10,6 +12,7 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 
 public class ResponseUtil {
+
     public static void writeObject(HttpServletResponse response, Object obj){
         String json = JSON.toJSONString(obj);
         writeString(response,json);

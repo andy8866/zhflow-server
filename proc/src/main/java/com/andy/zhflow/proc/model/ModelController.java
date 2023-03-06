@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
-@RequestMapping(value = "/api/proc/model")
+@RequestMapping(value = "/api/third/proc/model")
 public class ModelController {
 
     @Autowired
@@ -22,9 +22,11 @@ public class ModelController {
     }
 
     @GetMapping(value="/getList")
-    public ResultResponse<AmisPage<Model>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
+    public ResultResponse<AmisPage<Model>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage,
+                                                   @RequestParam("appId") String appId
+                                                   ) {
 
-        IPage<Model> item = Model.selectPage(page, perPage);
+        IPage<Model> item = Model.selectPage(page, perPage,appId);
 
         return ResultResponse.success(AmisPage.transitionPage(item));
     }
