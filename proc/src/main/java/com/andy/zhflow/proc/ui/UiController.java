@@ -62,18 +62,9 @@ public class UiController {
     @GetMapping(value="/getContent")
     public void getContent(HttpServletResponse response,
                            @RequestParam(value = "id",required = false) String id,
-                           @RequestParam(value = "taskId",required = false) String taskId,
-                           @RequestParam(value = "code",required = false) String code
+                           @RequestParam(value = "taskId",required = false) String taskId
                            ) throws Exception {
-        String content= uiService.getContent(id,taskId,code);
+        String content= uiService.getContent(id,taskId);
         ResponseUtil.writeString(response,content);
     }
-
-    @GetMapping(value="/getContentByCode")
-    public void getContentByCode(HttpServletResponse response,
-                                   @RequestParam("code") String code) throws Exception {
-        ResponseUtil.writeString(response, Ui.getByCode(code).getContent());
-    }
-
-
 }

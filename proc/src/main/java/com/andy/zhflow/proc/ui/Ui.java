@@ -1,6 +1,9 @@
 package com.andy.zhflow.proc.ui;
 
+import com.andy.zhflow.entity.AppEntity;
 import com.andy.zhflow.entity.BaseEntity;
+import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.third.app.App;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Data;
@@ -14,9 +17,8 @@ import java.util.List;
 @Data
 @Component
 @TableName("proc_ui")
-public class Ui extends BaseEntity {
+public class Ui extends AppEntity {
     private static UiMapper uiMapper;
-
 
     @Autowired
     public void setUiMapper(UiMapper mapper){
@@ -24,7 +26,6 @@ public class Ui extends BaseEntity {
     }
 
     private String name;
-    private String code;
     private String content;
 
     public static String save(UiInputVO inputVO) throws Exception {
@@ -45,8 +46,14 @@ public class Ui extends BaseEntity {
         ui.setBase(true);
 
         if(StringUtils.isNotEmpty(inputVO.getName())) ui.setName(inputVO.getName());
-        if(StringUtils.isNotEmpty(inputVO.getCode())) ui.setCode(inputVO.getCode());
         if(StringUtils.isNotEmpty(inputVO.getContent())) ui.setContent(inputVO.getContent());
+
+        if(StringUtils.isNotEmpty(AuthUtil.getAppId())) {
+            ui.setAppId(AuthUtil.getAppId());
+            ui.setAppName(App.getName(AuthUtil.getAppId()));
+        }
+        if(StringUtils.isNotEmpty(AuthUtil.getUserId())) ui.setCreateUserId(AuthUtil.getUserId());
+
 
         if(ui.getIsNew() || !find){
             uiMapper.insert(ui);
@@ -77,13 +84,6 @@ public class Ui extends BaseEntity {
             outList.add(new UiSelectOutVO(item.getId(),item.getName()));
         }
         return outList;
-    }
-
-
-
-    public static Ui getByCode(String code) {
-        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().eq(Ui::getCode,code);
-        return uiMapper.selectOne(wrapper);
     }
 
     public static void deleteById(String id) {

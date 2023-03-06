@@ -1,5 +1,6 @@
 package com.andy.zhflow.proc.model;
 
+import com.andy.zhflow.entity.AppEntity;
 import com.andy.zhflow.entity.BaseEntity;
 import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.third.app.App;
@@ -17,7 +18,7 @@ import java.util.Date;
 @Data
 @Component
 @TableName("proc_model")
-public class Model extends BaseEntity {
+public class Model extends AppEntity {
     private static ModelMapper modelMapper;
 
 
@@ -34,9 +35,6 @@ public class Model extends BaseEntity {
     private Date deploymentTime;
 
     private String type;
-    private String appId;
-    private String appName;
-    private String createUserId;
 
     public static String save(ModelInputVO inputVO) throws Exception {
         Model model =new Model();

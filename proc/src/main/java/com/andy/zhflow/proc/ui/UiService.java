@@ -44,10 +44,9 @@ public class UiService {
         return null;
     }
 
-    public String getContent(String id, String taskId, String code) {
+    public String getContent(String id, String taskId) {
         if(StringUtils.isNotEmpty(id)) return Ui.getById(id).getContent();
         if(StringUtils.isNotEmpty(taskId)) return getContentByTaskId(taskId);
-        if(StringUtils.isNotEmpty(code)) return Ui.getByCode(code).getContent();
         return null;
     }
 
