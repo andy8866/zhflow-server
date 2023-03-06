@@ -1,7 +1,7 @@
 package com.andy.zhflow.proc.copy;
 
 import com.andy.zhflow.proc.BpmnConstant;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.service.user.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
@@ -55,8 +55,8 @@ public class CopyService {
             copy.setUserId(userId);
             copy.setUserName(userService.getNameById(userId));
 
-            copy.setOriginatorId(UserUtil.getUserId());
-            copy.setOriginatorName(userService.getNameById(UserUtil.getUserId()));
+            copy.setOriginatorId(AuthUtil.getUserId());
+            copy.setOriginatorName(userService.getNameById(AuthUtil.getUserId()));
 
             copy.save();
         }

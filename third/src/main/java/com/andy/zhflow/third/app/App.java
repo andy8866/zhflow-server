@@ -14,6 +14,7 @@ public class App extends BaseEntity {
 
     private static AppMapper appMapper;
 
+
     @Autowired
     public void setAppMapper(AppMapper mapper){
         appMapper =mapper;
@@ -28,5 +29,14 @@ public class App extends BaseEntity {
                 .eq(App::getId,appId);
 
         return appMapper.selectOne(wrapper);
+    }
+
+    public static String getAppKey(String appId){
+        return getApp(appId).getSecretKey();
+    }
+
+
+    public static String getName(String appId) {
+        return getApp(appId).getName();
     }
 }

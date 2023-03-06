@@ -1,10 +1,10 @@
 package com.andy.zhflow.user;
 
 import com.alibaba.fastjson.JSON;
+import com.andy.zhflow.config.BaseConfig;
 import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.security.SecurityUser;
-import com.andy.zhflow.security.config.SecurityStarterAutoConfigure;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.service.user.IUserService;
 import com.andy.zhflow.service.user.UserOutVO;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
@@ -21,7 +21,7 @@ public class UserService implements IUserService {
     private RedisService redisService;
 
     public User getCurrentUser() {
-        String id= UserUtil.getUserId();
+        String id= AuthUtil.getUserId();
         return User.getById(id);
     }
 
@@ -32,7 +32,7 @@ public class UserService implements IUserService {
         // 创建令牌
         String token = NanoIdUtils.randomNanoId();
         String json= JSON.toJSONString(securityUser);
-        redisService.set(token,json, SecurityStarterAutoConfigure.EXPIRATION, TimeUnit.SECONDS);
+        redisService.set(token,json, BaseConfig.EXPIRATION, TimeUnit.SECONDS);
 
         return token;
     }

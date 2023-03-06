@@ -24,3 +24,6 @@ security:
     - /api/admin/uiPage/getUiByCode/**
     - /api/security/validateToken**
     - /api/third/**
+
+base-config:
+  expire: 86400

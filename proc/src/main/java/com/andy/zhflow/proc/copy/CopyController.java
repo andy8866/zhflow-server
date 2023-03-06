@@ -1,7 +1,7 @@
 package com.andy.zhflow.proc.copy;
 
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ public class CopyController {
 
     @GetMapping(value="/getList")
     public ResultResponse<List<Copy>> getList() {
-        List<Copy> list = Copy.getList(UserUtil.getUserId());
+        List<Copy> list = Copy.getList(AuthUtil.getUserId());
         return ResultResponse.success(list);
     }
 

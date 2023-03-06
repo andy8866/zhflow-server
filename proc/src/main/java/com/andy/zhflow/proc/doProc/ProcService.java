@@ -2,7 +2,7 @@ package com.andy.zhflow.proc.doProc;
 
 import com.andy.zhflow.bean.BeanService;
 import com.andy.zhflow.proc.BpmnConstant;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.utils.DateUtil;
 import org.camunda.bpm.engine.HistoryService;
@@ -14,7 +14,6 @@ import org.camunda.bpm.engine.history.HistoricVariableUpdate;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +38,7 @@ public class ProcService {
     protected BeanService beanService;
 
     public VariableMap initProcVarMap(){
-        String userId= UserUtil.getUserId();
+        String userId= AuthUtil.getUserId();
 
         VariableMap variables = Variables.createVariables();
         variables.put(BpmnConstant.ATTR_INITIATOR, userId);

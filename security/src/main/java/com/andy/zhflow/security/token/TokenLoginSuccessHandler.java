@@ -1,6 +1,7 @@
 package com.andy.zhflow.security.token;
 
 import com.alibaba.fastjson.JSON;
+import com.andy.zhflow.config.BaseConfig;
 import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.response.ResponseUtil;
 import com.andy.zhflow.response.ResultResponse;
@@ -36,10 +37,10 @@ public class TokenLoginSuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("用户:" + securityUser.toString());
 
         // 创建令牌
-        String token = NanoIdUtils.randomNanoId();
+        String token ="USER"+NanoIdUtils.randomNanoId();
         String json= JSON.toJSONString(securityUser);
 
-        redisService.set(token,json, SecurityStarterAutoConfigure.EXPIRATION, TimeUnit.SECONDS);
+        redisService.set(token,json, BaseConfig.EXPIRATION, TimeUnit.SECONDS);
 
         ResponseUtil.writeObject(response, ResultResponse.success(token));
     }

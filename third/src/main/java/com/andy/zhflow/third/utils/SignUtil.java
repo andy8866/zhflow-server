@@ -4,6 +4,8 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.beanutils.BeanMap;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -67,6 +69,7 @@ public class SignUtil {
     }
 
     public static TreeMap<String,String> jsonToTreeMap(String str){
-       return JSON.parseObject(str,new TypeReference<TreeMap<String, String>>() {});
+        Map map = JSON.parseObject(str,Map.class);
+        return new TreeMap<>(map);
     }
 }

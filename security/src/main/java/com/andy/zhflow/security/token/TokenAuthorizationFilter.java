@@ -3,6 +3,7 @@ package com.andy.zhflow.security.token;
 import com.alibaba.fastjson.JSON;
 import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.security.SecurityUser;
+import com.andy.zhflow.vo.AppTokenVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,13 +68,26 @@ public class TokenAuthorizationFilter extends BasicAuthenticationFilter {
             throw new AccountExpiredException("token已过期");
         }
 
-        SecurityUser securityUser= JSON.parseObject(json,SecurityUser.class);
-        if (securityUser == null) {
-            throw new AccountExpiredException("token缓存信息错误");
+        if(token.startsWith("USER")){
+            SecurityUser securityUser= JSON.parseObject(json,SecurityUser.class);
+            if (securityUser == null) {
+                throw new AccountExpiredException("user token信息错误");
+            }
+
+            return new UsernamePasswordAuthenticationToken(securityUser, null,
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_admin"))
+            );
+        } else if (token.startsWith("APP")) {
+            AppTokenVO appTokenVO= JSON.parseObject(json, AppTokenVO.class);
+            if (appTokenVO == null) {
+                throw new AccountExpiredException("app token信息错误");
+            }
+
+            return new UsernamePasswordAuthenticationToken(appTokenVO, null,
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_app"))
+            );
         }
 
-        return new UsernamePasswordAuthenticationToken(securityUser.getId(), null,
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_admin"))
-        );
+        throw new AccountExpiredException("token信息错误");
     }
 }

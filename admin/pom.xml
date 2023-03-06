@@ -45,6 +45,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>third</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.4</version>

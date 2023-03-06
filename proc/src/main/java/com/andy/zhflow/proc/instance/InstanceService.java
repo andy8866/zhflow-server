@@ -9,7 +9,7 @@ import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.doProc.ProcService;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.service.uiPage.IUiPageService;
@@ -74,7 +74,7 @@ public class InstanceService {
     protected IDeptService deptService;
 
     public void startProc(String procKey, Map<String,Object> vars) {
-        String userId=UserUtil.getUserId();
+        String userId= AuthUtil.getUserId();
         identityService.setAuthenticatedUserId(userId);
 
         VariableMap variableMap = procService.initProcVarMap();

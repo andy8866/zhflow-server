@@ -1,6 +1,8 @@
 package com.andy.zhflow.proc.model;
 
 import com.andy.zhflow.entity.BaseEntity;
+import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.third.app.App;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -33,6 +35,7 @@ public class Model extends BaseEntity {
 
     private String type;
     private String appId;
+    private String appName;
     private String createUserId;
 
     public static String save(ModelInputVO inputVO) throws Exception {
@@ -49,8 +52,11 @@ public class Model extends BaseEntity {
 
         if(StringUtils.isNotEmpty(inputVO.getType())) model.setType(inputVO.getType());
 
-        if(StringUtils.isNotEmpty(inputVO.getAppId())) model.setAppId(inputVO.getAppId());
-        if(StringUtils.isNotEmpty(inputVO.getCurrentUserId())) model.setCreateUserId(inputVO.getCurrentUserId());
+        if(StringUtils.isNotEmpty(AuthUtil.getAppId())) {
+            model.setAppId(AuthUtil.getAppId());
+            model.setAppName(App.getName(AuthUtil.getAppId()));
+        }
+        if(StringUtils.isNotEmpty(AuthUtil.getUserId())) model.setCreateUserId(AuthUtil.getUserId());
 
         if(model.getIsNew()){
             modelMapper.insert(model);

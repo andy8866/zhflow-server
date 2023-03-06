@@ -2,7 +2,7 @@ package com.andy.zhflow.proc.task;
 
 import com.andy.zhflow.proc.doProc.ProcTaskService;
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +48,7 @@ public class ProcTaskController {
 
     @GetMapping(value="/getHistoryCompleteTask")
     public ResultResponse<List<ProcTaskOutVO>> getHistoryCompleteTask(){
-        List<ProcTaskOutVO> list=procTaskService.getHistoryCompleteTask(UserUtil.getUserId());
+        List<ProcTaskOutVO> list=procTaskService.getHistoryCompleteTask(AuthUtil.getUserId());
         return ResultResponse.success(list);
     }
 }

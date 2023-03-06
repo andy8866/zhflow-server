@@ -2,13 +2,14 @@ package com.andy.zhflow.proc.model;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.response.ResultResponse;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
-@RequestMapping(value = "/api/third/proc/model")
+@RequestMapping(value = "/api/frame/proc/model")
 public class ModelController {
 
     @Autowired
@@ -22,10 +23,9 @@ public class ModelController {
     }
 
     @GetMapping(value="/getList")
-    public ResultResponse<AmisPage<Model>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage,
-                                                   @RequestParam("appId") String appId
-                                                   ) {
+    public ResultResponse<AmisPage<Model>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
 
+        String appId= AuthUtil.getAppId();
         IPage<Model> item = Model.selectPage(page, perPage,appId);
 
         return ResultResponse.success(AmisPage.transitionPage(item));

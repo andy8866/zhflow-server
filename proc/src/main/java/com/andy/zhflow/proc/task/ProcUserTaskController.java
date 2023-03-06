@@ -1,10 +1,9 @@
 package com.andy.zhflow.proc.task;
 
 import com.andy.zhflow.amis.AmisPage;
-import com.andy.zhflow.proc.copy.CopyService;
 import com.andy.zhflow.proc.doProc.ProcUserTaskService;
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +18,13 @@ public class ProcUserTaskController {
 
     @GetMapping(value="/getAgendaList")
     public ResultResponse<AmisPage<ProcTaskOutVO>> getAgendaList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
-        AmisPage<ProcTaskOutVO> appPage = userTaskService.getAgendaList(page, perPage, UserUtil.getUserId());
+        AmisPage<ProcTaskOutVO> appPage = userTaskService.getAgendaList(page, perPage, AuthUtil.getUserId());
         return ResultResponse.success(appPage);
     }
 
     @GetMapping(value="/getClaimList")
     public ResultResponse<AmisPage<ProcTaskOutVO>> getClaimList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
-        AmisPage<ProcTaskOutVO> appPage = userTaskService.getClaimList(page, perPage, UserUtil.getUserId());
+        AmisPage<ProcTaskOutVO> appPage = userTaskService.getClaimList(page, perPage, AuthUtil.getUserId());
         return ResultResponse.success(appPage);
     }
 

@@ -1,15 +1,12 @@
 package com.andy.zhflow.security.config;
 
 import com.andy.zhflow.redis.service.RedisService;
-import com.andy.zhflow.security.jwt.JwtAuthorizationFilter;
 import com.andy.zhflow.security.handler.LoginFailureHandler;
 import com.andy.zhflow.security.handler.SecurityAuthenticationEntryPoint;
-import com.andy.zhflow.security.jwt.JwtLoginSuccessHandler;
 import com.andy.zhflow.security.token.TokenAuthorizationFilter;
 import com.andy.zhflow.security.token.TokenLoginSuccessHandler;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
@@ -35,15 +32,10 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityStarterAutoConfigure {
 
-    // 过期时间是3600秒，既是1个小时
-    public static long EXPIRATION = 24*60 * 60L;
-
-
     private SecurityConfig securityConfig;
     @Autowired
     public void setSecurityConfig(SecurityConfig securityConfig){
         this.securityConfig=securityConfig;
-        EXPIRATION=securityConfig.getExpiration();
     }
 
     @Bean
@@ -68,6 +60,7 @@ public class SecurityStarterAutoConfigure {
             for (String permit:securityConfig.getPermits()){
                 authorize.antMatchers(permit).permitAll();
             }
+            authorize.antMatchers("/api/frame/**","/api/admin/dict/**").hasAnyRole("app");
             authorize.antMatchers("/**").hasAnyRole("admin", "user");
         });
 

@@ -9,7 +9,7 @@ import com.andy.zhflow.proc.FlowCommentType;
 import com.andy.zhflow.proc.copy.CopyService;
 import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
-import com.andy.zhflow.security.utils.UserUtil;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.service.user.IUserService;
@@ -105,7 +105,7 @@ public class ProcUserTaskService extends ProcService {
 
 
     public void claim(String taskId) {
-        taskService.claim(taskId,UserUtil.getUserId());
+        taskService.claim(taskId, AuthUtil.getUserId());
     }
 
     public void pass(String taskId, Map<String,Object> inputVO) {
@@ -141,7 +141,7 @@ public class ProcUserTaskService extends ProcService {
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.DELEGATE);
 
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
-        StringBuilder commentBuilder = new StringBuilder(userService.getNameById(UserUtil.getUserId())).append("->").append(User.getNameById(toUserId));
+        StringBuilder commentBuilder = new StringBuilder(userService.getNameById(AuthUtil.getUserId())).append("->").append(User.getNameById(toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -149,7 +149,7 @@ public class ProcUserTaskService extends ProcService {
 
         taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.DELEGATE,inputVO).toJson());
 
-        taskService.setOwner(taskId,UserUtil.getUserId());
+        taskService.setOwner(taskId, AuthUtil.getUserId());
         taskService.delegateTask(taskId, toUserId);
 
         copyService.makeCopy(taskId,inputVO);
@@ -160,7 +160,7 @@ public class ProcUserTaskService extends ProcService {
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.TRANSFER);
 
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
-        StringBuilder commentBuilder = new StringBuilder(userService.getNameById(UserUtil.getUserId())).append("->").append(User.getNameById(toUserId));
+        StringBuilder commentBuilder = new StringBuilder(userService.getNameById(AuthUtil.getUserId())).append("->").append(User.getNameById(toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -168,7 +168,7 @@ public class ProcUserTaskService extends ProcService {
 
         taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.TRANSFER,inputVO).toJson());
 
-        taskService.setOwner(taskId,UserUtil.getUserId());
+        taskService.setOwner(taskId, AuthUtil.getUserId());
         taskService.setAssignee(taskId,toUserId);
 
         copyService.makeCopy(taskId,inputVO);

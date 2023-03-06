@@ -1,7 +1,6 @@
 package com.andy.zhflow.entity;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.andy.zhflow.utils.UUIDUtil;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
