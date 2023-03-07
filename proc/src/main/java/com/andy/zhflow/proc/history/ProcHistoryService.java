@@ -1,6 +1,7 @@
 package com.andy.zhflow.proc.history;
 
 import com.andy.zhflow.amis.AmisPage;
+import com.andy.zhflow.security.utils.AuthUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -30,7 +31,10 @@ public class ProcHistoryService {
     public AmisPage<ProcHistoryProcOutVO> getList(Integer page, Integer perPage,
                                                   String userId) {
 
-        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc();
+        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery()
+                .tenantIdIn(AuthUtil.getAppId())
+                .orderByProcessInstanceStartTime().desc();
+
         if(StringUtils.isNotEmpty(userId)) query.startedBy(userId);
 
         Long total=query.count();

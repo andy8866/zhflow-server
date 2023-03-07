@@ -2,6 +2,7 @@ package com.andy.zhflow.proc.definition;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
+import com.andy.zhflow.security.utils.AuthUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -28,7 +29,9 @@ public class DefinitionService {
     private RepositoryService repositoryService;
 
     public AmisPage<DefinitionOutputVO> getList(Integer page, Integer perPage) {
+        String appId=AuthUtil.getAppId();
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+                .tenantIdIn(appId)
                 .orderByDeploymentTime().desc()
                 .latestVersion();
 
@@ -40,6 +43,7 @@ public class DefinitionService {
 
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
         for (DefinitionOutputVO outputVO:outList){
+            outputVO.setAppId(appId);
             Deployment deployment = deploymentQuery.deploymentId(outputVO.getDeploymentId()).singleResult();
             outputVO.setName(deployment.getName());
 

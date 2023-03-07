@@ -73,6 +73,7 @@ public class InstanceService {
     @Autowired
     protected IDeptService deptService;
 
+
     public void startProc(String procKey, Map<String,Object> vars) {
         String userId= AuthUtil.getUserId();
         identityService.setAuthenticatedUserId(userId);
@@ -80,7 +81,10 @@ public class InstanceService {
         VariableMap variableMap = procService.initProcVarMap();
         if(vars!=null) variableMap.putAll(vars);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(procKey,variableMap );
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(procKey).tenantIdIn(AuthUtil.getAppId()).latestVersion().singleResult();
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(),variableMap);;
     }
 
     public AmisPage<InstanceOutputVO> getList(Integer page, Integer perPage) {
@@ -177,11 +181,14 @@ public class InstanceService {
     }
 
     public List<ProcNodeVO> historyProcNodeList(String procInsId) {
-        List<HistoricActivityInstance> historicActivityInstanceList =  historyService.createHistoricActivityInstanceQuery()
+        List<HistoricActivityInstanceEntity> historicActivityInstanceList =  historyService.createHistoricActivityInstanceQuery()
                 .processInstanceId(procInsId)
-                .orderByHistoricActivityInstanceStartTime().desc()
-                .orderByHistoricActivityInstanceEndTime().desc()
-                .list();
+                .list()
+                .stream().map(item -> (HistoricActivityInstanceEntity)item)
+                .sorted(Comparator.comparing(HistoricActivityInstanceEntity::getStartTime,Comparator.reverseOrder())
+                        .thenComparing(HistoricActivityInstanceEntity::getSequenceCounter,Comparator.reverseOrder())
+                )
+                .toList();
 
         HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
                 .processInstanceId(procInsId)

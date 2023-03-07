@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 public class DefinitionOutputVO {
 
+    private String appId;
+
     private String id;
     private String category;
     private String name;

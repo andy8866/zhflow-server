@@ -6,6 +6,7 @@ import com.andy.zhflow.proc.copy.CopyService;
 import com.andy.zhflow.proc.definition.DefinitionService;
 import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
+import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
@@ -122,7 +123,9 @@ public class ProcTaskService extends ProcService{
     }
 
     public List<ProcTaskOutVO> getHistoryCompleteTask(String userId) {
-        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().taskAssignee(userId).finished()
+        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
+                .tenantIdIn(AuthUtil.getAppId())
+                .taskAssignee(userId).finished()
                 .orderByHistoricTaskInstanceEndTime().desc()
                 .list();
 

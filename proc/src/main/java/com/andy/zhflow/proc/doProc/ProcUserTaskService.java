@@ -77,6 +77,7 @@ public class ProcUserTaskService extends ProcService {
     public AmisPage<ProcTaskOutVO> getAgendaList(Integer page, Integer perPage, String userId) {
 
         TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(userId)
+                .tenantIdIn(AuthUtil.getAppId())
                 .initializeFormKeys()
                 .orderByTaskCreateTime().desc();
 
@@ -91,7 +92,9 @@ public class ProcUserTaskService extends ProcService {
 
     public AmisPage<ProcTaskOutVO> getClaimList(Integer page, Integer perPage, String userId) {
 
-        TaskQuery taskQuery = taskService.createTaskQuery().initializeFormKeys().orderByTaskCreateTime().desc()
+        TaskQuery taskQuery = taskService.createTaskQuery()
+                .tenantIdIn(AuthUtil.getAppId())
+                .initializeFormKeys().orderByTaskCreateTime().desc()
                 .or().taskCandidateUser(userId).taskCandidateGroupIn(getCandidateGroup(userId)).endOr();
 
         Long total=taskQuery.count();

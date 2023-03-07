@@ -1,0 +1,4 @@
+camunda:
+  bpm:
+    authorization:
+      tenant-check-enabled: false

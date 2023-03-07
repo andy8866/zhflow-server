@@ -33,3 +33,8 @@ security:
 
 base-config:
   expire: 86400
+
+camunda:
+  bpm:
+    authorization:
+      tenant-check-enabled: false
