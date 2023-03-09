@@ -12,8 +12,8 @@ import com.andy.zhflow.proc.task.TaskCommentVO;
 import com.andy.zhflow.security.utils.AuthUtil;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
+import com.andy.zhflow.service.third.IThirdCallService;
 import com.andy.zhflow.service.user.IUserService;
-import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
@@ -66,6 +66,9 @@ public class ProcUserTaskService extends ProcService {
     @Autowired
     protected IDeptService deptService;
 
+    @Autowired
+    protected IThirdCallService thirdCallService;
+
 
     /**
      * 待办任务
@@ -111,7 +114,7 @@ public class ProcUserTaskService extends ProcService {
         taskService.claim(taskId, AuthUtil.getUserId());
     }
 
-    public void pass(String taskId, Map<String,Object> inputVO) {
+    public void pass(String taskId, Map<String,Object> inputVO) throws Exception {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE, FlowCommentType.PASS);
 
@@ -139,12 +142,16 @@ public class ProcUserTaskService extends ProcService {
         copyService.makeCopy(taskId,inputVO);
     }
 
-    public void delegate(String taskId, Map<String,Object> inputVO) {
+    public void delegate(String taskId, Map<String,Object> inputVO) throws Exception {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.DELEGATE);
 
+
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
-        StringBuilder commentBuilder = new StringBuilder(userService.getNameById(AuthUtil.getUserId())).append("->").append(User.getNameById(toUserId));
+        StringBuilder commentBuilder = new StringBuilder(
+                thirdCallService.getUserNameById(AuthUtil.getAppId(),AuthUtil.getUserId()))
+                .append("->")
+                .append(thirdCallService.getUserNameById(AuthUtil.getAppId(),toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -158,12 +165,16 @@ public class ProcUserTaskService extends ProcService {
         copyService.makeCopy(taskId,inputVO);
     }
 
-    public void transfer(String taskId, Map<String,Object> inputVO) {
+    public void transfer(String taskId, Map<String,Object> inputVO) throws Exception {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.TRANSFER);
 
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
-        StringBuilder commentBuilder = new StringBuilder(userService.getNameById(AuthUtil.getUserId())).append("->").append(User.getNameById(toUserId));
+
+        StringBuilder commentBuilder = new StringBuilder(
+                thirdCallService.getUserNameById(AuthUtil.getAppId(),AuthUtil.getUserId()))
+                .append("->")
+                .append(thirdCallService.getUserNameById(AuthUtil.getAppId(),toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -177,7 +188,7 @@ public class ProcUserTaskService extends ProcService {
         copyService.makeCopy(taskId,inputVO);
     }
 
-    public void reback(String taskId, Map<String,Object> inputVO) {
+    public void reback(String taskId, Map<String,Object> inputVO) throws Exception {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.REBACK);
 
@@ -200,13 +211,15 @@ public class ProcUserTaskService extends ProcService {
         taskService.setAssignee(taskId,assigneeUserId);
     }
 
-    public void setSuperiorUser(DelegateTask task){
+    public void setSuperiorUser(DelegateTask task) throws Exception {
         List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(task.getProcessInstanceId())
                 .orderByHistoricActivityInstanceStartTime().desc()
                 .list();
 
-        String userid=list.get(0).getAssignee();
-        String superiorUserId=userService.getSuperiorUserId(userid);
+        String userId=list.get(0).getAssignee();
+        String appId = (String) task.getVariable("appId");
+        String superiorUserId = thirdCallService.getSuperiorUserId(appId,userId);
+
         task.setAssignee(superiorUserId);
     }
 

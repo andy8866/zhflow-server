@@ -43,7 +43,11 @@
             <artifactId>redis</artifactId>
             <version>${version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>service</artifactId>
+            <version>${version}</version>
+        </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>

@@ -68,7 +68,7 @@ public class ProcTaskService extends ProcService{
         }
     }
 
-    public void completeTask(String taskId,Map<String,Object> inputVO){
+    public void completeTask(String taskId,Map<String,Object> inputVO) throws Exception {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         inputVO.put(BpmnConstant.VAR_COMMENT_TYPE,FlowCommentType.NORMAL);
 

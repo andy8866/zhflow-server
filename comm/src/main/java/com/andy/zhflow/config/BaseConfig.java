@@ -19,6 +19,5 @@ public class BaseConfig {
         BaseConfig.EXPIRATION=expire;
     }
 
-    private String flowAppId="7CG1TlaLygU6hbQNhlzFU";
-    private String flowKey="xcYjxHqvueHM8jVCSydD";
+    private String thirdAppId ="7CG1TlaLygU6hbQNhlzFU";
 }

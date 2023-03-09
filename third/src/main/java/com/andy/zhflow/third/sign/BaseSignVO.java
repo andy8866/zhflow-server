@@ -1,4 +1,4 @@
-package com.andy.zhflow.third.utils;
+package com.andy.zhflow.third.sign;
 
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
@@ -13,7 +13,7 @@ public class BaseSignVO {
     private String randStr;
     private String sign;
 
-    public TreeMap<String,String> toTreeMap(){
+    public TreeMap<String,Object> toTreeMap(){
         String str = JSON.toJSONString(this);
         return SignUtil.jsonToTreeMap(str);
     }

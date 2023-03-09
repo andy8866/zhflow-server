@@ -1,5 +1,8 @@
 package com.andy.zhflow.third.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.andy.zhflow.third.sign.SignUtil;
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -8,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,21 +26,35 @@ public class OkHttpUtil{
         OkHttpUtil.okHttpClient= okHttpClient;
     }
 
+    public static Map<String, Object> doSign(Map<String, Object> params,Map<String, Object> signParams,String key){
+        if(params==null) params=new HashMap<>();
+        if(signParams==null) signParams=new HashMap<>();
+
+        TreeMap<String,Object> signMap=new TreeMap<>(signParams);
+
+        if (signMap.keySet().size() > 0 && StringUtils.isNotEmpty(key)) {
+            SignUtil.sign(signMap,key);
+        }
+
+        params.putAll(signMap);
+
+        return params;
+    }
     /**
      * get
      * @param url     请求的url
      * @param params 请求的参数，在浏览器？后面的数据，没有可以传null
      * @return
      */
-    public static String get(String url, Map<String, String> params,String key) {
+    public static String get(String url, Map<String, Object> params,Map<String, Object> signParams,String key) {
         String responseBody = "";
         StringBuffer sb = new StringBuffer(url);
-        if (params != null && params.keySet().size() > 0) {
-            TreeMap<String,String> treeMap=new TreeMap<>(params);
-            if(StringUtils.isNotEmpty(key)) SignUtil.sign(treeMap,key);
 
-            sb.append("?").append(SignUtil.toStr(treeMap));
+        params=doSign(params,signParams,key);
+        if (params.keySet().size() > 0) {
+            sb.append("?").append(SignUtil.mapToStr(params,false));
         }
+
         Request request = new Request.Builder().url(sb.toString()).build();
         Response response = null;
         try {
@@ -61,20 +79,15 @@ public class OkHttpUtil{
      * @param params post form 提交的参数
      * @return
      */
-    public static String post(String url, Map<String, String> params,String key) {
+    public static String post(String url, Map<String, Object> params,Map<String, Object> signParams,String key) {
         String responseBody = "";
         FormBody.Builder builder = new FormBody.Builder();
 
-        //添加参数
-        if (params != null && params.keySet().size() > 0) {
-
-            TreeMap<String,String> treeMap=new TreeMap<>(params);
-            if(StringUtils.isNotEmpty(key)) SignUtil.sign(treeMap,key);
-
-            for (String k : treeMap.keySet()) {
-                builder.add(k, treeMap.get(k));
-            }
+        params=doSign(params,signParams,key);
+        for (String k : params.keySet()) {
+            builder.add(k, params.get(k).toString());
         }
+
         Request request = new Request.Builder().url(url).post(builder.build()).build();
         Response response = null;
         try {
@@ -92,7 +105,9 @@ public class OkHttpUtil{
         return responseBody;
     }
 
-
+    public static String postJsonParams(String url,Map<String, Object> signParams,String key, Object obj) {
+        return postJsonParams(url,signParams,key, JSON.toJSONString(obj));
+    }
 
     /**
      * Post请求发送JSON数据....{"name":"zhangsan","pwd":"123456"}
@@ -100,18 +115,15 @@ public class OkHttpUtil{
      * 参数二：请求的JSON
      * 参数三：请求回调
      */
-    public static String postJsonParams(String url, Map<String, String> queries,String key, String jsonParams) {
+    public static String postJsonParams(String url, Map<String, Object> signParams,String key, String jsonParams) {
         String responseBody = "";
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonParams);
-
         StringBuffer sb = new StringBuffer(url);
-        if (queries != null && queries.keySet().size() > 0) {
-            TreeMap<String,String> treeMap=new TreeMap<>(queries);
-            if(StringUtils.isNotEmpty(key)) SignUtil.sign(treeMap,key);
 
-            sb.append("?").append(SignUtil.toStr(treeMap));
-        }
+        Map<String, Object> params=doSign(new HashMap<>(),signParams,key);
+        JSONObject jsonObject=JSON.parseObject(jsonParams);
+        jsonObject.putAll(params);
 
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toJSONString());
         Request request = new Request.Builder().url(sb.toString()).post(requestBody).build();
         Response response = null;
         try {

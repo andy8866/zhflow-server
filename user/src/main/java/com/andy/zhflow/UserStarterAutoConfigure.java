@@ -1,4 +1,4 @@
-package com.andy.zhflow.user;
+package com.andy.zhflow;
 
 import org.springframework.context.annotation.Configuration;
 

@@ -1,7 +1,6 @@
 package com.andy.zhflow.dept;
 
 import com.andy.zhflow.service.dept.IDeptService;
-import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.user.User;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @Component
 public class DeptService implements IDeptService {
 
-    public List<DeptOutVO> getList() {
+    public List<DeptOutVO> getList(){
         return Arrays.asList(
                 new DeptOutVO("d1","管理部"),
                 new DeptOutVO("d2","用户组")

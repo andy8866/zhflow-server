@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface IDeptService {
 
-
-
     List<String> getUserDeptIds(String userId);
 
     String getDeptNameById(String deptId) ;

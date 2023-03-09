@@ -1,11 +1,10 @@
 package com.andy.zhflow.third.token;
 
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.third.utils.BaseSignVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
@@ -15,9 +14,10 @@ public class TokenApiController {
     @Autowired
     private TokenApiService tokenApiService;
 
-    @PostMapping(value="/getToken")
-    public ResultResponse<String> getToken(@RequestBody BaseSignVO signVO) throws Exception {
-        String token=tokenApiService.getToken(signVO);
+    @GetMapping(value="/getToken")
+    public ResultResponse<String> getToken(@RequestParam("appId") String appId,
+                                           @RequestParam("userId") String userId) throws Exception {
+        String token=tokenApiService.getToken(appId,userId);
         return ResultResponse.success(token);
     }
 }

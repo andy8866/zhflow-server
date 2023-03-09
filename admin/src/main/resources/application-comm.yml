@@ -33,6 +33,7 @@ security:
 
 base-config:
   expire: 86400
+  third-app-id: 7CG1TlaLygU6hbQNhlzFU
 
 camunda:
   bpm:

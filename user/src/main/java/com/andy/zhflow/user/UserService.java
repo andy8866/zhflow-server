@@ -37,15 +37,6 @@ public class UserService implements IUserService {
         return token;
     }
 
-    /**
-     * 获取上级用户
-     * @param userId
-     * @return
-     */
-    public String getSuperiorUserId(String userId) {
-        return "Qsw0NCe5n1RxA5Xh1c-td";
-    }
-
     @Override
     public UserOutVO getByUserName(String userName) {
         User user = User.getByUserName(userName);
@@ -53,10 +44,4 @@ public class UserService implements IUserService {
         BeanUtils.copyProperties(user,outVO);
         return outVO;
     }
-
-    @Override
-    public String getNameById(String id) {
-        return User.getNameById(id);
-    }
-
 }

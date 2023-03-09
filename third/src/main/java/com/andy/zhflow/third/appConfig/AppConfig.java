@@ -1,12 +1,14 @@
 package com.andy.zhflow.third.appConfig;
 
-import com.alibaba.fastjson.JSON;
 import com.andy.zhflow.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Data
 @Component
@@ -23,8 +25,46 @@ public class AppConfig extends BaseEntity {
     private String appId;
     private String type;
     private String code;
+    private String name;
 
-    private String value;
+    private String httpUrlPath;
+    private String httpMethod;
+
+    private Boolean canDel;
+
+    public static List<AppConfig> getList(String appId,String type) {
+        LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()
+                .eq(AppConfig::getAppId,appId).orderByDesc(AppConfig::getCreateTime);
+
+        if(StringUtils.isNotEmpty(type)) wrapper.eq(AppConfig::getType,type);
+
+        return appConfigMapper.selectList(wrapper);
+    }
+    
+    public static String save(AppConfigInputVO inputVO) {
+        AppConfig item =new AppConfig();
+        if(StringUtils.isNotEmpty(inputVO.getId())) item = appConfigMapper.selectById(inputVO.getId());
+
+        item.setBase(true);
+
+        if(StringUtils.isNotEmpty(inputVO.getAppId())) item.setAppId(inputVO.getAppId());
+        if(StringUtils.isNotEmpty(inputVO.getType())) item.setType(inputVO.getType());
+        if(StringUtils.isNotEmpty(inputVO.getCode())) item.setCode(inputVO.getCode());
+        if(StringUtils.isNotEmpty(inputVO.getName())) item.setName(inputVO.getName());
+
+        if(StringUtils.isNotEmpty(inputVO.getHttpUrlPath())) item.setHttpUrlPath(inputVO.getHttpUrlPath());
+        if(StringUtils.isNotEmpty(inputVO.getHttpMethod())) item.setHttpMethod(inputVO.getHttpMethod());
+
+        if(item.getIsNew()){
+            appConfigMapper.insert(item);
+        }
+        else{
+            appConfigMapper.updateById(item);
+        }
+
+        return item.getId();
+    }
+
 
     public static AppConfig getConfig(String appId, String code){
         LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()
@@ -34,27 +74,18 @@ public class AppConfig extends BaseEntity {
         return appConfigMapper.selectOne(wrapper);
     }
 
-    public static String getValue(String appId,String code){
-        LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()
-                .eq(AppConfig::getAppId,appId)
-                .eq(AppConfig::getCode,code);
+    public static void delById(String id){
 
-        AppConfig appConfig = getConfig(appId,code);
-        if(appConfig==null) return null;
+        AppConfig appConfig = appConfigMapper.selectById(id);
+        if(!appConfig.getCanDel()) return ;
 
-        return appConfig.getValue();
+        appConfigMapper.deleteById(id);
     }
 
-    public static Object getVO(String appId,String code){
-        AppConfig appConfig = getConfig(appId,code);
-        if(appConfig==null) return null;
+    public static void delByAppId(String appId){
+        LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()
+                .eq(AppConfig::getAppId,appId);
 
-        switch (appConfig.getType()){
-            case AppConfigConstant.TYPE_HTTP_REQUEST :{
-                return JSON.parseObject(appConfig.getValue(), AppConfigHttpRequestVO.class);
-            }
-        }
-
-        return null;
+        appConfigMapper.delete(wrapper);
     }
 }
