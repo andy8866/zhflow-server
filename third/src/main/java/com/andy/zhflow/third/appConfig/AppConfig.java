@@ -40,7 +40,7 @@ public class AppConfig extends BaseEntity {
 
         return appConfigMapper.selectList(wrapper);
     }
-    
+
     public static String save(AppConfigInputVO inputVO) {
         AppConfig item =new AppConfig();
         if(StringUtils.isNotEmpty(inputVO.getId())) item = appConfigMapper.selectById(inputVO.getId());

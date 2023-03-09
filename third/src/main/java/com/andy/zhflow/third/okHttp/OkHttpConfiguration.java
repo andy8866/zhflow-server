@@ -1,4 +1,4 @@
-package com.andy.zhflow.third;
+package com.andy.zhflow.third.okHttp;
 
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
@@ -22,7 +22,8 @@ public class OkHttpConfiguration {
     public OkHttpClient okHttpClient() {
         return new OkHttpClient.Builder()
                 //.sslSocketFactory(sslSocketFactory(), x509TrustManager())
-                .retryOnConnectionFailure(false)
+                .addNetworkInterceptor(new NetInterceptor())
+                .retryOnConnectionFailure(true)
                 .connectionPool(pool())
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)

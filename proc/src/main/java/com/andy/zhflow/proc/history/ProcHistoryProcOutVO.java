@@ -1,6 +1,6 @@
 package com.andy.zhflow.proc.history;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.springframework.beans.BeanUtils;

@@ -1,4 +1,4 @@
-package com.andy.zhflow.third.utils;
+package com.andy.zhflow.third.okHttp;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -52,7 +52,7 @@ public class OkHttpUtil{
 
         params=doSign(params,signParams,key);
         if (params.keySet().size() > 0) {
-            sb.append("?").append(SignUtil.mapToStr(params,false));
+            sb.append("?").append(SignUtil.mapToStr(params,true));
         }
 
         Request request = new Request.Builder().url(sb.toString()).build();

@@ -33,7 +33,7 @@ public class ThirdController {
         String code= (String) params.get("code");
         if(StringUtils.isEmpty(code)) return ResultResponse.fail("缺少code");
 
-        Object result = thirdCallService.callApi(appId, code, params);
+        Object result = thirdCallService.callApi(appId, code, params,Object.class);
         return ResultResponse.success(result);
     }
 }
