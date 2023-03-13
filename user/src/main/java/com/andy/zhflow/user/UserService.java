@@ -35,7 +35,7 @@ public class UserService implements IUserService {
         SecurityUser securityUser = new SecurityUser(user.getId(), user.getUserName(), user.getPassword(), "ROLE_admin");
 
         // 创建令牌
-        String token = NanoIdUtils.randomNanoId();
+        String token ="USER"+NanoIdUtils.randomNanoId();
         String json= JSON.toJSONString(securityUser);
         redisService.set(token,json, BaseConfig.EXPIRATION, TimeUnit.SECONDS);
 

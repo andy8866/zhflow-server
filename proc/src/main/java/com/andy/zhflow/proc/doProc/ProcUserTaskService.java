@@ -219,8 +219,7 @@ public class ProcUserTaskService extends ProcService {
                 .list();
 
         String userId=list.get(0).getAssignee();
-        String appId = (String) task.getVariable("appId");
-        String superiorUserId = thirdCallService.getSuperiorUserId(appId,userId);
+        String superiorUserId = thirdCallService.getSuperiorUserId(task.getTenantId(),userId);
 
         task.setAssignee(superiorUserId);
     }
