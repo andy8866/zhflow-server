@@ -2,7 +2,8 @@ package com.andy.zhflow.proc.task;
 
 import com.andy.zhflow.proc.doProc.ProcTaskService;
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,9 @@ public class ProcTaskController {
 
     @Autowired
     private ProcTaskService procTaskService;
+
+    @Autowired
+    private IAuthService authService;
 
     @GetMapping(value="/getProcVar")
     public ResultResponse<Map<String,Object>> getProcVar(@RequestParam("taskId") String taskId) throws Exception {
@@ -48,7 +52,7 @@ public class ProcTaskController {
 
     @GetMapping(value="/getHistoryCompleteTask")
     public ResultResponse<List<ProcTaskOutVO>> getHistoryCompleteTask(){
-        List<ProcTaskOutVO> list=procTaskService.getHistoryCompleteTask(AuthUtil.getUserId());
+        List<ProcTaskOutVO> list=procTaskService.getHistoryCompleteTask(authService.getUserId());
         return ResultResponse.success(list);
     }
 }

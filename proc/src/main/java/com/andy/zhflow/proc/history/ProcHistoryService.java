@@ -1,7 +1,8 @@
 package com.andy.zhflow.proc.history;
 
 import com.andy.zhflow.amis.AmisPage;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -23,7 +24,7 @@ public class ProcHistoryService {
     private org.camunda.bpm.engine.HistoryService historyService;
 
     @Autowired
-    private RuntimeService runtimeService;
+    private IAuthService authService;
 
     @Autowired
     private RepositoryService repositoryService;
@@ -32,7 +33,7 @@ public class ProcHistoryService {
                                                   String userId) {
 
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery()
-                .tenantIdIn(AuthUtil.getAppId())
+                .tenantIdIn(authService.getAppId())
                 .orderByProcessInstanceStartTime().desc();
 
         if(StringUtils.isNotEmpty(userId)) query.startedBy(userId);

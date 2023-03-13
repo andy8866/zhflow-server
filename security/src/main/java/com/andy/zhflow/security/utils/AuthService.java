@@ -1,13 +1,16 @@
 package com.andy.zhflow.security.utils;
 
 import com.andy.zhflow.security.SecurityUser;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.vo.AppTokenVO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
-public class AuthUtil {
+@Component
+public class AuthService implements IAuthService {
 
-    public static Object getPrincipal(){
+    public Object getPrincipal(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 认证信息可能为空，因此需要进行判断。
         if (authentication!=null) {
@@ -17,7 +20,7 @@ public class AuthUtil {
         return null;
     }
 
-    public static String getUserId() {
+    public String getUserId() {
         SecurityUser securityUser=getSecurityUser();
         if(securityUser!=null) return securityUser.getId();
 
@@ -27,14 +30,14 @@ public class AuthUtil {
         return null;
     }
 
-    public static String getAppId() {
+    public String getAppId() {
         AppTokenVO appTokenVO=getAppTokenVO();
         if(appTokenVO!=null) return appTokenVO.getAppId();
 
         return null;
     }
 
-    public static SecurityUser getSecurityUser(){
+    public SecurityUser getSecurityUser(){
         Object principal =getPrincipal();
         if(principal instanceof SecurityUser){
             return (SecurityUser)principal;
@@ -43,7 +46,7 @@ public class AuthUtil {
         return null;
     }
 
-    public static AppTokenVO getAppTokenVO(){
+    public AppTokenVO getAppTokenVO(){
         Object principal =getPrincipal();
         if(principal instanceof AppTokenVO){
             return (AppTokenVO)principal;

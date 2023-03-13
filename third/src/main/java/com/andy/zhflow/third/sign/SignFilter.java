@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.TreeMap;
@@ -31,12 +32,14 @@ public class SignFilter implements Filter {
         String randKey=null;
         String sign=null;
 
-        if(StringUtils.isNotEmpty(request.getContentType()) && request.getContentType().contains("json")){
+        RepeatedlyReadRequestWrapper requestWrapper = new RepeatedlyReadRequestWrapper((HttpServletRequest) request);
+
+        if(StringUtils.isNotEmpty(requestWrapper.getContentType()) && requestWrapper.getContentType().contains("json")){
 
             StringBuffer jb = new StringBuffer();
             String line = null;
 
-            BufferedReader reader = request.getReader();
+            BufferedReader reader = requestWrapper.getReader();
             while ((line = reader.readLine()) != null) {
                 jb.append(line);
             }
@@ -55,10 +58,10 @@ public class SignFilter implements Filter {
 
         }else{
 
-            appId=request.getParameter("appId");
-            times=request.getParameter(SignUtil.TIMESTAMP_KEY);
-            randKey=request.getParameter(SignUtil.RAND_KEY);
-            sign=request.getParameter(SignUtil.SIGN_KEY);
+            appId=requestWrapper.getParameter("appId");
+            times=requestWrapper.getParameter(SignUtil.TIMESTAMP_KEY);
+            randKey=requestWrapper.getParameter(SignUtil.RAND_KEY);
+            sign=requestWrapper.getParameter(SignUtil.SIGN_KEY);
         }
 
         String key=App.getAppKey(appId);
@@ -76,7 +79,7 @@ public class SignFilter implements Filter {
             throw new RuntimeException(e);
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(requestWrapper,response);
     }
 
     @Override

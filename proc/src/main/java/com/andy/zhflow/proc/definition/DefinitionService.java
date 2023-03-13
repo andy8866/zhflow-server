@@ -2,7 +2,8 @@ package com.andy.zhflow.proc.definition;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -11,14 +12,11 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.annotation.ElementType;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,8 +26,12 @@ public class DefinitionService {
     @Autowired
     private RepositoryService repositoryService;
 
+    @Autowired
+    private IAuthService authService;
+
+
     public AmisPage<DefinitionOutputVO> getList(Integer page, Integer perPage) {
-        String appId=AuthUtil.getAppId();
+        String appId= authService.getAppId();
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
                 .tenantIdIn(appId)
                 .orderByDeploymentTime().desc()

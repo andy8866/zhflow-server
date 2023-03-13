@@ -1,8 +1,8 @@
 package com.andy.zhflow.proc.model;
 
 import com.andy.zhflow.entity.AppEntity;
-import com.andy.zhflow.entity.BaseEntity;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.third.app.App;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -20,11 +20,15 @@ import java.util.Date;
 @TableName("proc_model")
 public class Model extends AppEntity {
     private static ModelMapper modelMapper;
-
-
     @Autowired
     public void setModelMapper(ModelMapper mapper){
         modelMapper =mapper;
+    }
+
+    private static IAuthService authService;
+    @Autowired
+    public void setIAuthService(IAuthService authService){
+        Model.authService =authService;
     }
 
     private String name;
@@ -50,11 +54,11 @@ public class Model extends AppEntity {
 
         if(StringUtils.isNotEmpty(inputVO.getType())) model.setType(inputVO.getType());
 
-        if(StringUtils.isNotEmpty(AuthUtil.getAppId())) {
-            model.setAppId(AuthUtil.getAppId());
-            model.setAppName(App.getName(AuthUtil.getAppId()));
+        if(StringUtils.isNotEmpty(authService.getAppId())) {
+            model.setAppId(authService.getAppId());
+            model.setAppName(App.getName(authService.getAppId()));
         }
-        if(StringUtils.isNotEmpty(AuthUtil.getUserId())) model.setCreateUserId(AuthUtil.getUserId());
+        if(StringUtils.isNotEmpty(authService.getUserId())) model.setCreateUserId(authService.getUserId());
 
         if(model.getIsNew()){
             modelMapper.insert(model);

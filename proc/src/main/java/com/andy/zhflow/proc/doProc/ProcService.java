@@ -2,7 +2,7 @@ package com.andy.zhflow.proc.doProc;
 
 import com.andy.zhflow.bean.BeanService;
 import com.andy.zhflow.proc.BpmnConstant;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.utils.DateUtil;
 import org.camunda.bpm.engine.HistoryService;
@@ -37,8 +37,11 @@ public class ProcService {
     @Autowired
     protected BeanService beanService;
 
+    @Autowired
+    private IAuthService authService;
+
     public VariableMap initProcVarMap(){
-        String userId= AuthUtil.getUserId();
+        String userId= authService.getUserId();
 
         VariableMap variables = Variables.createVariables();
         variables.put(BpmnConstant.ATTR_INITIATOR, userId);

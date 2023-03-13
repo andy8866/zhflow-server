@@ -9,9 +9,10 @@ import com.andy.zhflow.proc.FlowCommentType;
 import com.andy.zhflow.proc.copy.CopyService;
 import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.service.third.IThirdCallService;
 import com.andy.zhflow.service.user.IUserService;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +70,8 @@ public class ProcUserTaskService extends ProcService {
     @Autowired
     protected IThirdCallService thirdCallService;
 
-
+    @Autowired
+    protected IAuthService authService;
     /**
      * 待办任务
      * @param page
@@ -80,7 +82,7 @@ public class ProcUserTaskService extends ProcService {
     public AmisPage<ProcTaskOutVO> getAgendaList(Integer page, Integer perPage, String userId) {
 
         TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(userId)
-                .tenantIdIn(AuthUtil.getAppId())
+                .tenantIdIn(authService.getAppId())
                 .initializeFormKeys()
                 .orderByTaskCreateTime().desc();
 
@@ -96,7 +98,7 @@ public class ProcUserTaskService extends ProcService {
     public AmisPage<ProcTaskOutVO> getClaimList(Integer page, Integer perPage, String userId) {
 
         TaskQuery taskQuery = taskService.createTaskQuery()
-                .tenantIdIn(AuthUtil.getAppId())
+                .tenantIdIn(authService.getAppId())
                 .initializeFormKeys().orderByTaskCreateTime().desc()
                 .or().taskCandidateUser(userId).taskCandidateGroupIn(getCandidateGroup(userId)).endOr();
 
@@ -111,7 +113,7 @@ public class ProcUserTaskService extends ProcService {
 
 
     public void claim(String taskId) {
-        taskService.claim(taskId, AuthUtil.getUserId());
+        taskService.claim(taskId, authService.getUserId());
     }
 
     public void pass(String taskId, Map<String,Object> inputVO) throws Exception {
@@ -149,9 +151,9 @@ public class ProcUserTaskService extends ProcService {
 
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
         StringBuilder commentBuilder = new StringBuilder(
-                thirdCallService.getUserNameById(AuthUtil.getAppId(),AuthUtil.getUserId()))
+                thirdCallService.getUserNameById(authService.getAppId(), authService.getUserId()))
                 .append("->")
-                .append(thirdCallService.getUserNameById(AuthUtil.getAppId(),toUserId));
+                .append(thirdCallService.getUserNameById(authService.getAppId(),toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -159,7 +161,7 @@ public class ProcUserTaskService extends ProcService {
 
         taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.DELEGATE,inputVO).toJson());
 
-        taskService.setOwner(taskId, AuthUtil.getUserId());
+        taskService.setOwner(taskId, authService.getUserId());
         taskService.delegateTask(taskId, toUserId);
 
         copyService.makeCopy(taskId,inputVO);
@@ -172,9 +174,9 @@ public class ProcUserTaskService extends ProcService {
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
 
         StringBuilder commentBuilder = new StringBuilder(
-                thirdCallService.getUserNameById(AuthUtil.getAppId(),AuthUtil.getUserId()))
+                thirdCallService.getUserNameById(authService.getAppId(), authService.getUserId()))
                 .append("->")
-                .append(thirdCallService.getUserNameById(AuthUtil.getAppId(),toUserId));
+                .append(thirdCallService.getUserNameById(authService.getAppId(),toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -182,7 +184,7 @@ public class ProcUserTaskService extends ProcService {
 
         taskService.createComment(taskId,task.getProcessInstanceId(), TaskCommentVO.createComment(FlowCommentType.TRANSFER,inputVO).toJson());
 
-        taskService.setOwner(taskId, AuthUtil.getUserId());
+        taskService.setOwner(taskId, authService.getUserId());
         taskService.setAssignee(taskId,toUserId);
 
         copyService.makeCopy(taskId,inputVO);

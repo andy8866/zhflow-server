@@ -1,8 +1,9 @@
 package com.andy.zhflow.proc.ui;
 
 import com.andy.zhflow.entity.AppEntity;
-import com.andy.zhflow.entity.BaseEntity;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.proc.model.Model;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.third.app.App;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -23,6 +24,12 @@ public class Ui extends AppEntity {
     @Autowired
     public void setUiMapper(UiMapper mapper){
         uiMapper =mapper;
+    }
+
+    private static IAuthService authService;
+    @Autowired
+    public void setIAuthService(IAuthService authService){
+        Ui.authService =authService;
     }
 
     private String name;
@@ -48,11 +55,11 @@ public class Ui extends AppEntity {
         if(StringUtils.isNotEmpty(inputVO.getName())) ui.setName(inputVO.getName());
         if(StringUtils.isNotEmpty(inputVO.getContent())) ui.setContent(inputVO.getContent());
 
-        if(StringUtils.isNotEmpty(AuthUtil.getAppId())) {
-            ui.setAppId(AuthUtil.getAppId());
-            ui.setAppName(App.getName(AuthUtil.getAppId()));
+        if(StringUtils.isNotEmpty(authService.getAppId())) {
+            ui.setAppId(authService.getAppId());
+            ui.setAppName(App.getName(authService.getAppId()));
         }
-        if(StringUtils.isNotEmpty(AuthUtil.getUserId())) ui.setCreateUserId(AuthUtil.getUserId());
+        if(StringUtils.isNotEmpty(authService.getUserId())) ui.setCreateUserId(authService.getUserId());
 
 
         if(ui.getIsNew() || !find){
@@ -70,7 +77,8 @@ public class Ui extends AppEntity {
     }
 
     public static List<Ui> getCompList(String name) {
-        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().orderByDesc(Ui::getUpdateTime);
+        LambdaQueryWrapper<Ui> wrapper=new LambdaQueryWrapper<Ui>().eq(Ui::getAppId, authService.getAppId())
+                .orderByDesc(Ui::getUpdateTime);
         if(StringUtils.isNotEmpty(name)) wrapper.like(Ui::getName,name);
         return uiMapper.selectList(wrapper);
     }

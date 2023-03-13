@@ -9,9 +9,10 @@ import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.proc.BpmnConstant;
 import com.andy.zhflow.proc.BpmnUtil;
 import com.andy.zhflow.proc.doProc.ProcService;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.service.uiPage.IUiPageService;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.user.UserService;
@@ -73,16 +74,18 @@ public class InstanceService {
     @Autowired
     protected IDeptService deptService;
 
+    @Autowired
+    protected IAuthService authService;
 
     public void startProc(String procKey, Map<String,Object> vars) {
-        String userId= AuthUtil.getUserId();
+        String userId= authService.getUserId();
         identityService.setAuthenticatedUserId(userId);
 
         VariableMap variableMap = procService.initProcVarMap();
         if(vars!=null) variableMap.putAll(vars);
 
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey(procKey).tenantIdIn(AuthUtil.getAppId()).latestVersion().singleResult();
+                .processDefinitionKey(procKey).tenantIdIn(authService.getAppId()).latestVersion().singleResult();
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(),variableMap);;
     }

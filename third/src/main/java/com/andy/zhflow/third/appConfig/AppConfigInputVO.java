@@ -11,5 +11,4 @@ public class AppConfigInputVO {
     private String name;
 
     private String httpUrlPath;
-    private String httpMethod;
 }

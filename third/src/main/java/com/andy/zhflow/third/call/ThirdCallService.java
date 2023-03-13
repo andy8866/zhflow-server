@@ -29,11 +29,8 @@ public class ThirdCallService implements IThirdCallService {
         String resultStr;
         String url=app.getRootUrl()+configVO.getHttpUrlPath();
 
-        if(configVO.getHttpMethod().equals("get")){
-            resultStr = OkHttpUtil.get(url, params,signMap, app.getSecretKey());
-        }else{
-            resultStr = OkHttpUtil.postJsonParams(url,signMap, app.getSecretKey(),params);
-        }
+//        resultStr = OkHttpUtil.get(url, params,signMap, app.getSecretKey());
+        resultStr = OkHttpUtil.postJsonParams(url,signMap, app.getSecretKey(),params);
 
         log.info(String.valueOf(clazz));
         ResultResponse<T> resultResponse = JSON.parseObject(resultStr, new TypeReference<ResultResponse<T>>() {});

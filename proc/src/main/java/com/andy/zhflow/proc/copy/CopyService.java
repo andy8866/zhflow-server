@@ -1,9 +1,9 @@
 package com.andy.zhflow.proc.copy;
 
 import com.andy.zhflow.proc.BpmnConstant;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.service.third.IThirdCallService;
-import com.andy.zhflow.service.user.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RepositoryService;
@@ -25,6 +25,9 @@ public class CopyService {
 
     @Autowired
     private IThirdCallService thirdCallService;
+
+    @Autowired
+    private IAuthService authService;
 
     public void makeCopy(String taskId, Map<String,Object> inputVO) throws Exception {
         String userIds = (String) inputVO.getOrDefault(BpmnConstant.VAR_COPY_USER_IDS, null);
@@ -54,10 +57,10 @@ public class CopyService {
             copy.setProcName(historicProcessInstance.getProcessDefinitionName());
 
             copy.setUserId(userId);
-            copy.setUserName(thirdCallService.getUserNameById(AuthUtil.getAppId(),userId));
+            copy.setUserName(thirdCallService.getUserNameById(authService.getAppId(),userId));
 
-            copy.setOriginatorId(AuthUtil.getUserId());
-            copy.setOriginatorName(thirdCallService.getUserNameById(AuthUtil.getAppId(),AuthUtil.getUserId()));
+            copy.setOriginatorId(authService.getUserId());
+            copy.setOriginatorName(thirdCallService.getUserNameById(authService.getAppId(), authService.getUserId()));
 
             copy.save();
         }

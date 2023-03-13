@@ -2,7 +2,8 @@ package com.andy.zhflow.proc.model;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class ModelController {
     @Autowired
     private ModelService modelService;
 
+    @Autowired
+    private IAuthService authService;
+
 
     @PostMapping(value="/save")
     public ResultResponse<String> save(@RequestBody() ModelInputVO inputVO) throws Exception {
@@ -25,7 +29,7 @@ public class ModelController {
     @GetMapping(value="/getList")
     public ResultResponse<AmisPage<Model>> getList(@RequestParam("page") Integer page, @RequestParam("perPage") Integer perPage) {
 
-        String appId= AuthUtil.getAppId();
+        String appId= authService.getAppId();
         IPage<Model> item = Model.selectPage(page, perPage,appId);
 
         return ResultResponse.success(AmisPage.transitionPage(item));

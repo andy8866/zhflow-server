@@ -1,20 +1,21 @@
 package com.andy.zhflow.user;
 
 import com.andy.zhflow.response.ResultResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController()
 @RequestMapping(value = "/api/third/user")
 public class UserApiController {
 
-    @GetMapping(value = "/getListToSelect")
-    public ResultResponse<List<UserSelectOutVO>> getListToSelect(@RequestParam(value = "name", required = false) String name) {
+    @PostMapping(value = "/getListToSelect")
+    public ResultResponse<List<UserSelectOutVO>> getListToSelect(@RequestBody Map<String,String> map) {
+        String name=map.getOrDefault("name",null);
         List<UserSelectOutVO> list = User.getListToSelect(name);
         return ResultResponse.success(list);
     }
@@ -23,13 +24,15 @@ public class UserApiController {
      * 获取上级用户
      * @return
      */
-    @GetMapping(value = "/getSuperiorUserId")
-    public ResultResponse<String> getSuperiorUserId(@RequestParam(value = "userId") String userId) {
+    @PostMapping(value = "/getSuperiorUserId")
+    public ResultResponse<String> getSuperiorUserId(@RequestBody Map<String,String> map) {
+        String userId=map.getOrDefault("userId",null);
         return ResultResponse.success("Qsw0NCe5n1RxA5Xh1c-td");
     }
 
-    @GetMapping(value = "/getUserNameById")
-    public ResultResponse<String> getUserNameById(@RequestParam(value = "userId") String userId) {
+    @PostMapping(value = "/getUserNameById")
+    public ResultResponse<String> getUserNameById(@RequestBody Map<String,String> map) {
+        String userId=map.getOrDefault("userId",null);
         return ResultResponse.success(User.getNameById(userId));
     }
 }

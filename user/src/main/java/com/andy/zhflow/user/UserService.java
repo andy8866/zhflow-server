@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.andy.zhflow.config.BaseConfig;
 import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.security.SecurityUser;
-import com.andy.zhflow.security.utils.AuthUtil;
+import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.service.user.IUserService;
 import com.andy.zhflow.service.user.UserOutVO;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,8 +22,11 @@ public class UserService implements IUserService {
     @Resource
     private RedisService redisService;
 
+    @Autowired
+    private IAuthService authService;
+
     public User getCurrentUser() {
-        String id= AuthUtil.getUserId();
+        String id= authService.getUserId();
         return User.getById(id);
     }
 

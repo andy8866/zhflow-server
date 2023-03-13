@@ -28,8 +28,6 @@ public class AppConfig extends BaseEntity {
     private String name;
 
     private String httpUrlPath;
-    private String httpMethod;
-
     private Boolean canDel;
 
     public static List<AppConfig> getList(String appId,String type) {
@@ -53,7 +51,6 @@ public class AppConfig extends BaseEntity {
         if(StringUtils.isNotEmpty(inputVO.getName())) item.setName(inputVO.getName());
 
         if(StringUtils.isNotEmpty(inputVO.getHttpUrlPath())) item.setHttpUrlPath(inputVO.getHttpUrlPath());
-        if(StringUtils.isNotEmpty(inputVO.getHttpMethod())) item.setHttpMethod(inputVO.getHttpMethod());
 
         if(item.getIsNew()){
             appConfigMapper.insert(item);
