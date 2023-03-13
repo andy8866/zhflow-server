@@ -1,11 +1,11 @@
-package com.andy.zhflow.user;
+package com.andy.zhflow.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserSelectOutVO {
+public class SelectOutVO {
     private String value;
     private String label;
 }

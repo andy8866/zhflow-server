@@ -1,6 +1,7 @@
 package com.andy.zhflow.user;
 
 import com.andy.zhflow.response.ResultResponse;
+import com.andy.zhflow.vo.SelectOutVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +15,9 @@ import java.util.Map;
 public class UserApiController {
 
     @PostMapping(value = "/getListToSelect")
-    public ResultResponse<List<UserSelectOutVO>> getListToSelect(@RequestBody Map<String,String> map) {
+    public ResultResponse<List<SelectOutVO>> getListToSelect(@RequestBody Map<String,String> map) {
         String name=map.getOrDefault("name",null);
-        List<UserSelectOutVO> list = User.getListToSelect(name);
+        List<SelectOutVO> list = User.getListToSelect(name);
         return ResultResponse.success(list);
     }
 

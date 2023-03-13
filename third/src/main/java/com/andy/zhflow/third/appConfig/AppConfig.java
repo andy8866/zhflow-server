@@ -62,6 +62,10 @@ public class AppConfig extends BaseEntity {
         return item.getId();
     }
 
+    public void insert(){
+        appConfigMapper.insert(this);
+    }
+
 
     public static AppConfig getConfig(String appId, String code){
         LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()

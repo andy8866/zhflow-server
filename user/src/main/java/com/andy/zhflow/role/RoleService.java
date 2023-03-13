@@ -2,6 +2,7 @@ package com.andy.zhflow.role;
 
 import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.user.User;
+import com.andy.zhflow.vo.SelectOutVO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,13 +19,13 @@ public class RoleService implements IRoleService {
         );
     }
 
-    public List<RoleSelectOutVO> getListToSelect() {
+    public List<SelectOutVO> getListToSelect() {
         List<RoleOutVO> list=getList();
 
-        List<RoleSelectOutVO> outList=new ArrayList<>();
+        List<SelectOutVO> outList=new ArrayList<>();
 
         for (RoleOutVO item:list){
-            outList.add(new RoleSelectOutVO(item.getName(),item.getId()));
+            outList.add(new SelectOutVO(item.getName(),item.getId()));
         }
 
         return outList;

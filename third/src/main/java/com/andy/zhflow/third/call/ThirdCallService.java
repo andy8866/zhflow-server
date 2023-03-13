@@ -7,6 +7,7 @@ import com.andy.zhflow.third.app.App;
 import com.andy.zhflow.third.appConfig.AppConfig;
 import com.andy.zhflow.third.okHttp.OkHttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -21,16 +22,24 @@ public class ThirdCallService implements IThirdCallService {
     public <T> T callApi(String appId, String code, Map<String, Object> params,Class<T> clazz) throws Exception {
         App app=App.getApp(appId);
 
-        AppConfig configVO= AppConfig.getConfig(appId,code);
+        String urlPath="";
+
+        if(code.equals(ThirdCallCodeConstant.GET_APP_TOKEN)){
+            urlPath="/api/third/token/getToken";
+        }else{
+            AppConfig configVO= AppConfig.getConfig(appId,code);
+            urlPath=configVO.getHttpUrlPath();
+        }
 
         Map<String, Object> signMap=new HashMap<>();
         signMap.put("appId",appId);
 
         String resultStr;
-        String url=app.getRootUrl()+configVO.getHttpUrlPath();
+        String url=app.getRootUrl()+urlPath;
 
 //        resultStr = OkHttpUtil.get(url, params,signMap, app.getSecretKey());
         resultStr = OkHttpUtil.postJsonParams(url,signMap, app.getSecretKey(),params);
+        if(StringUtils.isEmpty(resultStr)) throw new Exception("第三方返回数据为空或第三方调用接口错误");
 
         log.info(String.valueOf(clazz));
         ResultResponse<T> resultResponse = JSON.parseObject(resultStr, new TypeReference<ResultResponse<T>>() {});

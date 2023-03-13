@@ -1,6 +1,7 @@
 package com.andy.zhflow.dept;
 
 import com.andy.zhflow.response.ResultResponse;
+import com.andy.zhflow.vo.SelectOutVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,8 @@ public class DeptApiController {
     private DeptService deptService;
 
     @PostMapping(value="/getListToSelect")
-    public ResultResponse<List<DeptSelectOutVO>> getListToSelect() {
-        List<DeptSelectOutVO> list = deptService.getListToSelect();
+    public ResultResponse<List<SelectOutVO>> getListToSelect() {
+        List<SelectOutVO> list = deptService.getListToSelect();
         return ResultResponse.success(list);
     }
 

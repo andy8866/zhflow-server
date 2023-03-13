@@ -2,6 +2,7 @@ package com.andy.zhflow.user;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.andy.zhflow.entity.BaseEntity;
+import com.andy.zhflow.vo.SelectOutVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -58,12 +59,12 @@ public class User extends BaseEntity {
         return userMapper.selectList(wrapper);
     }
 
-    public static List<UserSelectOutVO> getListToSelect(String name) {
+    public static List<SelectOutVO> getListToSelect(String name) {
         List<User> list=getListNoPage(name);
 
-        List<UserSelectOutVO> outList=new ArrayList<>();
+        List<SelectOutVO> outList=new ArrayList<>();
         for (User user:list){
-            outList.add(new UserSelectOutVO(user.getId(),user.getUserName()));
+            outList.add(new SelectOutVO(user.getId(),user.getUserName()));
         }
 
         return outList;

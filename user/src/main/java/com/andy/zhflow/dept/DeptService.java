@@ -2,6 +2,7 @@ package com.andy.zhflow.dept;
 
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.user.User;
+import com.andy.zhflow.vo.SelectOutVO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,13 +19,13 @@ public class DeptService implements IDeptService {
         );
     }
 
-    public List<DeptSelectOutVO> getListToSelect() {
+    public List<SelectOutVO> getListToSelect() {
         List<DeptOutVO> list=getList();
 
-        List<DeptSelectOutVO> outList=new ArrayList<>();
+        List<SelectOutVO> outList=new ArrayList<>();
 
         for (DeptOutVO item:list){
-            outList.add(new DeptSelectOutVO(item.getName(),item.getId()));
+            outList.add(new SelectOutVO(item.getName(),item.getId()));
         }
 
         return outList;

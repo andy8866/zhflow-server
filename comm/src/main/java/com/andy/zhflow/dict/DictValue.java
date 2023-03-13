@@ -20,8 +20,6 @@ import java.util.Map;
 public class DictValue extends BaseEntity {
     private static DictValueMapper dictValueMapper;
 
-
-
     @Autowired
     public void setDictGroupMapper(DictValueMapper mapper){
         dictValueMapper =mapper;

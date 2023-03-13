@@ -30,4 +30,6 @@ public class AppConfigController {
         AppConfig.delById(id);
         return ResultResponse.success();
     }
+
+
 }

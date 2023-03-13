@@ -2,6 +2,7 @@ package com.andy.zhflow.user;
 
 import com.andy.zhflow.amis.AmisPage;
 import com.andy.zhflow.response.ResultResponse;
+import com.andy.zhflow.vo.SelectOutVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,8 +57,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/getListToSelect")
-    public ResultResponse<List<UserSelectOutVO>> getListToSelect(@RequestParam(value = "name", required = false) String name) {
-        List<UserSelectOutVO> list = User.getListToSelect(name);
+    public ResultResponse<List<SelectOutVO>> getListToSelect(@RequestParam(value = "name", required = false) String name) {
+        List<SelectOutVO> list = User.getListToSelect(name);
         return ResultResponse.success(list);
     }
 }

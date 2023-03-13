@@ -1,6 +1,7 @@
 package com.andy.zhflow.role;
 
 import com.andy.zhflow.response.ResultResponse;
+import com.andy.zhflow.vo.SelectOutVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,8 @@ public class RoleApiController {
     private RoleService roleService;
 
     @PostMapping(value="/getListToSelect")
-    public ResultResponse<List<RoleSelectOutVO>> getListToSelect() {
-        List<RoleSelectOutVO> list = roleService.getListToSelect();
+    public ResultResponse<List<SelectOutVO>> getListToSelect() {
+        List<SelectOutVO> list = roleService.getListToSelect();
         return ResultResponse.success(list);
     }
 
