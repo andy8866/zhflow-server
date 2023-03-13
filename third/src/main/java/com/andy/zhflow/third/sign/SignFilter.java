@@ -64,6 +64,8 @@ public class SignFilter implements Filter {
             sign=requestWrapper.getParameter(SignUtil.SIGN_KEY);
         }
 
+        if(StringUtils.isEmpty(appId)) throw new RuntimeException("缺少appId");
+
         String key=App.getAppKey(appId);
         if(StringUtils.isEmpty(key)) throw new RuntimeException("appKey未配置");
 

@@ -30,6 +30,7 @@ security:
     - /api/dept/**
     - /api/role/**
     - /api/user/**
+    - /api/thirdCall/**
 
 base-config:
   expire: 86400

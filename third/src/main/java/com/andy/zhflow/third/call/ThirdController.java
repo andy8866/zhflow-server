@@ -11,19 +11,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController()
-@RequestMapping(value = "/api/third")
+@RequestMapping(value = "/api/thirdCall")
 public class ThirdController {
 
     @Autowired
     private IThirdCallService thirdCallService;
 
     @Autowired
-    private BaseConfig baseConfig;
-
-    @Autowired
     private IAuthService authService;
 
-    @PostMapping(value="/call")
+    @PostMapping(value="")
     public ResultResponse<Object> call(@RequestBody() Map<String,Object> params) throws Exception {
 
         String appId= authService.getAppId();
