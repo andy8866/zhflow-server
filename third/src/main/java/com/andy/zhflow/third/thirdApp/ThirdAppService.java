@@ -101,4 +101,19 @@ public class ThirdAppService implements IThirdAppService {
         params.put("type", type);
         return callApi(appId,"getDictValueMap", params,new TypeReference<Map<String,String>>() {});
     }
+
+    public void taskComplete(String appId, Map<String,Object> params) throws Exception {
+        params.put("appId", appId);
+        callApi(appId,"taskComplete", params);
+    }
+
+    public void procComplete(String appId, Map<String,Object> params) throws Exception {
+        params.put("appId", appId);
+        callApi(appId,"procComplete", params);
+    }
+
+    public void startProc(String appId, Map<String,Object> params) throws Exception {
+        params.put("appId", appId);
+        callApi(appId,"startProc", params);
+    }
 }

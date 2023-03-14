@@ -13,6 +13,7 @@ import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.service.security.IAuthService;
+import com.andy.zhflow.service.thirdApp.IThirdAppService;
 import com.andy.zhflow.service.uiPage.IUiPageService;
 import com.andy.zhflow.user.User;
 import com.andy.zhflow.user.UserService;
@@ -77,7 +78,10 @@ public class InstanceService {
     @Autowired
     protected IAuthService authService;
 
-    public void startProc(String procKey, Map<String,Object> vars) {
+    @Autowired
+    protected IThirdAppService thirdAppService;
+
+    public void startProc(String procKey, Map<String,Object> vars) throws Exception {
         String userId= authService.getUserId();
         identityService.setAuthenticatedUserId(userId);
 
@@ -87,7 +91,10 @@ public class InstanceService {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(procKey).tenantIdIn(authService.getAppId()).latestVersion().singleResult();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(),variableMap);;
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(),variableMap);
+
+        variableMap.put("procInsId",processInstance.getProcessInstanceId());
+        thirdAppService.startProc(authService.getAppId(),variableMap);
     }
 
     public AmisPage<InstanceOutputVO> getList(Integer page, Integer perPage) {

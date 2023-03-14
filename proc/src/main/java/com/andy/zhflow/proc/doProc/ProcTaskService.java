@@ -8,6 +8,7 @@ import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
 import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.security.IAuthService;
+import com.andy.zhflow.service.thirdApp.IThirdAppService;
 import com.andy.zhflow.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
@@ -15,7 +16,9 @@ import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.history.HistoricDetail;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
+import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.task.DelegationState;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +55,8 @@ public class ProcTaskService extends ProcService{
 
     @Autowired
     private IAuthService authService;
+    @Autowired
+    private IThirdAppService thirdAppService;
 
     public List<ProcTaskOutVO> convertTaskOutList(List<Task> list){
         List<ProcTaskOutVO> outList = ProcTaskOutVO.convertList(list);
@@ -82,6 +87,16 @@ public class ProcTaskService extends ProcService{
             taskService.resolveTask(taskId,inputVO);
         }else{
             taskService.complete(taskId,inputVO);
+
+            Map<String, Object> procVar = getProcVarByProcessInstanceId(task.getProcessInstanceId());
+            procVar.put("taskId",taskId);
+            procVar.put("procInsId",task.getProcessInstanceId());
+            thirdAppService.taskComplete(task.getTenantId(),procVar);
+
+            HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+            if("COMPLETED".equals(historicProcessInstance.getState())){
+                thirdAppService.procComplete(task.getTenantId(),procVar);
+            }
         }
 
         copyService.makeCopy(taskId,inputVO);
@@ -124,6 +139,17 @@ public class ProcTaskService extends ProcService{
         ProcRuntimeVO procRuntimeVO = getProcRuntimeVO(taskId);
         String firstTaskDefinitionKey = definitionService.getFirstTaskDefinitionKey(procRuntimeVO.getProcessDefinitionId());
         return getTaskLastVar(procRuntimeVO.getProcessInstanceId(),firstTaskDefinitionKey,false);
+    }
+
+    public Map<String, Object> getTaskHistoryVar(String taskId) {
+        List<HistoricVariableInstance> list = historyService.createHistoricVariableInstanceQuery().taskIdIn(taskId).list();
+
+        Map<String, Object> variables = new HashMap<>();
+        for (HistoricVariableInstance variableInstance:list){
+            variables.put(variableInstance.getName(),variableInstance.getValue());
+        }
+
+        return variables;
     }
 
     public List<ProcTaskOutVO> getHistoryCompleteTask(String userId) {

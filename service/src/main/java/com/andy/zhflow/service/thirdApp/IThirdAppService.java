@@ -18,4 +18,8 @@ public interface IThirdAppService {
     List<SelectOutVO> getUserListToSelect(String appId) throws Exception;
 
     Map<String,String> getDictValueMap(String appId, String type)  throws Exception;
+    void taskComplete(String appId, Map<String,Object> params) throws Exception;
+    void procComplete(String appId, Map<String,Object> params) throws Exception;
+
+    void startProc(String appId, Map<String,Object>  variableMap)throws Exception;
 }
