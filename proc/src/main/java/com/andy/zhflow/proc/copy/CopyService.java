@@ -1,12 +1,10 @@
 package com.andy.zhflow.proc.copy;
 
 import com.andy.zhflow.proc.BpmnConstant;
-import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.security.IAuthService;
-import com.andy.zhflow.service.third.IThirdCallService;
+import com.andy.zhflow.service.thirdApp.IThirdAppService;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
-import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +19,7 @@ public class CopyService {
     private HistoryService historyService;
 
     @Autowired
-    private RepositoryService repositoryService;
-
-    @Autowired
-    private IThirdCallService thirdCallService;
+    private IThirdAppService thirdAppService;
 
     @Autowired
     private IAuthService authService;
@@ -59,10 +54,10 @@ public class CopyService {
             copy.setProcName(historicProcessInstance.getProcessDefinitionName());
 
             copy.setUserId(userId);
-            copy.setUserName(thirdCallService.getUserNameById(authService.getAppId(),userId));
+            copy.setUserName(thirdAppService.getUserNameById(historicTaskInstance.getTenantId(),userId));
 
             copy.setOriginatorId(authService.getUserId());
-            copy.setOriginatorName(thirdCallService.getUserNameById(authService.getAppId(), authService.getUserId()));
+            copy.setOriginatorName(thirdAppService.getUserNameById(historicTaskInstance.getTenantId(), authService.getUserId()));
 
             copy.save();
         }

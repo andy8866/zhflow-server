@@ -1,17 +1,12 @@
 package com.andy.zhflow.third.app;
 
 import com.andy.zhflow.response.ResultResponse;
-import com.andy.zhflow.third.appConfig.AppConfig;
-import com.andy.zhflow.third.token.TokenApiService;
-import com.andy.zhflow.uiPage.UiPage;
-import com.andy.zhflow.uiPage.UiPageInputVO;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController()
 @RequestMapping(value = "/api/app")
@@ -47,5 +42,13 @@ public class AppController {
     public ResultResponse<Void> copyConfig(@RequestBody AppConfigCopyInputVO appConfigCopyInputVO) throws Exception {
         appService.copyConfig(appConfigCopyInputVO);
         return ResultResponse.success();
+    }
+
+    @GetMapping(value="/switchApp")
+    public ResultResponse<String> switchApp(@RequestParam("appId") String appId) throws Exception {
+        if(StringUtils.isEmpty(appId)) appId=appService.getFirstAppId();
+
+        String appToken=appService.switchApp(appId);
+        return ResultResponse.success(appToken);
     }
 }

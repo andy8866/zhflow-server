@@ -9,11 +9,10 @@ import com.andy.zhflow.proc.FlowCommentType;
 import com.andy.zhflow.proc.copy.CopyService;
 import com.andy.zhflow.proc.task.ProcTaskOutVO;
 import com.andy.zhflow.proc.task.TaskCommentVO;
-import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.dept.IDeptService;
 import com.andy.zhflow.service.role.IRoleService;
 import com.andy.zhflow.service.security.IAuthService;
-import com.andy.zhflow.service.third.IThirdCallService;
+import com.andy.zhflow.service.thirdApp.IThirdAppService;
 import com.andy.zhflow.service.user.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.HistoryService;
@@ -68,7 +67,7 @@ public class ProcUserTaskService extends ProcService {
     protected IDeptService deptService;
 
     @Autowired
-    protected IThirdCallService thirdCallService;
+    protected IThirdAppService thirdAppService;
 
     @Autowired
     protected IAuthService authService;
@@ -151,9 +150,9 @@ public class ProcUserTaskService extends ProcService {
 
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
         StringBuilder commentBuilder = new StringBuilder(
-                thirdCallService.getUserNameById(authService.getAppId(), authService.getUserId()))
+                thirdAppService.getUserNameById(authService.getAppId(),authService.getUserId()))
                 .append("->")
-                .append(thirdCallService.getUserNameById(authService.getAppId(),toUserId));
+                .append(thirdAppService.getUserNameById(authService.getAppId(),toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -174,9 +173,9 @@ public class ProcUserTaskService extends ProcService {
         String toUserId= (String) inputVO.getOrDefault("toUserId","");
 
         StringBuilder commentBuilder = new StringBuilder(
-                thirdCallService.getUserNameById(authService.getAppId(), authService.getUserId()))
+                thirdAppService.getUserNameById(authService.getAppId(), authService.getUserId()))
                 .append("->")
-                .append(thirdCallService.getUserNameById(authService.getAppId(),toUserId));
+                .append(thirdAppService.getUserNameById(authService.getAppId(),toUserId));
 
         String comment= (String) inputVO.getOrDefault(BpmnConstant.VAR_COMMENT,"");
         if (StringUtils.isNotBlank(comment)) commentBuilder.append(": ").append(comment);
@@ -219,7 +218,7 @@ public class ProcUserTaskService extends ProcService {
                 .list();
 
         String userId=list.get(0).getAssignee();
-        String superiorUserId = thirdCallService.getSuperiorUserId(task.getTenantId(),userId);
+        String superiorUserId = thirdAppService.getSuperiorUserId(task.getTenantId(),userId);
 
         task.setAssignee(superiorUserId);
     }

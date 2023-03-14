@@ -23,18 +23,11 @@ security:
     - /api/admin/website/**
     - /api/admin/uiPage/getUiByCode/**
     - /api/security/validateToken**
-    - /api/third/**
-  app-permits:
-    - /api/proc/**
-    - /api/admin/dict/**
-    - /api/dept/**
-    - /api/role/**
-    - /api/user/**
-    - /api/thirdCall/**
+    - /api/serviceThirdApp/**
+    - /api/thirdApp/**
 
 base-config:
   expire: 86400
-  third-app-id: 7CG1TlaLygU6hbQNhlzFU
 
 camunda:
   bpm:

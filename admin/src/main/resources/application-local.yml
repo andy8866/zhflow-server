@@ -20,6 +20,3 @@ spring:
         min-idle: 5
     timeout: 5000ms     # 连接超时时间（毫秒）
     password: 123456
-
-feign:
-  url: http://localhost:${server.port}

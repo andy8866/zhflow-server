@@ -18,6 +18,4 @@ public class BaseConfig {
         this.expire = expire;
         BaseConfig.EXPIRATION=expire;
     }
-
-    private String thirdAppId ="7CG1TlaLygU6hbQNhlzFU";
 }

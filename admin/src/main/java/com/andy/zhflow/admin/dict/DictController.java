@@ -43,12 +43,6 @@ public class DictController {
         return ResultResponse.success(id);
     }
 
-    @GetMapping(value="/getValueList")
-    public ResultResponse<List<DictValue>> getValueList(@RequestParam("type") String type) {
-        List<DictValue> list = DictValue.getListByType(type);
-        return ResultResponse.success(list);
-    }
-
     @GetMapping(value="/getValueMap")
     public ResultResponse<Map<String,String>> getValueMap(@RequestParam("type") String type) {
         Map<String,String> map = DictValue.getValueMap(type);

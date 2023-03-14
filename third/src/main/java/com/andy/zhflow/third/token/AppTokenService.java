@@ -3,6 +3,7 @@ package com.andy.zhflow.third.token;
 import com.alibaba.fastjson.JSON;
 import com.andy.zhflow.config.BaseConfig;
 import com.andy.zhflow.redis.service.RedisService;
+import com.andy.zhflow.service.thirdApp.IAppTokenService;
 import com.andy.zhflow.vo.AppTokenVO;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,12 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class TokenApiService {
+public class AppTokenService implements IAppTokenService {
     @Autowired
     private RedisService redisService;
 
 
-    public String getToken(String appId,String userId) throws Exception {
+    public String getAppToken(String appId, String userId) throws Exception {
 
         // 创建令牌
         String token ="APP"+NanoIdUtils.randomNanoId();

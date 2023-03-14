@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.TreeMap;
 
 @Slf4j
-@WebFilter(urlPatterns = {"/api/third/*"},filterName = "signFilter")
+@WebFilter(urlPatterns = {"/api/serviceThirdApp/*"},filterName = "signFilter")
 public class SignFilter implements Filter {
 
     @Override

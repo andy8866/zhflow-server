@@ -23,6 +23,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.andy.zhflow</groupId>
+            <artifactId>comm</artifactId>
+            <version>${version}</version>
+        </dependency>
     </dependencies>
 
 </project>

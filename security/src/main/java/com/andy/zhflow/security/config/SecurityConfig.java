@@ -13,6 +13,4 @@ import java.util.List;
 public class SecurityConfig {
 
     public List<String> permits=new ArrayList<>();
-
-    public List<String> appPermits=new ArrayList<>();
 }

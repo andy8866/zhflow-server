@@ -58,8 +58,7 @@ public class SecurityStarterAutoConfigure {
 
         http.authorizeHttpRequests((authorize) -> {
             authorize.antMatchers(securityConfig.getPermits().toArray(String[]::new)).permitAll();
-            authorize.antMatchers(securityConfig.getAppPermits().toArray(String[]::new)).hasAnyRole("app","admin","user");
-            authorize.antMatchers("/**").hasAnyRole("admin", "user");
+            authorize.antMatchers("/**").hasAnyRole("admin", "user","app");
         });
 
         http.exceptionHandling().authenticationEntryPoint(new SecurityAuthenticationEntryPoint());
