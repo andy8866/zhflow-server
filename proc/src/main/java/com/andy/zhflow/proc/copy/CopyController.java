@@ -19,7 +19,7 @@ public class CopyController {
 
     @GetMapping(value="/getList")
     public ResultResponse<List<Copy>> getList() {
-        List<Copy> list = Copy.getList(authService.getUserId());
+        List<Copy> list = Copy.getList(authService.getAppId(),authService.getUserId());
         return ResultResponse.success(list);
     }
 

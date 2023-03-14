@@ -48,6 +48,8 @@ public class CopyService {
 
         for (String userId : userIdList) {
             Copy copy=new Copy();
+            copy.setAppId(historicTaskInstance.getTenantId());
+
             copy.setTitle(title);
 
             copy.setTaskId(historicTaskInstance.getId());

@@ -15,12 +15,12 @@ import java.util.List;
 @TableName("proc_copy")
 public class Copy extends BaseEntity {
     private static CopyMapper copyMapper;
-
-
     @Autowired
     public void setCopyMapper(CopyMapper mapper){
         copyMapper =mapper;
     }
+
+    private String appId;
 
     private String title;
 
@@ -43,8 +43,8 @@ public class Copy extends BaseEntity {
         return getId();
     }
 
-    public static List<Copy> getList(String userId) {
-        LambdaQueryWrapper<Copy> wrapper=new LambdaQueryWrapper<Copy>().orderByDesc(Copy::getUpdateTime);
+    public static List<Copy> getList(String appId,String userId) {
+        LambdaQueryWrapper<Copy> wrapper=new LambdaQueryWrapper<Copy>().eq(Copy::getAppId,appId).orderByDesc(Copy::getUpdateTime);
         if(StringUtils.isNotEmpty(userId)) wrapper.eq(Copy::getUserId,userId);
         return copyMapper.selectList(wrapper);
     }

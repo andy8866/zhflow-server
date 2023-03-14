@@ -1,6 +1,7 @@
 package com.andy.zhflow.proc.deployment;
 
 import com.andy.zhflow.amis.AmisPage;
+import com.andy.zhflow.security.utils.AuthService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -14,14 +15,14 @@ import java.util.List;
 public class DeploymentService {
 
     @Autowired
-    private RuntimeService runtimeService;
+    private AuthService authService;
 
     @Autowired
     private RepositoryService repositoryService;
 
     public AmisPage<DeploymentOutputVO> getList(Integer page, Integer perPage) {
 
-        DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
+        DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery().tenantIdIn(authService.getAppId());
 
         Long total=deploymentQuery.count();
 
