@@ -17,5 +17,5 @@ public interface IThirdAppService {
     List<SelectOutVO> getRoleListToSelect(String appId) throws Exception;
     List<SelectOutVO> getUserListToSelect(String appId) throws Exception;
 
-    Map<String,String> getDicValueMap(String appId,String type)  throws Exception;
+    Map<String,String> getDictValueMap(String appId, String type)  throws Exception;
 }

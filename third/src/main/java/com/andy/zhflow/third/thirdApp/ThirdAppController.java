@@ -72,9 +72,9 @@ public class ThirdAppController {
         return ResultResponse.success( thirdAppService.getUserListToSelect(authService.getAppId()));
     }
 
-    @PostMapping(value="/getDicValueMap")
-    public ResultResponse<Map<String,String>> getDicValueMap(@RequestBody Map<String,String> map) throws Exception {
+    @PostMapping(value="/getDictValueMap")
+    public ResultResponse<Map<String,String>> getDictValueMap(@RequestBody Map<String,String> map) throws Exception {
         String type=map.getOrDefault("type",null);
-        return ResultResponse.success( thirdAppService.getDicValueMap(authService.getAppId(),type));
+        return ResultResponse.success( thirdAppService.getDictValueMap(authService.getAppId(),type));
     }
 }

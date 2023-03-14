@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.andy.zhflow.config.BaseConfig;
 import com.andy.zhflow.redis.service.RedisService;
 import com.andy.zhflow.security.SecurityUser;
-import com.andy.zhflow.security.utils.AuthService;
+import com.andy.zhflow.service.app.IAppService;
 import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.service.user.IUserService;
 import com.andy.zhflow.service.user.UserOutVO;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class UserService implements IUserService {
 
     @Resource
-    private RedisService redisService;
+    private IAppService appService;
 
     @Autowired
     private IAuthService authService;
@@ -30,16 +30,8 @@ public class UserService implements IUserService {
         return User.getById(id);
     }
 
-    public String switchCurrentUser(String id) {
-        User user=User.getById(id);
-        SecurityUser securityUser = new SecurityUser(user.getId(), user.getUserName(), user.getPassword(), "ROLE_admin");
-
-        // 创建令牌
-        String token ="USER"+NanoIdUtils.randomNanoId();
-        String json= JSON.toJSONString(securityUser);
-        redisService.set(token,json, BaseConfig.EXPIRATION, TimeUnit.SECONDS);
-
-        return token;
+    public String switchUser(String id) throws Exception {
+        return appService.switchApp(authService.getAppId(),id);
     }
 
     @Override

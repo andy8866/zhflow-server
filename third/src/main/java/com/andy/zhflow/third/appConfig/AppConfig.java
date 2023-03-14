@@ -17,6 +17,8 @@ public class AppConfig extends BaseEntity {
 
     private static AppConfigMapper appConfigMapper;
 
+
+
     @Autowired
     public void setAppConfigMapper(AppConfigMapper mapper){
         appConfigMapper =mapper;
@@ -86,6 +88,13 @@ public class AppConfig extends BaseEntity {
     public static void delByAppId(String appId){
         LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()
                 .eq(AppConfig::getAppId,appId);
+
+        appConfigMapper.delete(wrapper);
+    }
+
+    public static void delByAppIdAndCode(String appId, String code) {
+        LambdaQueryWrapper<AppConfig> wrapper = new LambdaQueryWrapper<AppConfig>()
+                .eq(AppConfig::getAppId,appId).eq(AppConfig::getCode,code);
 
         appConfigMapper.delete(wrapper);
     }

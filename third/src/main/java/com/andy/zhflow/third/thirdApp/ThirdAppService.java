@@ -95,10 +95,10 @@ public class ThirdAppService implements IThirdAppService {
         return callApi(appId,"getUserListToSelect", params,new TypeReference<List<SelectOutVO>>() {});
     }
 
-    public Map<String,String> getDicValueMap(String appId,String type) throws Exception {
+    public Map<String,String> getDictValueMap(String appId, String type) throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("appId", appId);
         params.put("type", type);
-        return callApi(appId,"getDicValueMap", params,new TypeReference<Map<String,String>>() {});
+        return callApi(appId,"getDictValueMap", params,new TypeReference<Map<String,String>>() {});
     }
 }

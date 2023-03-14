@@ -26,6 +26,9 @@ public class AppService implements IAppService {
             appConfig.setBase(true);
             appConfig.setId(NanoIdUtils.randomNanoId());
             appConfig.setAppId(inputVO.getTargetId());
+
+            AppConfig.delByAppIdAndCode(appConfig.getAppId(),appConfig.getCode());
+
             appConfig.insert();
         }
     }
@@ -36,10 +39,12 @@ public class AppService implements IAppService {
         return null;
     }
 
-    public String switchApp(String appId) throws Exception {
-        List<SelectOutVO> userListToSelect = thirdAppService.getUserListToSelect(appId);
-        String userId=null;
-        if(userListToSelect.size()>0) userId=userListToSelect.get(0).getValue();
+    public String switchApp(String appId,String userId) throws Exception {
+        if(userId==null){
+            List<SelectOutVO> userListToSelect = thirdAppService.getUserListToSelect(appId);
+            if(userListToSelect.size()>0) userId=userListToSelect.get(0).getValue();
+        }
+
         return appTokenService.getAppToken(appId,userId);
     }
 }

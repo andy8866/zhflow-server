@@ -45,10 +45,10 @@ public class AppController {
     }
 
     @GetMapping(value="/switchApp")
-    public ResultResponse<String> switchApp(@RequestParam("appId") String appId) throws Exception {
+    public ResultResponse<String> switchApp(@RequestParam("id") String appId) throws Exception {
         if(StringUtils.isEmpty(appId)) appId=appService.getFirstAppId();
 
-        String appToken=appService.switchApp(appId);
+        String appToken=appService.switchApp(appId,null);
         return ResultResponse.success(appToken);
     }
 }

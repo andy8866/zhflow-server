@@ -50,9 +50,9 @@ public class UserController {
         return ResultResponse.success(userService.getCurrentUser());
     }
 
-    @GetMapping(value="/switchCurrentUser")
-    public ResultResponse<String> switchCurrentUser(@RequestParam(value = "id") String id) {
-        String token=userService.switchCurrentUser(id);
+    @GetMapping(value="/switchUser")
+    public ResultResponse<String> switchUser(@RequestParam(value = "id") String id) throws Exception {
+        String token=userService.switchUser(id);
         return ResultResponse.success(token);
     }
 
