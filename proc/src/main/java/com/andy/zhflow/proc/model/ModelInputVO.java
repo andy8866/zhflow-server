@@ -8,5 +8,4 @@ public class ModelInputVO {
     private String name;
     private String content;
     private String procKey;
-    private String type;
 }

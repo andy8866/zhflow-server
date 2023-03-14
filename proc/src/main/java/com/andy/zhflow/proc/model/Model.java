@@ -1,7 +1,6 @@
 package com.andy.zhflow.proc.model;
 
 import com.andy.zhflow.entity.AppEntity;
-import com.andy.zhflow.security.utils.AuthService;
 import com.andy.zhflow.service.security.IAuthService;
 import com.andy.zhflow.third.app.App;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -38,8 +37,6 @@ public class Model extends AppEntity {
 
     private Date deploymentTime;
 
-    private String type;
-
     public static String save(ModelInputVO inputVO) throws Exception {
         Model model =new Model();
         if(StringUtils.isNoneEmpty(inputVO.getId())) model = modelMapper.selectById(inputVO.getId());
@@ -51,8 +48,6 @@ public class Model extends AppEntity {
         if(StringUtils.isNotEmpty(inputVO.getContent())) model.setContent(inputVO.getContent());
 
         if(StringUtils.isNotEmpty(inputVO.getProcKey())) model.setProcKey(inputVO.getProcKey());
-
-        if(StringUtils.isNotEmpty(inputVO.getType())) model.setType(inputVO.getType());
 
         if(StringUtils.isNotEmpty(authService.getAppId())) {
             model.setAppId(authService.getAppId());
