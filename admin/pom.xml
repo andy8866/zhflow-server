@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>zhflow</artifactId>
-        <groupId>com.andy</groupId>
+        <groupId>com.scyingneng</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.andy.zhflow</groupId>
+    <groupId>com.scyingneng.zhflow</groupId>
     <artifactId>admin</artifactId>
     <packaging>jar</packaging>
 
@@ -21,31 +21,31 @@
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>comm</artifactId>
             <version>${version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>security</artifactId>
             <version>${version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>redis</artifactId>
             <version>${version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>proc</artifactId>
             <version>${version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>third</artifactId>
             <version>${version}</version>
         </dependency>

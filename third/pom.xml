@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.andy</groupId>
+        <groupId>com.scyingneng</groupId>
         <artifactId>zhflow</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.andy.zhflow</groupId>
+    <groupId>com.scyingneng.zhflow</groupId>
     <artifactId>third</artifactId>
 
     <dependencies>
@@ -18,7 +18,7 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>mysql</artifactId>
             <version>${version}</version>
         </dependency>
@@ -28,7 +28,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>comm</artifactId>
             <version>${version}</version>
         </dependency>
@@ -39,12 +39,12 @@
             <version>4.10.0</version>
         </dependency>
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>redis</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>com.andy.zhflow</groupId>
+            <groupId>com.scyingneng.zhflow</groupId>
             <artifactId>service</artifactId>
             <version>${version}</version>
         </dependency>

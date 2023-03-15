@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.andy.zhflow.mysql.config.MysqlStarterAutoConfigure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.scyingneng.zhflow.mysql.config.MysqlStarterAutoConfigure

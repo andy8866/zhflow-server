@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.andy.zhflow.proc.ProcStarterAutoConfigure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.scyingneng.zhflow.proc.ProcStarterAutoConfigure
