@@ -24,6 +24,7 @@ public class Suggest extends BaseEntity {
         suggestMapper =mapper;
     }
 
+    private String name;
     private String companyName;
     private String phone;
     private String email;
