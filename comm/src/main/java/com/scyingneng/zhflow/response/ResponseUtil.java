@@ -2,6 +2,7 @@ package com.scyingneng.zhflow.response;
 
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -12,14 +13,22 @@ import java.net.URLEncoder;
 
 public class ResponseUtil {
 
+
+
     public static void writeObject(HttpServletResponse response, Object obj){
         String json = JSON.toJSONString(obj);
         writeString(response,json);
     }
     public static void writeString(HttpServletResponse response, String str){
+        writeString(response,str,"application/json; charset=utf-8");
+    }
+
+    public static void writeString(HttpServletResponse response, String str,String contentType){
         response.setStatus(200);
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=utf-8");
+
+        if(StringUtils.isNotEmpty(contentType))  response.setContentType(contentType);
+
         PrintWriter out = null;
 
         try {

@@ -25,6 +25,7 @@ security:
     - /api/security/validateToken**
     - /api/serviceThirdApp/**
     - /api/thirdApp/**
+    - /api/admin/theme/getUseCss**
 
 base-config:
   expire: 86400
