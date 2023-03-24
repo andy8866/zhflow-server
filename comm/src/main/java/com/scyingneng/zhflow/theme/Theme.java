@@ -71,7 +71,7 @@ public class Theme extends BaseEntity {
 
     public static Map<String, Object> getEdit(String id) {
         Theme theme= themeMapper.selectById(id);
-        if(StringUtils.isEmpty(theme.getContent())) return new HashMap<>();
+        if(theme==null || StringUtils.isEmpty(theme.getContent())) return new HashMap<>();
 
         return (Map<String, Object>) JSON.parse(theme.getContent());
     }

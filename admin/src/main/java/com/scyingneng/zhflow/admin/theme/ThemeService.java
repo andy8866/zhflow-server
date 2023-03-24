@@ -24,9 +24,8 @@ public class ThemeService  {
 
     private void append(Map<String,Object> map,StringBuilder stringBuilder){
         map.forEach((key,value)->{
-            if("kv".equals(key) || "colorKV".equals(key) ){
-                Map<String,Object> kvMap= (Map<String, Object>) value;
-                append(kvMap,stringBuilder);
+            if("css".equals(key) ){
+                stringBuilder.append(value).append(System.lineSeparator());
             }
             else{
                 stringBuilder.append(key).append(": ").append(value).append(";").append(System.lineSeparator());
@@ -37,6 +36,7 @@ public class ThemeService  {
 
     public void getUseCss(HttpServletResponse response) {
         Theme theme=Theme.getUse();
-        getCss(response,theme.getId());
+        if(theme!=null) getCss(response,theme.getId());
+        else getCss(response,null);
     }
 }
