@@ -67,29 +67,6 @@
                     <mainClass>com.scyingneng.zhflow.admin.AdminApp</mainClass>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <configuration>
-                    <!-- imageName用于设置生成的二进制文件名称 -->
-                    <imageName>${project.artifactId}</imageName>
-                    <!-- mainClass用于指定main方法类路径 -->
-                    <mainClass>com.scyingneng.zhflow.admin.AdminApp</mainClass>
-                    <buildArgs>
-                        --no-fallback
-                    </buildArgs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>build-native</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>
