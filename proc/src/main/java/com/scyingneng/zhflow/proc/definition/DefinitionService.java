@@ -11,6 +11,7 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class DefinitionService {
@@ -79,8 +81,8 @@ public class DefinitionService {
 
     public String getFirstTaskDefinitionKey(String processDefinitionKey) {
         BpmnModelInstance bpmnModelInstance = repositoryService.getBpmnModelInstance(processDefinitionKey);
-        StartEvent startEvent = bpmnModelInstance.getModelElementsByType(StartEvent.class).stream().toList().get(0);
-        FlowNode target = startEvent.getOutgoing().stream().toList().get(0).getTarget();
+        StartEvent startEvent = (StartEvent) bpmnModelInstance.getModelElementsByType(StartEvent.class).stream().collect(Collectors.toList());
+        FlowNode target = startEvent.getOutgoing().stream().collect(Collectors.toList()).get(0).getTarget();
         if(target.getElementType().getTypeName().equals(BpmnConstant.ELEMENT_TASK_USER)){
             return target.getId();
         }
@@ -91,7 +93,7 @@ public class DefinitionService {
 
     public String getStartKey(String processDefinitionKey) {
         BpmnModelInstance bpmnModelInstance = repositoryService.getBpmnModelInstance(processDefinitionKey);
-        StartEvent startEvent = bpmnModelInstance.getModelElementsByType(StartEvent.class).stream().toList().get(0);
+        StartEvent startEvent = bpmnModelInstance.getModelElementsByType(StartEvent.class).stream().collect(Collectors.toList()).get(0);
         return startEvent.getId();
     }
 }

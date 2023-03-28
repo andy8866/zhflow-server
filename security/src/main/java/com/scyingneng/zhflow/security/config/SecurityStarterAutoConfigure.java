@@ -26,6 +26,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -56,8 +57,10 @@ public class SecurityStarterAutoConfigure {
 
         http.cors().configurationSource(corsConfigurationSource());
 
+
+
         http.authorizeHttpRequests((authorize) -> {
-            authorize.antMatchers(securityConfig.getPermits().toArray(String[]::new)).permitAll();
+            authorize.antMatchers( Arrays.copyOf(securityConfig.getPermits().toArray(), securityConfig.getPermits().size(), String[].class)).permitAll();
             authorize.antMatchers("/**").hasAnyRole("admin", "user","app");
         });
 
@@ -83,7 +86,7 @@ public class SecurityStarterAutoConfigure {
 
     private CorsConfigurationSource corsConfigurationSource() {
         // Very permissive CORS config...
-        final var configuration = new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");
 //        configuration.addAllowedOrigin("*");

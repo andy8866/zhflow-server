@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InstanceService {
@@ -136,7 +137,7 @@ public class InstanceService {
                 .stream().map(item -> (HistoricActivityInstanceEntity)item)
                 .sorted(Comparator.comparing(HistoricActivityInstanceEntity::getStartTime)
                 .thenComparing(HistoricActivityInstanceEntity::getSequenceCounter))
-                .toList();
+                .collect(Collectors.toList());
         ;
         if (activityInstanceList.size()==0) {
             return new ProcViewerVO();
@@ -196,8 +197,7 @@ public class InstanceService {
                 .stream().map(item -> (HistoricActivityInstanceEntity)item)
                 .sorted(Comparator.comparing(HistoricActivityInstanceEntity::getStartTime,Comparator.reverseOrder())
                         .thenComparing(HistoricActivityInstanceEntity::getSequenceCounter,Comparator.reverseOrder())
-                )
-                .toList();
+                ).collect(Collectors.toList());
 
         HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
                 .processInstanceId(procInsId)

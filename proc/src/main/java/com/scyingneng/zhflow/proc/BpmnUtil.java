@@ -10,6 +10,7 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BpmnUtil {
     public static List<FlowNode> getFlowList(BpmnModelInstance bpmnModelInstance, ModelElementType type){
@@ -48,7 +49,7 @@ public class BpmnUtil {
     public static Set<String> dfsFindRejects(BpmnModelInstance bpmnModel, Set<String> unfinishedTaskSet,
                                              Set<String> finishedSequenceFlowSet, Set<String> finishedTaskSet) {
 
-        List<Process> processes = bpmnModel.getModelElementsByType(Process.class).stream().toList();
+        List<Process> processes = bpmnModel.getModelElementsByType(Process.class).stream().collect(Collectors.toList());
 
         Collection<FlowElement> allElements = getAllElements(processes.get(0).getFlowElements(), null);
         Set<String> rejectedSet = new HashSet<>();
@@ -171,15 +172,15 @@ public class BpmnUtil {
     public static List<SequenceFlow> getElementIncomingFlows(FlowElement source) {
         List<SequenceFlow> sequenceFlows = null;
         if (source instanceof FlowNode) {
-            sequenceFlows = ((FlowNode) source).getIncoming().stream().toList();
+            sequenceFlows = ((FlowNode) source).getIncoming().stream().collect(Collectors.toList());
         } else if (source instanceof Gateway) {
-            sequenceFlows = ((Gateway) source).getIncoming().stream().toList();
+            sequenceFlows = ((Gateway) source).getIncoming().stream().collect(Collectors.toList());
         } else if (source instanceof SubProcess) {
-            sequenceFlows = ((SubProcess) source).getIncoming().stream().toList();
+            sequenceFlows = ((SubProcess) source).getIncoming().stream().collect(Collectors.toList());
         } else if (source instanceof StartEvent) {
-            sequenceFlows = ((StartEvent) source).getIncoming().stream().toList();
+            sequenceFlows = ((StartEvent) source).getIncoming().stream().collect(Collectors.toList());
         } else if (source instanceof EndEvent) {
-            sequenceFlows = ((EndEvent) source).getIncoming().stream().toList();
+            sequenceFlows = ((EndEvent) source).getIncoming().stream().collect(Collectors.toList());
         }
         return sequenceFlows;
     }
@@ -192,21 +193,21 @@ public class BpmnUtil {
     public static List<SequenceFlow> getElementOutgoingFlows(FlowElement source) {
         List<SequenceFlow> sequenceFlows = null;
         if (source instanceof FlowNode) {
-            sequenceFlows = ((FlowNode) source).getOutgoing().stream().toList();
+            sequenceFlows = ((FlowNode) source).getOutgoing().stream().collect(Collectors.toList());
         } else if (source instanceof Gateway) {
-            sequenceFlows = ((Gateway) source).getOutgoing().stream().toList();
+            sequenceFlows = ((Gateway) source).getOutgoing().stream().collect(Collectors.toList());
         } else if (source instanceof SubProcess) {
-            sequenceFlows = ((SubProcess) source).getOutgoing().stream().toList();
+            sequenceFlows = ((SubProcess) source).getOutgoing().stream().collect(Collectors.toList());
         } else if (source instanceof StartEvent) {
-            sequenceFlows = ((StartEvent) source).getOutgoing().stream().toList();
+            sequenceFlows = ((StartEvent) source).getOutgoing().stream().collect(Collectors.toList());
         } else if (source instanceof EndEvent) {
-            sequenceFlows = ((EndEvent) source).getOutgoing().stream().toList();
+            sequenceFlows = ((EndEvent) source).getOutgoing().stream().collect(Collectors.toList());
         }
         return sequenceFlows;
     }
 
     public static EndEvent getEndEvent(BpmnModelInstance bpmnModel) {
-        List<Process> processes = bpmnModel.getModelElementsByType(Process.class).stream().toList();
+        List<Process> processes = bpmnModel.getModelElementsByType(Process.class).stream().collect(Collectors.toList());
         return getEndEvent(processes.get(0).getFlowElements());
     }
 
@@ -232,7 +233,7 @@ public class BpmnUtil {
     public static String getProcKey(String bpmnContent){
         BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(IOUtils.toInputStream(bpmnContent, StandardCharsets.UTF_8));
         Collection<Process> collections = bpmnModelInstance.getModelElementsByType(Process.class);
-        if(collections.size()>0) return collections.stream().toList().get(0).getId();
+        if(collections.size()>0) return collections.stream().collect(Collectors.toList()).get(0).getId();
         return "";
     }
 }
