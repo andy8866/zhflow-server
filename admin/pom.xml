@@ -71,7 +71,6 @@
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.9.20</version>
                 <configuration>
                     <!-- imageName用于设置生成的二进制文件名称 -->
                     <imageName>${project.artifactId}</imageName>
