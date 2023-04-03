@@ -83,7 +83,7 @@
                             <targetDir>${project.build.directory}</targetDir>
                             <targetJar>admin.zhflow</targetJar>
                             <excludes>
-                                <exclude>bpmn/**/*</exclude>
+                                <exclude>org/camunda/bpm/engine/impl/bpmn/parser/*.xsd</exclude>
                             </excludes>
                         </configuration>
                     </execution>
