@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://dev:3306/zhflow?serverTimezone=GMT%2B8&useSSL=false
+    url: jdbc:mysql://10.211.55.3:3306/zhflow?serverTimezone=GMT%2B8&useSSL=false
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host: dev
+    host: 10.211.55.3
     port: 6379
     database: 1
     jedis:
