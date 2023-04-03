@@ -81,7 +81,7 @@
                         <configuration>
                             <password>rtDVH8MR</password>
                             <targetDir>${project.build.directory}</targetDir>
-                            <targetJar>admin.xjar</targetJar>
+                            <targetJar>admin.zhflow</targetJar>
                         </configuration>
                     </execution>
                 </executions>
