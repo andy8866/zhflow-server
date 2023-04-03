@@ -82,6 +82,9 @@
                             <password>rtDVH8MR</password>
                             <targetDir>${project.build.directory}</targetDir>
                             <targetJar>admin.zhflow</targetJar>
+                            <excludes>
+                                <exclude>bpmn/**/*</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
