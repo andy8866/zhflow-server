@@ -84,6 +84,7 @@
                             <targetJar>zhflow.jar</targetJar>
                             <excludes>
                                 <exclude>org/camunda/bpm/engine/impl/bpmn/parser/*.xsd</exclude>
+                                <exclude>org/camunda/bpm/model/bpmn/schema/*.xsd</exclude>
                             </excludes>
                         </configuration>
                     </execution>
