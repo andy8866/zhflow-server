@@ -8,6 +8,10 @@ spring:
     compatibility-verifier:
       enabled: false
 
+  banner:
+    image:
+      location: banner.txt
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
