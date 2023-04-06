@@ -9,8 +9,7 @@ spring:
       enabled: false
 
   banner:
-    image:
-      location: banner.txt
+    location: banner.txt
 
 mybatis-plus:
   configuration:
