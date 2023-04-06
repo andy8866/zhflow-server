@@ -85,6 +85,7 @@
                             <excludes>
                                 <exclude>org/camunda/bpm/engine/impl/bpmn/parser/*.xsd</exclude>
                                 <exclude>org/camunda/bpm/model/bpmn/schema/*.xsd</exclude>
+                                <exclude>banner.txt</exclude>
                             </excludes>
                         </configuration>
                     </execution>
