@@ -4,6 +4,7 @@ import com.scyingneng.zhflow.redis.service.RedisService;
 import com.scyingneng.zhflow.security.handler.LoginFailureHandler;
 import com.scyingneng.zhflow.security.handler.SecurityAuthenticationEntryPoint;
 import com.scyingneng.zhflow.security.token.TokenAuthorizationFilter;
+import com.scyingneng.zhflow.security.token.TokenLoginOutSuccessHandler;
 import com.scyingneng.zhflow.security.token.TokenLoginSuccessHandler;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,8 @@ public class SecurityStarterAutoConfigure {
             authorize.antMatchers( Arrays.copyOf(securityConfig.getPermits().toArray(), securityConfig.getPermits().size(), String[].class)).permitAll();
             authorize.antMatchers("/**").hasAnyRole("admin", "user","app");
         });
+
+        http.logout().logoutUrl("/api/logout").logoutSuccessHandler(new TokenLoginOutSuccessHandler(redisService));
 
         http.exceptionHandling().authenticationEntryPoint(new SecurityAuthenticationEntryPoint());
 

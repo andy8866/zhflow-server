@@ -22,6 +22,7 @@ logging:
 security:
   permits:
     - /error/**
+    - /api/logout/**
     - /api/admin/index/**
     - /api/admin/website/**
     - /api/admin/uiPage/getUiByCode/**

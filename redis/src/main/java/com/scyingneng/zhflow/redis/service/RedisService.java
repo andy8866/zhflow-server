@@ -66,4 +66,17 @@ public class RedisService {
         }
         return false;
     }
+
+    public boolean delete(final String key) {
+        if (StringUtils.isBlank(key)) {
+            return false;
+        }
+        try {
+            redisTemplate.delete(key);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
