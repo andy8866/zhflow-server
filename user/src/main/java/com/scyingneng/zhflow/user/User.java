@@ -69,12 +69,17 @@ public class User extends BaseEntity {
             throw new Exception("用户不已存在");
         }
 
+        if(user.getUserName().equals("admin"))return ;
+
         user.setPassword(password);
         user.setUpdateTime(new Date());
         userMapper.updateById(user);
     }
 
     public static void del(String id) {
+        User user = getById(id);
+        if(user!=null && user.getUserName().equals("admin"))return ;
+
         userMapper.deleteById(id);
     }
 
