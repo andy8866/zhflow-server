@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
 public class User extends BaseEntity {
 
     private static UserMapper userMapper;
+
+
 
 
     @Autowired
@@ -37,6 +40,42 @@ public class User extends BaseEntity {
     public static User getByUserName(String userName){
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>().eq(User::getUserName,userName);
         return userMapper.selectOne(queryWrapper);
+    }
+
+    public static void addUser(String userName,String password) throws Exception {
+        if(StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
+            throw new Exception("用户名或密码不能为空");
+        }
+
+        if(getByUserName(userName)!=null){
+            throw new Exception("用户名已存在");
+        }
+
+        User user=new User();
+        user.setBase(true);
+        user.setUserName(userName);
+        user.setPassword(password);
+
+        userMapper.insert(user);
+    }
+
+    public static void updatePassword(String id, String password) throws Exception {
+        if(StringUtils.isEmpty(password)){
+            throw new Exception("密码不能为空");
+        }
+
+        User user = getById(id);
+        if(user==null){
+            throw new Exception("用户不已存在");
+        }
+
+        user.setPassword(password);
+        user.setUpdateTime(new Date());
+        userMapper.updateById(user);
+    }
+
+    public static void del(String id) {
+        userMapper.deleteById(id);
     }
 
     public boolean matchingPassword(String password){

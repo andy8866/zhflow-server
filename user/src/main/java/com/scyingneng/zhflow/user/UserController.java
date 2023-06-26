@@ -26,6 +26,30 @@ public class UserController {
         return ResultResponse.success(AmisPage.transitionPage(appPage));
     }
 
+    @GetMapping(value="/addUser")
+    public ResultResponse<Void> addUser(@RequestParam("userName") String userName, @RequestParam("password") String password) throws Exception {
+
+        User.addUser(userName,password);
+
+        return ResultResponse.success();
+    }
+
+    @GetMapping(value="/updatePassword")
+    public ResultResponse<Void> updatePassword(@RequestParam("id") String id, @RequestParam("password") String password) throws Exception {
+
+        User.updatePassword(id,password);
+
+        return ResultResponse.success();
+    }
+
+    @GetMapping(value="/del")
+    public ResultResponse<Void> del(@RequestParam("id") String id) throws Exception {
+
+        User.del(id);
+
+        return ResultResponse.success();
+    }
+
     @GetMapping(value="/getListNoPage")
     public ResultResponse<List<User>> getListNoPage(@RequestParam(value = "name",required = false) String name) {
         List<User> list = User.getListNoPage(name);
