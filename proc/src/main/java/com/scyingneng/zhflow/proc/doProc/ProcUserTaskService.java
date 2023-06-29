@@ -71,6 +71,8 @@ public class ProcUserTaskService extends ProcService {
 
     @Autowired
     protected IAuthService authService;
+
+
     /**
      * 待办任务
      * @param page
@@ -223,9 +225,10 @@ public class ProcUserTaskService extends ProcService {
         task.setAssignee(superiorUserId);
     }
 
-    public HashSet<String> getMultiInstanceUserIds(DelegateExecution execution) {
+    public HashSet<String> getMultiInstanceUserIds(DelegateExecution execution){
         HashSet<String> candidateUserIds = new LinkedHashSet<>();
         ModelElementInstance flowElement=null;
+        String appId=execution.getTenantId();
         if(((ExecutionEntity)execution).getActivity()!=null){
             String activityId=((ExecutionEntity)execution).getActivity().getActivities().get(0).getActivityId();
             flowElement= execution.getBpmnModelInstance().getModelElementById(activityId);
@@ -244,13 +247,23 @@ public class ProcUserTaskService extends ProcService {
                 if (BpmnConstant.BPMN_CUSTOM_DATA_TYPE_ROLES.equals(dataType)) {
                     groups.forEach(item -> {
                         String roleId=item.replace(BpmnConstant.CANDIDATE_ROLE_GROUP_PREFIX,"");
-                        List<String> userIds = roleService.getUserIdsByRoleId(roleId);
+                        List<String> userIds = null;
+                        try {
+                            userIds = thirdAppService.getUserIdsByRoleId(appId,roleId);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         candidateUserIds.addAll(userIds);
                     });
                 } else if (BpmnConstant.BPMN_CUSTOM_DATA_TYPE_DEPTS.equals(dataType)) {
                     groups.forEach(item -> {
                         String deptId=item.replace(BpmnConstant.CANDIDATE_DEPT_GROUP_PREFIX,"");
-                        List<String> userIds = deptService.getUserIdsByDeptId(deptId);
+                        List<String> userIds = null;
+                        try {
+                            userIds = thirdAppService.getUserIdsByDeptId(appId,deptId);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         candidateUserIds.addAll(userIds);
                     });
                 }

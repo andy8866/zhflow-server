@@ -43,10 +43,14 @@ public class ThirdAppService implements IThirdAppService {
 
 //        resultStr = OkHttpUtil.get(url, params,signMap, app.getSecretKey());
         resultStr = OkHttpUtil.postJsonParams(url,signMap, app.getSecretKey(),params);
-        if(StringUtils.isEmpty(resultStr)) throw new Exception("第三方返回数据为空或第三方调用接口错误");
+        if(StringUtils.isEmpty(resultStr)) {
+            throw new Exception("第三方返回数据为空或第三方调用接口错误");
+        }
 
         ResultResponse<T> resultResponse =JSON.parseObject(resultStr, new TypeReference<ResultResponse<T>>() {});
-        if(!resultResponse.isSuccess()) throw new Exception(resultResponse.getMsg());
+        if(!resultResponse.isSuccess()) {
+            throw new Exception(resultResponse.getMsg());
+        }
 
         if(resultResponse.getData()!=null && typeReference!=null){
             String s=JSON.toJSONString(resultResponse.getData());
@@ -111,5 +115,21 @@ public class ThirdAppService implements IThirdAppService {
     public void startProc(String appId, Map<String,Object> params) throws Exception {
         params.put("appId", appId);
         callApi(appId,"startProc", params);
+    }
+
+    public List<String> getUserIdsByRoleId(String appId,String roleId) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appId",appId);
+        params.put("roleId",roleId);
+
+        return callApi(appId,"getUserIdsByRoleId", params,new TypeReference<List<String>>() {});
+    }
+
+    public List<String> getUserIdsByDeptId(String appId,String deptId) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appId",appId);
+        params.put("deptId",deptId);
+
+        return callApi(appId,"getUserIdsByDeptId", params,new TypeReference<List<String>>() {});
     }
 }

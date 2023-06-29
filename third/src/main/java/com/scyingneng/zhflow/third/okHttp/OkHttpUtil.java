@@ -129,7 +129,7 @@ public class OkHttpUtil{
         try {
             response = okHttpClient.newCall(request).execute();
             if (response.isSuccessful()) {
-                return response.body().string();
+                responseBody= response.body().string();
             }
         } catch (Exception e) {
             logger.error("okhttp3 post error >> ex = {}", ExceptionUtils.getStackTrace(e));

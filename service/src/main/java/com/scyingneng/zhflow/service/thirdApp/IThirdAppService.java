@@ -22,4 +22,8 @@ public interface IThirdAppService {
     void procComplete(String appId, Map<String,Object> params) throws Exception;
 
     void startProc(String appId, Map<String,Object>  variableMap)throws Exception;
+
+    List<String> getUserIdsByRoleId(String appId, String roleId)throws Exception ;
+
+    List<String> getUserIdsByDeptId(String appId, String deptId)throws Exception ;
 }
